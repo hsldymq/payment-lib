@@ -2,6 +2,8 @@
 namespace Utils\PaymentVendor\RequestInterface\Alipay\Traits;
 
 use Utils\PaymentVendor\ConfigManager\AlipayConfig;
+use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
+use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
 use Utils\PaymentVendor\SignatureHelper\Alipay\Generator;
 
 /**
@@ -18,8 +20,7 @@ trait ParametersMakerTrait
         string $charset = 'utf-8',
         string $version = '1.0'
     ): array {
-
-        $now = \get_now_datetime();
+        $now = $this->now();
         $parameters = [
             'app_id' => $this->config->getAppID(),
             'method' => $method,
@@ -30,9 +31,18 @@ trait ParametersMakerTrait
             'version' => $version,
         ];
         $parameters = array_merge($extra_data, $parameters);
-        $parameters['biz_content'] = \GuzzleHttp\json_encode($biz_content);
+        $parameters['biz_content'] = \GuzzleHttp\json_encode($biz_content, JSON_FORCE_OBJECT);
         $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->sign_type);
 
         return $parameters;
+    }
+
+    private function now(): \DateTime
+    {
+        if ($this instanceof MutableDateTimeInterface) {
+            return $this->getDateTime();
+        }
+
+        return new \DateTime('now', new \DateTimeZone('+0800'));
     }
 }

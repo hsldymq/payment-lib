@@ -8,20 +8,22 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Utils\PaymentVendor\ConfigManager\AlipayConfig;
 use Utils\PaymentVendor\DataParser;
+use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
 use Utils\PaymentVendor\RequestInterface\Traits\CertVerificationLessTrait;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
 use Utils\PaymentVendor\RequestInterface\RequestableInterface;
+use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
 use Utils\PaymentVendor\SignatureHelper\Alipay\Generator;
 use function GuzzleHttp\Psr7\build_query;
 
 /**
  * @link https://os.alipayobjects.com/rmsportal/UYaiBLFsoFZqVgxWkEZx.zip 文档PDF下载地址
  */
-class NoPasswordBatchRefund implements RequestableInterface
+class NoPasswordBatchRefund implements RequestableInterface, MutableDateTimeInterface
 {
     use CertVerificationLessTrait;
+    use MutableDateTimeTrait;
 
-    /** @var AlipayConfig */
     private $config;
 
     private $params = [
@@ -30,16 +32,16 @@ class NoPasswordBatchRefund implements RequestableInterface
         'dback_notify_url' => null,
     ];
 
-    public function __construct(array $config)
+    public function __construct(AlipayConfig $config)
     {
-        $this->config = new AlipayConfig($config);
+        $this->config = $config;
     }
 
     public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->params, ['detail_data', 'serial_number']);
 
-        $now = \get_now_datetime();
+        $now = $this->getDateTime();
         $parameters = [
             'service'           => 'refund_fastpay_by_platform_nopwd',
             'partner'           => $this->config->getPartnerID(),
@@ -108,11 +110,15 @@ class NoPasswordBatchRefund implements RequestableInterface
     {
         // 退款理由不能包含^,|,$,#等特殊字符
         if (preg_match('/\^|\||\$|\#/', $reason) || preg_match('/\^|\||\$|\#/', $trade_no)) {
-            throw new MakePaymentVendorParametersFailedException(['message' => 'Refund Detail Data Should Not Include Special Characters']);
+            throw new MakePaymentVendorParametersFailedException(['message' => 'Refund Detail Data Should Not Include Special Characters.']);
         }
 
-        $amount = sprintf('%.2f', $amount / 100);
-        $this->params['detail_data'][] = "{$trade_no}^{$amount}^{$reason}";
+        if (isset($this->params['detail_data'][$trade_no])) {
+            throw new MakePaymentVendorParametersFailedException(['message' => 'Duplicated Trade No In Same Batch.']);
+        }
+
+        $amount = ParameterHelper::transUnitCentToYuan($amount);
+        $this->params['detail_data'][$trade_no] = "{$trade_no}^{$amount}^{$reason}";
 
         return $this;
     }

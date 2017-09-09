@@ -16,24 +16,13 @@ use Utils\PaymentVendor\SignatureHelper\Alipay\Validator;
  */
 trait DefaultResponseHandlerTrait
 {
-    /** @var AlipayConfig */
-    private $config;
-
-    /** @var string */
-    private $sign_type = null;
-
-    /** @var string */
-    private $response_data_field = null;
-
-    /** @var string */
-    private $response_sign_field = null;
-
     public function handleResponse(ResponseInterface $response): array
     {
         // 检查handler所需的必要字段
         $this->checkProperty();
 
         $data = DataParser::parseJSON($response->getBody());
+        print_r($data);
         // 验证错误码
         $this->checkError($data);
 

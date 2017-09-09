@@ -3,18 +3,23 @@ namespace Utils\PaymentVendor\RequestInterface\Alipay;
 
 use Utils\PaymentVendor\ConfigManager\AlipayConfig;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
+use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
+use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
 
 /**
+ * // TODO 有待验证,需要APP配合.
  * APP支付.
  * @link https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.4fv1t7&treeId=193&articleId=105465&docType=1 文档地址
  */
-class TradeAppPay
+class TradeAppPay implements MutableDateTimeInterface
 {
     use ParametersMakerTrait;
+    use MutableDateTimeTrait;
 
-    /** @var AlipayConfig */
     private $config;
+
+    private $sign_type = 'RSA';
 
     private $biz_content = [
         'body' => null,
@@ -38,9 +43,9 @@ class TradeAppPay
         'store_id' => null,
     ];
 
-    public function __construct(array $config)
+    public function __construct(AlipayConfig $config)
     {
-        $this->config = new AlipayConfig($config);
+        $this->config = $config;
     }
 
     public function makeParameters(): array
@@ -74,9 +79,9 @@ class TradeAppPay
      * @param int $amount
      * @return TradeAppPay
      */
-    public function setAmount(int $amount): self
+    public function setTotalAmount(int $amount): self
     {
-        $this->biz_content['total_amount'] = sprintf('%.2f', $amount / 100);
+        $this->biz_content['total_amount'] = ParameterHelper::transUnitCentToYuan($amount);
 
         return $this;
     }

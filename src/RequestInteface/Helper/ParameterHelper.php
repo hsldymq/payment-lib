@@ -59,6 +59,16 @@ class ParameterHelper
     }
 
     /**
+     * 将以分为单位的金额换算为元,保留小数点后两位.
+     * @param int $amount
+     * @return string
+     */
+    public static function transUnitCentToYuan(int $amount): string
+    {
+        return sprintf('%.2f', $amount / 100);
+    }
+
+    /**
      * 过滤掉无效数据,被过滤的值以null返回
      *  1. 如果参数为null,空字符串被视为无效.
      *  2. 如果参数为数组,那么按照以上规则递归进行过滤

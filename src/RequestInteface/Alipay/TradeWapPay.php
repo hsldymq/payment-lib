@@ -4,17 +4,23 @@ namespace Utils\PaymentVendor\RequestInterface\Alipay;
 use Utils\PaymentVendor\ConfigManager\AlipayConfig;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
+use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
+use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
 
 /**
+ * TODO 有待验证(需要WEB前端配合)
  * 手机网站支付.
  * @link https://docs.open.alipay.com/203/107090/ 文档地址
  */
-class TradeWapPay
+class TradeWapPay implements MutableDateTimeInterface
 {
     use ParametersMakerTrait;
+    use MutableDateTimeTrait;
 
     /** @var AlipayConfig */
     private $config;
+
+    private $sign_type = 'RSA';
 
     /** @var string */
     private $return_url = null;
@@ -44,9 +50,9 @@ class TradeWapPay
         'quit_url' => null,
     ];
 
-    public function __construct(array $config)
+    public function __construct(AlipayConfig $config)
     {
-        $this->config = new AlipayConfig($config);
+        $this->config = $config;
     }
 
     public function makeParameters(): array
@@ -84,7 +90,7 @@ class TradeWapPay
     {
         ParameterHelper::checkAmount($amount);
 
-        $this->biz_content['total_amount'] = sprintf('%.2f', $amount / 100);
+        $this->biz_content['total_amount'] = ParameterHelper::transUnitCentToYuan($amount);
 
         return $this;
     }

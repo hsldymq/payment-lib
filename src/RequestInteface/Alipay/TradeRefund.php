@@ -7,16 +7,19 @@ use Utils\PaymentVendor\RequestInterface\Alipay\Traits\DefaultRequestPreparation
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\DefaultResponseHandlerTrait;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
+use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
 use Utils\PaymentVendor\RequestInterface\RequestableInterface;
+use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
 
 /**
  * @link https://docs.open.alipay.com/api_1/alipay.trade.refund 文档地址
  */
-class TradeRefund implements RequestableInterface
+class TradeRefund implements RequestableInterface, MutableDateTimeInterface
 {
     use ParametersMakerTrait;
     use DefaultRequestPreparationTrait;
     use DefaultResponseHandlerTrait;
+    use MutableDateTimeTrait;
 
     /** @var AlipayConfig */
     private $config;
@@ -38,16 +41,16 @@ class TradeRefund implements RequestableInterface
         'terminal_id' => null,
     ];
 
-    public function __construct(array $config)
+    public function __construct(AlipayConfig $config)
     {
-        $this->config = new AlipayConfig($config);
+        $this->config = $config;
     }
 
     public function makeParameters(): array
     {
         ParameterHelper::checkRequired(
             $this->biz_content,
-            ['out_request_no', 'refund_amount', 'refund_reason'],
+            ['refund_amount'],
             ['trade_no','out_trade_no']
         );
 
@@ -102,7 +105,7 @@ class TradeRefund implements RequestableInterface
     {
         ParameterHelper::checkAmount($amount);
 
-        $this->biz_content['refund_amount'] = sprintf('%.2f', $amount / 100);
+        $this->biz_content['refund_amount'] = ParameterHelper::transUnitCentToYuan($amount);
 
         return $this;
     }

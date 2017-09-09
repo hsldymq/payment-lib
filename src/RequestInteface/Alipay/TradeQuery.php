@@ -6,19 +6,21 @@ use Utils\PaymentVendor\RequestInterface\Alipay\Traits\DefaultRequestPreparation
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\DefaultResponseHandlerTrait;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
+use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
 use Utils\PaymentVendor\RequestInterface\RequestableInterface;
+use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
 
 /**
  * 支付宝交易订单查询.
  * @link https://docs.open.alipay.com/api_1/alipay.trade.query 文档地址
  */
-class TradeQuery implements RequestableInterface
+class TradeQuery implements RequestableInterface, MutableDateTimeInterface
 {
     use DefaultResponseHandlerTrait;
     use DefaultRequestPreparationTrait;
     use ParametersMakerTrait;
+    use MutableDateTimeTrait;
 
-    /** @var AlipayConfig */
     private $config;
 
     private $sign_type = 'RSA';
@@ -32,9 +34,9 @@ class TradeQuery implements RequestableInterface
         'out_trade_no' => null,
     ];
 
-    public function __construct(array $config)
+    public function __construct(AlipayConfig $config)
     {
-        $this->config = new AlipayConfig($config);
+        $this->config = $config;
     }
 
     public function makeParameters(): array

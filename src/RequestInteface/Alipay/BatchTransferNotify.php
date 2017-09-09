@@ -1,28 +1,34 @@
 <?php
 namespace Utils\PaymentVendor\RequestInterface\Alipay;
+
 use Api\Exception\Logic\MakePaymentVendorParametersFailedException;
 use Utils\PaymentVendor\ConfigManager\AlipayConfig;
+use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
+use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
 use Utils\PaymentVendor\SignatureHelper\Alipay\Generator;
 
 /**
+ * // TODO 有待验证(跳到支付宝转账界面,明细提示验证成功,但是系统不支持,无法显示密码表单)
  * 批量付款到支付宝账户有密接口.
  * @link https://docs.open.alipay.com/64/104804 文档地址
+ * @link https://docs.open.alipay.com/common/104741 生成签名的方式(需要剔除掉sign_type)
  */
-class BatchTransferNotify
+class BatchTransferNotify implements MutableDateTimeInterface
 {
-    /** @var AlipayConfig */
+    use MutableDateTimeTrait;
+
     private $config;
 
     private $params = [
-        'detail_data' => [],
-        'batch_no' => null,
+        'detail_data' => [],            // 必填
+        'batch_no' => null,             // 必填
         'extend_param' => null,
     ];
 
-    public function __construct(array $config)
+    public function __construct(AlipayConfig $config)
     {
-        $this->config = new AlipayConfig($config);
+        $this->config = $config;
     }
 
     public function makeTransferUrl(): string
@@ -34,12 +40,13 @@ class BatchTransferNotify
 
     public function makeParameters(): array
     {
-        $now = \get_now_datetime();
+        ParameterHelper::checkRequired($this->params, ['batch_no', 'detail_data']);
+
+        $now = $this->getDateTime();
         $parameters = [
             'service'        => 'batch_trans_notify',
             'partner'        => $this->config->getPartnerID(),
             '_input_charset' => 'utf-8',
-            'sign_type'      => 'MD5',
             'notify_url'     => $this->config->getCallbackUrl('transfer.batch'),
             'account_name'   => $this->config->getAccountName(),
             'detail_data'    => $this->makeDetailDataString(),
@@ -52,6 +59,7 @@ class BatchTransferNotify
         $this->params['extend_param'] && $parameters['extend_param'] = $this->params['extend_param'];
 
         $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, 'MD5');
+        $parameters['sign_type'] = 'MD5';
         ksort($parameters);
 
         return $parameters;
@@ -59,7 +67,7 @@ class BatchTransferNotify
 
     public function setBatchNo(string $batch_no): self
     {
-        if (!preg_match('/^[a-z0-9]{11-32}$/i', $batch_no)) {
+        if (!preg_match('/^[a-z0-9]{11,32}$/i', $batch_no)) {
             throw new MakePaymentVendorParametersFailedException([
                 'message' => 'Length of The Batch No Should Be 11 <= x <= 32, And Should Be a Combination Of Alphanumeric'
             ]);
@@ -72,7 +80,7 @@ class BatchTransferNotify
 
     /**
      * 增加转账数据.
-     * @param string $out_trade_no 商户订单号
+     * @param string $serial_no 商户订单号
      * @param string $user_account 转账目标用户账号
      * @param string $user_real_name 用户姓名
      * @param int $amount 金额(单位:分)
@@ -81,7 +89,7 @@ class BatchTransferNotify
      * @throws MakePaymentVendorParametersFailedException
      */
     public function addDetailData(
-        string $out_trade_no,
+        string $serial_no,
         string $user_account,
         string $user_real_name,
         int $amount,
@@ -89,7 +97,7 @@ class BatchTransferNotify
     ): self {
         ParameterHelper::checkAmount($amount);
 
-        if (strlen($out_trade_no) > 64) {
+        if (strlen($serial_no) > 64) {
             throw new MakePaymentVendorParametersFailedException(['message' => 'Length Of out_trade_no Is Too Long']);
         }
 
@@ -102,7 +110,7 @@ class BatchTransferNotify
         }
 
         $this->params['detail_data'][] = [
-            'out_trade_no' => $out_trade_no,
+            'serial_no' => $serial_no,
             'user_account' => $user_account,
             'user_real_name' => $user_real_name,
             'amount' => $amount,
@@ -132,8 +140,8 @@ class BatchTransferNotify
     {
         $list = [];
         foreach ($this->params['detail_data'] as $each) {
-            $amount = sprintf('%.2f', $each['amount'] / 100);
-            $list[] = "{$each['out_trade_no']}^{$each['user_account']}^{$each['user_real_name']}^{$amount}^{$each['remark']}";
+            $amount = ParameterHelper::transUnitCentToYuan($each['amount']);
+            $list[] = "{$each['serial_no']}^{$each['user_account']}^{$each['user_real_name']}^{$amount}^{$each['remark']}";
         }
 
         return implode('|', $list);
@@ -147,6 +155,6 @@ class BatchTransferNotify
             $total_amount += $each['amount'];
         }
 
-        return sprintf('%.2f', $total_amount / 100);
+        return ParameterHelper::transUnitCentToYuan($total_amount);
     }
 }
