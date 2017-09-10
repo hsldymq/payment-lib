@@ -9,7 +9,6 @@ class Generator
 {
     use SignStringPackerTrait;
 
-    /** @var AlipayConfig */
     private $config;
 
     public function __construct(AlipayConfig $config)
