@@ -1,10 +1,7 @@
 <?php
-namespace Utils\PaymentVendor\SignatureHelper\Alipay;
+namespace Archman\PaymentLib\SignatureHelper\Alipay;
 
-use Exception\InvalidPaymentPublicKeyException;
-use Exception\UnsupportedVendorSignTypeException;
-use Exception\VerifyVendorSignatureFailed;
-use Utils\PaymentVendor\ConfigManager\AlipayConfig;
+use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 
 /**
  * 支付包签名验证器.
@@ -13,10 +10,9 @@ class Validator
 {
     use SignStringPackerTrait;
 
-    /** @var AlipayConfig */
     private $config;
 
-    public function __construct(AlipayConfig $config)
+    public function __construct(AlipayConfigInterface $config)
     {
         $this->config = $config;
     }
@@ -65,11 +61,13 @@ class Validator
                 $result = $this->verifyMD5($signature, $packed_string);
                 break;
             default:
-                throw new UnsupportedVendorSignTypeException("Unsupported Alipay Sign Type: {$sign_type}");
+                // TODO
+                throw new \Exception();
         }
 
         if (!$result && $throw) {
-            throw new VerifyVendorSignatureFailed("Failed To Verify Alipay Signature. Signauture To Be Verified: {$signature} Packed String: {$packed_string}");
+            // TODO
+            throw new \Exception();
         }
 
         return $result;
@@ -77,9 +75,11 @@ class Validator
 
     private function verifyRSA(string $signature, string $packed_string): bool
     {
-        $key_resource = \openssl_get_publickey($this->config->getAlipayPublicKeyRSA());
+        // TODO
+        $key_resource = \openssl_get_publickey($this->config->getAlipayPublicKey('RSA'));
         if (!$key_resource) {
-            throw new InvalidPaymentPublicKeyException('Invalid Alipay Public Key');
+            // TODO
+            throw new \Exception();
         }
 
         $is_correct = \openssl_verify($packed_string, base64_decode($signature), $key_resource) === 1;
@@ -90,9 +90,11 @@ class Validator
 
     private function verifyRSA2(string $signature, string $packed_string): bool
     {
-        $key_resource = \openssl_get_publickey($this->config->getAlipayPublicKeyRSA2());
+        // TODO
+        $key_resource = \openssl_get_publickey($this->config->getAlipayPublicKey('RSA2'));
         if (!$key_resource) {
-            throw new InvalidPaymentPublicKeyException('Invalid Alipay Public Key');
+            // TODO
+            throw new \Exception();
         }
 
         $is_correct = \openssl_verify($packed_string, base64_decode($signature), $key_resource, OPENSSL_ALGO_SHA256) === 1;

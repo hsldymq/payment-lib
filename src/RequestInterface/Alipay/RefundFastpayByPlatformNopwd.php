@@ -20,7 +20,7 @@ use function GuzzleHttp\Psr7\build_query;
 /**
  * @link https://os.alipayobjects.com/rmsportal/UYaiBLFsoFZqVgxWkEZx.zip 文档PDF下载地址
  */
-class NoPasswordBatchRefund implements RequestableInterface, MutableDateTimeInterface
+class RefundFastpayByPlatformNopwd implements RequestableInterface, MutableDateTimeInterface
 {
     use CertVerificationLessTrait;
     use MutableDateTimeTrait;
@@ -94,7 +94,7 @@ class NoPasswordBatchRefund implements RequestableInterface, MutableDateTimeInte
     /**
      * 设置流水号(3-24位). 用于生成批次号.
      * @param string $sn
-     * @return NoPasswordBatchRefund
+     * @return RefundFastpayByPlatformNopwd
      */
     public function setSerialNumber(string $sn): self
     {
@@ -107,7 +107,7 @@ class NoPasswordBatchRefund implements RequestableInterface, MutableDateTimeInte
      * @param string $trade_no 支付宝原支付订单号
      * @param int $amount 单位:分
      * @param string $reason 退款原因
-     * @return NoPasswordBatchRefund
+     * @return RefundFastpayByPlatformNopwd
      * @throws MakePaymentVendorParametersFailedException
      */
     public function addDetailData(string $trade_no, int $amount, string $reason): self

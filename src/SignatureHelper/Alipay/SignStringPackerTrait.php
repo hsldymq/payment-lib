@@ -1,5 +1,5 @@
 <?php
-namespace Utils\PaymentVendor\SignatureHelper\Alipay;
+namespace Archman\PaymentLib\SignatureHelper\Alipay;
 
 Trait SignStringPackerTrait
 {

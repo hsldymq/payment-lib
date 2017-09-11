@@ -1,8 +1,7 @@
 <?php
-namespace Utils\PaymentVendor\SignatureHelper\Weixin;
+namespace Archman\PaymentLib\SignatureHelper\Weixin;
 
-use Exception\UnsupportedVendorSignTypeException;
-use Utils\PaymentVendor\ConfigManager\WeixinConfig;
+use Archman\PaymentLib\ConfigManager\WeixinConfigInterface;
 
 /**
  * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
@@ -13,7 +12,7 @@ class Generator
 
     private $config;
 
-    public function __construct(WeixinConfig $config)
+    public function __construct(WeixinConfigInterface $config)
     {
         $this->config = $config;
     }
@@ -31,7 +30,8 @@ class Generator
                 $sign = $this->makeSignSHA256($packed_string);
                 break;
             default:
-                throw new UnsupportedVendorSignTypeException();
+                // TODO
+                throw new \Exception();
         }
 
         return $sign;
@@ -39,14 +39,14 @@ class Generator
 
     private function makeSignMD5(string $packed_string): string
     {
-        $secret_key = $this->config->getSecretKey();
+        $secret_key = $this->config->getApiKey();
 
         return strtoupper(md5("{$packed_string}&key={$secret_key}"));
     }
 
     private function makeSignSHA256(string $packed_string): string
     {
-        $secret_key = $this->config->getSecretKey();
+        $secret_key = $this->config->getApiKey();
 
         return strtoupper(hash_hmac('sha256', "{$packed_string}&key={$secret_key}", $secret_key));
     }

@@ -1,9 +1,9 @@
 <?php
-namespace Utils\PaymentVendor\SignatureHelper\Weixin;
+namespace Archman\PaymentLib\SignatureHelper\Weixin;
 
+use Archman\PaymentLib\ConfigManager\WeixinConfigInterface;
 use Exception\UnsupportedVendorSignTypeException;
 use Exception\VerifyVendorSignatureFailed;
-use Utils\PaymentVendor\ConfigManager\WeixinConfig;
 
 /**
  * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
@@ -14,7 +14,7 @@ class Validator
 
     private $config;
 
-    public function __construct(WeixinConfig $config)
+    public function __construct(WeixinConfigInterface $config)
     {
         $this->config = $config;
     }
@@ -32,11 +32,13 @@ class Validator
                 $result = $this->verifySHA256($signature, $packed_string);
                 break;
             default:
-                throw new UnsupportedVendorSignTypeException();
+                // TODO
+                throw new \Exception();
         }
 
         if (!$result && $throw_exception) {
-            throw new VerifyVendorSignatureFailed("Failed To Verify Weixin Signature. Signauture To Be Verified: {$signature} Packed String: {$packed_string}");
+            // TODO
+            throw new \Exception();
         }
 
         return $result;
@@ -44,14 +46,14 @@ class Validator
 
     private function verifyMD5(string $signature, string $packed_string): bool
     {
-        $secret_key = $this->config->getSecretKey();
+        $secret_key = $this->config->getApiKey();
 
         return strtoupper(md5("{$packed_string}&key={$secret_key}")) === $signature;
     }
 
     private function verifySHA256(string $signature, string $packed_string): bool
     {
-        $secret_key = $this->config->getSecretKey();
+        $secret_key = $this->config->getApiKey();
 
         return strtoupper(hash_hmac('sha256', "{$packed_string}&key={$secret_key}", $secret_key)) === $signature;
     }

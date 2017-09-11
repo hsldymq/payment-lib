@@ -1,9 +1,7 @@
 <?php
-namespace Utils\PaymentVendor\SignatureHelper\Alipay;
+namespace Archman\PaymentLib\SignatureHelper\Alipay;
 
-use Exception\InvalidPaymentPrivateKeyException;
-use Exception\UnsupportedVendorSignTypeException;
-use Utils\PaymentVendor\ConfigManager\AlipayConfig;
+use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 
 class Generator
 {
@@ -11,7 +9,7 @@ class Generator
 
     private $config;
 
-    public function __construct(AlipayConfig $config)
+    public function __construct(AlipayConfigInterface $config)
     {
         $this->config = $config;
     }
@@ -32,7 +30,8 @@ class Generator
                 $sign = $this->makeSignMD5($packed_string);
                 break;
             default:
-                throw new UnsupportedVendorSignTypeException();
+                // TODO
+                throw new \Exception();
         }
 
         return $sign;
@@ -40,9 +39,11 @@ class Generator
 
     private function makeSignRSA(string $packed_string): string
     {
-        $res = \openssl_get_privatekey($this->config->getAppPrivateKeyRSA());
+        // TODO
+        $res = \openssl_get_privatekey($this->config->getAppPrivateKey('RSA'));
         if (!$res) {
-            throw new InvalidPaymentPrivateKeyException('Invalid Alipay Private Key');
+            // TODO
+            throw new \Exception();
         }
 
         \openssl_sign($packed_string, $sign, $res);
@@ -54,9 +55,11 @@ class Generator
 
     private function makeSignRSA2(string $packed_string): string
     {
-        $res = \openssl_get_privatekey($this->config->getAppPrivateKeyRSA2());
+        // TODO
+        $res = \openssl_get_privatekey($this->config->getAppPrivateKey('RSA2'));
         if (!$res) {
-            throw new InvalidPaymentPrivateKeyException('Invalid Alipay Private Key');
+            // TODO
+            throw new \Exception();
         }
 
         \openssl_sign($packed_string, $sign, $res, OPENSSL_ALGO_SHA256);
