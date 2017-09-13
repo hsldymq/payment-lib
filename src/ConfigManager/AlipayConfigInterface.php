@@ -26,25 +26,11 @@ interface AlipayConfigInterface
     public function getOpenAPIPrivateKey(?string $algo = null): string;
 
     /**
-     * 开放平台应用公钥.
-     * @param null|string $algo
-     * @return string
-     */
-    public function getOpenAPIPublicKey(?string $algo = null): string;
-
-    /**
      * mapi网关密钥.
      * @param null|string $algo
      * @return string
      */
     public function getMAPIPrivateKey(?string $algo = null): string;
-
-    /**
-     * mapi网关公钥.
-     * @param null|string $algo
-     * @return string
-     */
-    public function getMAPIPublicKey(?string $algo = null): string;
 
     /**
      * 应用公钥证书文件路径.
