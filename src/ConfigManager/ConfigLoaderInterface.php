@@ -3,7 +3,7 @@ namespace Archman\PaymentLib\ConfigManager;
 
 interface ConfigLoaderInterface
 {
-    public static function loadAlipayConfig(array $context): AlipayConfigInterface;
+    public static function loadAlipayConfig(array $context): ?AlipayConfigInterface;
 
-    public static function loadWeixinConfig(array $context): WeixinConfigInterface;
+    public static function loadWechatConfig(array $context): ?WechatConfigInterface;
 }

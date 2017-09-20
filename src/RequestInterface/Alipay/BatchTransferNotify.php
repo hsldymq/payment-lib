@@ -1,8 +1,8 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface\Alipay;
+namespace Archman\PaymentLib\RequestInterface\Alipay;
 
 use Api\Exception\Logic\MakePaymentVendorParametersFailedException;
-use Utils\PaymentVendor\ConfigManager\AlipayConfig;
+use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
 use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
@@ -26,7 +26,7 @@ class BatchTransferNotify implements MutableDateTimeInterface
         'extend_param' => null,
     ];
 
-    public function __construct(AlipayConfig $config)
+    public function __construct(AlipayConfigInterface $config)
     {
         $this->config = $config;
     }

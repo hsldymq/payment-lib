@@ -1,7 +1,7 @@
 <?php
-namespace Archman\PaymentLib\SignatureHelper\Weixin;
+namespace Archman\PaymentLib\SignatureHelper\Wechat;
 
-use Archman\PaymentLib\ConfigManager\WeixinConfigInterface;
+use Archman\PaymentLib\ConfigManager\WechatConfigInterface;
 
 /**
  * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
@@ -12,7 +12,7 @@ class Generator
 
     private $config;
 
-    public function __construct(WeixinConfigInterface $config)
+    public function __construct(WechatConfigInterface $config)
     {
         $this->config = $config;
     }

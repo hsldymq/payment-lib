@@ -1,5 +1,5 @@
 <?php
-namespace Archman\PaymentLib\SignatureHelper\Weixin;
+namespace Archman\PaymentLib\SignatureHelper\Wechat;
 
 Trait SignStringPackerTrait
 {

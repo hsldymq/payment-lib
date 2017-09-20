@@ -1,9 +1,8 @@
 <?php
-namespace Archman\PaymentLib\SignatureHelper\Weixin;
+namespace Archman\PaymentLib\SignatureHelper\Wechat;
 
-use Archman\PaymentLib\ConfigManager\WeixinConfigInterface;
-use Exception\UnsupportedVendorSignTypeException;
-use Exception\VerifyVendorSignatureFailed;
+use Archman\PaymentLib\ConfigManager\WechatConfigInterface;
+use Archman\PaymentLib\Exception\SignatureException;
 
 /**
  * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
@@ -14,44 +13,42 @@ class Validator
 
     private $config;
 
-    public function __construct(WeixinConfigInterface $config)
+    public function __construct(WechatConfigInterface $config)
     {
         $this->config = $config;
     }
 
-    public function verify(string $signature, string $sign_type, array $data, bool $throw_exception = false): bool
+    public function validate(string $signature, string $sign_type, array $data, bool $throw_exception = false): bool
     {
         $sign_type = strtoupper($sign_type);
         $packed_string = $this->packRequestSignString($data);
 
         switch ($sign_type) {
             case 'MD5':
-                $result = $this->verifyMD5($signature, $packed_string);
+                $result = $this->validateSignMD5($signature, $packed_string);
                 break;
             case 'HMAC-SHA256':
-                $result = $this->verifySHA256($signature, $packed_string);
+                $result = $this->validateSignSHA256($signature, $packed_string);
                 break;
             default:
-                // TODO
-                throw new \Exception();
+                throw new SignatureException("Unsupported Wechat Sign Type.");
         }
 
         if (!$result && $throw_exception) {
-            // TODO
-            throw new \Exception();
+            throw new SignatureException("Fail To Validate Wechat Sign. The Signature Should Be: {$signature}");
         }
 
         return $result;
     }
 
-    private function verifyMD5(string $signature, string $packed_string): bool
+    private function validateSignMD5(string $signature, string $packed_string): bool
     {
         $secret_key = $this->config->getApiKey();
 
         return strtoupper(md5("{$packed_string}&key={$secret_key}")) === $signature;
     }
 
-    private function verifySHA256(string $signature, string $packed_string): bool
+    private function validateSignSHA256(string $signature, string $packed_string): bool
     {
         $secret_key = $this->config->getApiKey();
 
