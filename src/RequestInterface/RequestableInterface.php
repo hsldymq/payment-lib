@@ -1,5 +1,5 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface;
+namespace Archman\PaymentLib\RequestInterface;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;

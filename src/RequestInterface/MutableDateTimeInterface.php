@@ -1,5 +1,5 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface;
+namespace Archman\PaymentLib\RequestInterface;
 
 interface MutableDateTimeInterface
 {

@@ -1,12 +1,10 @@
 <?php
 namespace Archman\PaymentLib\RequestInterface\Alipay;
 
-use Api\Exception\Logic\MakePaymentVendorParametersFailedException;
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
 use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
-use Utils\PaymentVendor\SignatureHelper\Alipay\Generator;
 
 /**
  * // TODO 有待验证(跳到支付宝转账界面,明细提示验证成功,但是系统不支持,无法显示密码表单)
