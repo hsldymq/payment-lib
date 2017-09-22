@@ -2,6 +2,7 @@
 namespace Archman\PaymentLib\SignatureHelper\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Exception\SignatureException;
 
 /**
  * 支付包签名验证器.
@@ -25,11 +26,11 @@ class Validator
      * @param bool $throw_exception 如果验证失败是否抛出异常,这个只是在验证阶段发现签名不一致的情况下指示是否抛出异常. 如果出现其他错误是必然抛出异常.
      * @return bool
      */
-    public function verifyAsync(string $signature, string $sign_type, array $data, bool $throw_exception = false): bool
+    public function validateSignAsync(string $signature, string $sign_type, array $data, bool $throw_exception = false): bool
     {
         $packed_string = $this->packVerifiedSignStringAsync($data);
 
-        return $this->verify($signature, $sign_type, $packed_string, $throw_exception);
+        return $this->validate($signature, $sign_type, $packed_string, $throw_exception);
     }
 
     /**
@@ -40,25 +41,25 @@ class Validator
      * @param bool $throw_exception
      * @return bool
      */
-    public function verifySync(string $signature, string $sign_type, array $data, bool $throw_exception = false): bool
+    public function validateSignSync(string $signature, string $sign_type, array $data, bool $throw_exception = false): bool
     {
         $packed_string = $this->packVerifiedSignStringSync($data);
 
-        return $this->verify($signature, $sign_type, $packed_string, $throw_exception);
+        return $this->validate($signature, $sign_type, $packed_string, $throw_exception);
     }
 
-    private function verify(string $signature, string $sign_type, string $packed_string, bool $throw)
+    private function validate(string $signature, string $sign_type, string $packed_string, bool $throw)
     {
         $sign_type = strtoupper($sign_type);
         switch ($sign_type) {
             case 'RSA':
-                $result = $this->verifyRSA($signature, $packed_string);
+                $result = $this->validateSignRSA($signature, $packed_string);
                 break;
             case 'RSA2':
-                $result = $this->verifyRSA2($signature, $packed_string);
+                $result = $this->validateSignRSA2($signature, $packed_string);
                 break;
             case 'MD5':
-                $result = $this->verifyMD5($signature, $packed_string);
+                $result = $this->validateSignMD5($signature, $packed_string);
                 break;
             default:
                 // TODO
@@ -73,7 +74,7 @@ class Validator
         return $result;
     }
 
-    private function verifyRSA(string $signature, string $packed_string): bool
+    private function validateSignRSA(string $signature, string $packed_string): bool
     {
         // TODO
         $key_resource = \openssl_get_publickey($this->config->getAlipayPublicKey('RSA'));
@@ -88,7 +89,7 @@ class Validator
         return $is_correct;
     }
 
-    private function verifyRSA2(string $signature, string $packed_string): bool
+    private function validateSignRSA2(string $signature, string $packed_string): bool
     {
         // TODO
         $key_resource = \openssl_get_publickey($this->config->getAlipayPublicKey('RSA2'));
@@ -103,9 +104,9 @@ class Validator
         return $is_correct;
     }
 
-    private function verifyMD5(string $signature, string $packed_string): bool
+    private function validateSignMD5(string $signature, string $packed_string): bool
     {
-        $safe_key = $this->config->getSafeKey();
+        $safe_key = $this->config->getMAPIPrivateKey();
 
         return md5("{$packed_string}{$safe_key}") === $signature;
     }

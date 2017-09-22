@@ -18,12 +18,11 @@ class Validator
         $this->config = $config;
     }
 
-    public function validate(string $signature, string $sign_type, array $data, bool $throw_exception = false): bool
+    public function validate(string $signature, string $sign_type, array $data, array $exclude = [])
     {
-        $sign_type = strtoupper($sign_type);
-        $packed_string = $this->packRequestSignString($data);
+        $packed_string = $this->packRequestSignString($data, $exclude);
 
-        switch ($sign_type) {
+        switch (strtoupper($sign_type)) {
             case 'MD5':
                 $result = $this->validateSignMD5($signature, $packed_string);
                 break;
@@ -31,14 +30,12 @@ class Validator
                 $result = $this->validateSignSHA256($signature, $packed_string);
                 break;
             default:
-                throw new SignatureException("Unsupported Wechat Sign Type.");
+                throw new SignatureException("Unsupported Wechat Sign Type: {$sign_type}");
         }
 
-        if (!$result && $throw_exception) {
-            throw new SignatureException("Fail To Validate Wechat Sign. The Signature Should Be: {$signature}");
+        if (!$result) {
+            throw new SignatureException('Failed To Validate Wechat Signature.');
         }
-
-        return $result;
     }
 
     private function validateSignMD5(string $signature, string $packed_string): bool

@@ -2,6 +2,8 @@
 namespace Archman\PaymentLib\SignatureHelper\Wechat;
 
 use Archman\PaymentLib\ConfigManager\WechatConfigInterface;
+use Archman\PaymentLib\Exception\SignatureException;
+use Archman\PaymentLib\SignatureHelper\SignAlgo;
 
 /**
  * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
@@ -17,12 +19,11 @@ class Generator
         $this->config = $config;
     }
 
-    public function makeSign(array $data, string $sign_type): string
+    public function makeSign(array $data, string $sign_type, array $exclude = []): string
     {
-        $sign_type = strtoupper($sign_type);
-        $packed_string = $this->packRequestSignString($data);
+        $packed_string = $this->packRequestSignString($data, $exclude);
 
-        switch ($sign_type) {
+        switch (strtoupper($sign_type)) {
             case 'MD5':
                 $sign = $this->makeSignMD5($packed_string);
                 break;
@@ -30,8 +31,7 @@ class Generator
                 $sign = $this->makeSignSHA256($packed_string);
                 break;
             default:
-                // TODO
-                throw new \Exception();
+                throw new SignatureException("Unsupported Wechat Sign Type: {$sign_type}");
         }
 
         return $sign;

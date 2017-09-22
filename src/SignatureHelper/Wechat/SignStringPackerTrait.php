@@ -4,7 +4,7 @@ namespace Archman\PaymentLib\SignatureHelper\Wechat;
 Trait SignStringPackerTrait
 {
     /**
-     * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3 文档.
+     * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
      * @param array $data
      * @param array $exclude
      * @return string
