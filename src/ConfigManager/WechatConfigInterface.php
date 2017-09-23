@@ -42,4 +42,6 @@ interface WechatConfigInterface
     public function getClientKeyPassword(): ?string;
 
     public function getApiKey(): string;
+
+    public function getDefaultSignType(): string;
 }
