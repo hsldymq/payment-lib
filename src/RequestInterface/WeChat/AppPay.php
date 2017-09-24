@@ -1,12 +1,13 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface\Weixin;
+namespace Archman\PaymentLib\RequestInterface\WeChat;
 
-use Utils\PaymentVendor\ConfigManager\WeixinConfig;
+use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Archman\PaymentLib\RequestInterface\WeChat\UnifiedOrder;
 use Utils\PaymentVendor\RequestInterface\Client;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
 use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
 use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
-use Utils\PaymentVendor\SignatureHelper\Weixin\Generator;
+use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
  * TODO 有待验证
@@ -18,25 +19,23 @@ class AppPay implements MutableDateTimeInterface
 
     private $config;
 
-    private $sign_type = 'MD5';
-
     /** @var UnifiedOrder */
-    private $unified_order = null;
+    private $unifiedOrder = null;
 
     private $params = [
         'prepayid' => null,
         'package' => 'Sign=WXPay',
     ];
 
-    public function __construct(WeixinConfig $config)
+    public function __construct(WeChatConfigInterface $config)
     {
         $this->config = $config;
     }
 
     public function makeParameters(): array
     {
-        if (!$this->params['prepayid'] && $this->unified_order) {
-            $data = Client::sendRequest($this->unified_order);
+        if (!$this->params['prepayid'] && $this->unifiedOrder) {
+            $data = Client::sendRequest($this->unifiedOrder);
             $this->setPrepayID($data['prepay_id']);
         }
 
@@ -48,21 +47,21 @@ class AppPay implements MutableDateTimeInterface
         $parameters['partnerid'] = $this->config->getMerchantID();
         $parameters['noncestr'] = md5(microtime(true));
         $parameters['timestamp'] = $now->getTimestamp();
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->sign_type);
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
 
         return $parameters;
     }
 
-    public function setPrepayID(string $prepay_id): self
+    public function setPrepayID(string $prepayID): self
     {
-        $this->params['prepayid'] = $prepay_id;
+        $this->params['prepayid'] = $prepayID;
 
         return $this;
     }
 
     public function setUnifiedOrder(UnifiedOrder $order): self
     {
-        $this->unified_order = $order;
+        $this->unifiedOrder = $order;
 
         return $this;
     }

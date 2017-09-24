@@ -1,7 +1,7 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface\Weixin;
+namespace Archman\PaymentLib\RequestInterface\WeChat;
 
-use Utils\PaymentVendor\ConfigManager\WeixinConfig;
+use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
 use Utils\PaymentVendor\RequestInterface\RequestableInterface;
 use Utils\PaymentVendor\RequestInterface\Weixin\Traits\RequestPreparationTrait;
@@ -26,7 +26,7 @@ class QueryOrder implements RequestableInterface
         'out_trade_no' => null,
     ];
 
-    public function __construct(WeixinConfig $config)
+    public function __construct(WeChatConfigInterface $config)
     {
         $this->config = $config;
     }

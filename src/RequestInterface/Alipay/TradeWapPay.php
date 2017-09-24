@@ -1,6 +1,7 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface\Alipay;
+namespace Archman\PaymentLib\RequestInterface\Alipay;
 
+use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Utils\PaymentVendor\ConfigManager\AlipayConfig;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
@@ -17,7 +18,6 @@ class TradeWapPay implements MutableDateTimeInterface
     use ParametersMakerTrait;
     use MutableDateTimeTrait;
 
-    /** @var AlipayConfig */
     private $config;
 
     private $sign_type = 'RSA';
@@ -50,7 +50,7 @@ class TradeWapPay implements MutableDateTimeInterface
         'quit_url' => null,
     ];
 
-    public function __construct(AlipayConfig $config)
+    public function __construct(AlipayConfigInterface $config)
     {
         $this->config = $config;
     }

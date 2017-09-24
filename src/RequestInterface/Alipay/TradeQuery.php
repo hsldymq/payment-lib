@@ -1,6 +1,7 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface\Alipay;
+namespace Archman\PaymentLib\RequestInterface\Alipay;
 
+use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Utils\PaymentVendor\ConfigManager\AlipayConfig;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\DefaultRequestPreparationTrait;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\DefaultResponseHandlerTrait;
@@ -34,7 +35,7 @@ class TradeQuery implements RequestableInterface, MutableDateTimeInterface
         'out_trade_no' => null,
     ];
 
-    public function __construct(AlipayConfig $config)
+    public function __construct(AlipayConfigInterface $config)
     {
         $this->config = $config;
     }

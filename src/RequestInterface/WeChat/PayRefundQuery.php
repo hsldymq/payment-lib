@@ -1,6 +1,7 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface\Weixin;
+namespace Archman\PaymentLib\RequestInterface\WeChat;
 
+use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Utils\PaymentVendor\ConfigManager\WeixinConfig;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
 use Utils\PaymentVendor\RequestInterface\RequestableInterface;
@@ -32,7 +33,7 @@ class PayRefundQuery implements RequestableInterface
         'refund_id' => null,
     ];
 
-    public function __construct(WeixinConfig $config)
+    public function __construct(WeChatConfigInterface $config)
     {
         $this->config = $config;
     }

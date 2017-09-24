@@ -34,10 +34,10 @@ interface AlipayConfigInterface
 
     /**
      * mapi网关密钥.
-     * @param null|string $algo
+     * @param null|string $signType
      * @return string
      */
-    public function getMAPIPrivateKey(?string $algo = null): string;
+    public function getMAPIPrivateKey(?string $signType = null): string;
 
     /**
      * mapi默认网关签名类型.
@@ -48,8 +48,8 @@ interface AlipayConfigInterface
 
     /**
      * 应用公钥证书文件路径.
-     * @param null|string $algo
+     * @param null|string $signType
      * @return string
      */
-    public function getAppCertPath(?string $algo = null): ?string;
+    public function getAppCertPath(?string $signType = null): ?string;
 }

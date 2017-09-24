@@ -1,8 +1,9 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface\Alipay;
+namespace Archman\PaymentLib\RequestInterface\Alipay;
 
 use Api\Exception\Logic\MakePaymentVendorParametersFailedException;
 use Api\Exception\Logic\VendorInterfaceResponseErrorException;
+use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -33,7 +34,7 @@ class RefundFastpayByPlatformNopwd implements RequestableInterface, MutableDateT
         'dback_notify_url' => null,
     ];
 
-    public function __construct(AlipayConfig $config)
+    public function __construct(AlipayConfigInterface $config)
     {
         $this->config = $config;
     }

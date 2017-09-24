@@ -1,6 +1,7 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface\Alipay;
+namespace Archman\PaymentLib\RequestInterface\Alipay;
 
+use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Utils\PaymentVendor\ConfigManager\AlipayConfig;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
 use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
@@ -43,7 +44,7 @@ class TradeAppPay implements MutableDateTimeInterface
         'store_id' => null,
     ];
 
-    public function __construct(AlipayConfig $config)
+    public function __construct(AlipayConfigInterface $config)
     {
         $this->config = $config;
     }

@@ -1,5 +1,5 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface\Weixin;
+namespace Archman\PaymentLib\RequestInterface\WeChat;
 
 use Utils\PaymentVendor\ConfigManager\WeixinConfig;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;

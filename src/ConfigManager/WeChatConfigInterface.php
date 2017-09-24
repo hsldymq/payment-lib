@@ -43,5 +43,5 @@ interface WeChatConfigInterface
 
     public function getApiKey(): string;
 
-    public function getSignType(): string;
+    public function getDefaultSignType(): string;
 }

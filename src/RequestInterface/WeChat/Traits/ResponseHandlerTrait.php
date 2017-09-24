@@ -1,5 +1,5 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface\Weixin\Traits;
+namespace Archman\PaymentLib\RequestInterface\WeChat\Traits;
 
 use Api\Exception\Logic\VendorInterfaceResponseErrorException;
 use Psr\Http\Message\ResponseInterface;

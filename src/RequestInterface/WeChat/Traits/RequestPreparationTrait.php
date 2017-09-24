@@ -1,5 +1,5 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface\Weixin\Traits;
+namespace Archman\PaymentLib\RequestInterface\WeChat\Traits;
 
 use GuzzleHttp\Psr7\Request;
 use function GuzzleHttp\Psr7\stream_for;

@@ -18,11 +18,13 @@ class Generator
         $this->config = $config;
     }
 
-    public function makeSign(array $data, string $sign_type, array $exclude = []): string
+    public function makeSign(array $data, ?string $signType = null, array $exclude = []): string
     {
         $packed_string = $this->packRequestSignString($data, $exclude);
 
-        switch (strtoupper($sign_type)) {
+        $signType = $signType ?? $this->config->getDefaultSignType();
+
+        switch (strtoupper($signType)) {
             case 'MD5':
                 $sign = $this->makeSignMD5($packed_string);
                 break;
@@ -30,7 +32,7 @@ class Generator
                 $sign = $this->makeSignSHA256($packed_string);
                 break;
             default:
-                throw new SignatureException("Unsupported WeChat Sign Type: {$sign_type}");
+                throw new SignatureException("Unsupported WeChat Sign Type: {$signType}");
         }
 
         return $sign;
