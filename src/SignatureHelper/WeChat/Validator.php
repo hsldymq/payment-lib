@@ -1,7 +1,7 @@
 <?php
-namespace Archman\PaymentLib\SignatureHelper\Wechat;
+namespace Archman\PaymentLib\SignatureHelper\WeChat;
 
-use Archman\PaymentLib\ConfigManager\WechatConfigInterface;
+use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Exception\SignatureException;
 
 /**
@@ -13,7 +13,7 @@ class Validator
 
     private $config;
 
-    public function __construct(WechatConfigInterface $config)
+    public function __construct(WeChatConfigInterface $config)
     {
         $this->config = $config;
     }
@@ -30,11 +30,11 @@ class Validator
                 $result = $this->validateSignSHA256($signature, $packed_string);
                 break;
             default:
-                throw new SignatureException("Unsupported Wechat Sign Type: {$sign_type}");
+                throw new SignatureException("Unsupported WeChat Sign Type: {$sign_type}");
         }
 
         if (!$result) {
-            throw new SignatureException('Failed To Validate Wechat Signature.');
+            throw new SignatureException('Failed To Validate WeChat Signature.');
         }
     }
 

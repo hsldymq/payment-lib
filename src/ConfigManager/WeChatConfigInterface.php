@@ -1,7 +1,7 @@
 <?php
 namespace Archman\PaymentLib\ConfigManager;
 
-interface WechatConfigInterface
+interface WeChatConfigInterface
 {
     public function getAppID(): string;
 
@@ -43,5 +43,5 @@ interface WechatConfigInterface
 
     public function getApiKey(): string;
 
-    public function getDefaultSignType(): string;
+    public function getSignType(): string;
 }
