@@ -9,6 +9,10 @@ use Utils\PaymentVendor\RequestInterface\Weixin\Traits\ResponseHandlerTrait;
 use Utils\PaymentVendor\RequestInterface\Weixin\Traits\RootCATrait;
 use Utils\PaymentVendor\SignatureHelper\Weixin\Generator;
 
+/**
+ * 查询订单.
+ * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
+ */
 class QueryOrder implements RequestableInterface
 {
     use RequestPreparationTrait;

@@ -14,7 +14,7 @@ use Utils\PaymentVendor\RequestInterface\Weixin\Traits\RequestPreparationTrait;
  * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=4_2
  * @link https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
  */
-class UnifiedOrder implements RequestableInterface
+class PayUnifiedOrder implements RequestableInterface
 {
     use RequestPreparationTrait;
     use ResponseHandlerTrait;
