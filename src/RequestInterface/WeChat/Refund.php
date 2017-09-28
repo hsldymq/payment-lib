@@ -15,7 +15,7 @@ use Utils\PaymentVendor\SignatureHelper\Weixin\Generator;
  * 申请退款接口.
  * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_4&index=6
  */
-class PayRefund implements RequestableInterface
+class Refund implements RequestableInterface
 {
     use RequestPreparationTrait;
     use ResponseHandlerTrait;

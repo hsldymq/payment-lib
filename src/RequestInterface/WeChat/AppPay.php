@@ -2,7 +2,6 @@
 namespace Archman\PaymentLib\RequestInterface\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
-use Archman\PaymentLib\RequestInterface\WeChat\PayUnifiedOrder;
 use Utils\PaymentVendor\RequestInterface\Client;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
 use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
@@ -19,7 +18,7 @@ class AppPay implements MutableDateTimeInterface
 
     private $config;
 
-    /** @var PayUnifiedOrder */
+    /** @var UnifiedOrder */
     private $unifiedOrder = null;
 
     private $params = [
@@ -59,7 +58,7 @@ class AppPay implements MutableDateTimeInterface
         return $this;
     }
 
-    public function setUnifiedOrder(PayUnifiedOrder $order): self
+    public function setUnifiedOrder(UnifiedOrder $order): self
     {
         $this->unifiedOrder = $order;
 

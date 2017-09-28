@@ -2,6 +2,7 @@
 namespace Archman\PaymentLib\RequestInterface\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Utils\PaymentVendor\ConfigManager\WeixinConfig;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
 use Utils\PaymentVendor\RequestInterface\RequestableInterface;
 use Utils\PaymentVendor\RequestInterface\Weixin\Traits\RequestPreparationTrait;
@@ -10,10 +11,10 @@ use Utils\PaymentVendor\RequestInterface\Weixin\Traits\RootCATrait;
 use Utils\PaymentVendor\SignatureHelper\Weixin\Generator;
 
 /**
- * 查询订单.
- * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
+ * 查询退款.
+ * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_5&index=7
  */
-class QueryOrder implements RequestableInterface
+class RefundQuery implements RequestableInterface
 {
     use RequestPreparationTrait;
     use ResponseHandlerTrait;
@@ -23,11 +24,13 @@ class QueryOrder implements RequestableInterface
 
     private $sign_type = 'MD5';
 
-    private $uri = 'https://api.mch.weixin.qq.com/pay/orderquery';
+    private $uri = 'https://api.mch.weixin.qq.com/pay/refundquery';
 
     private $params = [
         'transaction_id' => null,
         'out_trade_no' => null,
+        'out_refund_no' => null,
+        'refund_id' => null,
     ];
 
     public function __construct(WeChatConfigInterface $config)
@@ -37,7 +40,7 @@ class QueryOrder implements RequestableInterface
 
     public function makeParameters(): array
     {
-        ParameterHelper::checkRequired($this->params, [], ['transaction_id', 'out_trade_no']);
+        ParameterHelper::checkRequired($this->params, [], ['transaction_id', 'out_trade_no', 'out_refund_no', 'refund_id']);
 
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
@@ -48,16 +51,30 @@ class QueryOrder implements RequestableInterface
         return $parameters;
     }
 
-    public function setTransactionID(string $transaction_id): self
+    public function setTransactionID(string $id): self
     {
-        $this->params['transaction_id'] = $transaction_id;
+        $this->params['transaction_id'] = $id;
 
         return $this;
     }
 
-    public function setOutTradeNo(string $out_trade_no): self
+    public function setOutTradeNo(string $no): self
     {
-        $this->params['out_trade_no'] = $out_trade_no;
+        $this->params['out_trade_no'] = $no;
+
+        return $this;
+    }
+
+    public function setOutRefundNo(string $no): self
+    {
+        $this->params['out_refund_no'] = $no;
+
+        return $this;
+    }
+
+    public function setRefundID(string $id): self
+    {
+        $this->params['refund_id'] = $id;
 
         return $this;
     }

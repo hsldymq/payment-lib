@@ -14,7 +14,7 @@ use Utils\PaymentVendor\SignatureHelper\Weixin\Generator;
  * 微信内H5调起支付.
  * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6
  */
-class WapPayInWeixin implements MutableDateTimeInterface
+class WapPayInWeChat implements MutableDateTimeInterface
 {
     use MutableDateTimeTrait;
 
@@ -22,7 +22,7 @@ class WapPayInWeixin implements MutableDateTimeInterface
 
     private $sign_type = 'MD5';
 
-    /** @var PayUnifiedOrder */
+    /** @var UnifiedOrder */
     private $unified_order = null;
 
     private $params = [
@@ -60,7 +60,7 @@ class WapPayInWeixin implements MutableDateTimeInterface
         return $this;
     }
 
-    public function setUnifiedOrder(PayUnifiedOrder $order): self
+    public function setUnifiedOrder(UnifiedOrder $order): self
     {
         $this->unified_order = $order;
 
