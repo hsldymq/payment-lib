@@ -1,5 +1,5 @@
 <?php
-namespace Archman\PaymentLib\RequestInterface\WeChat;
+namespace Archman\PaymentLib\Request\WeChat;
 
 /**
  * 撤销订单.

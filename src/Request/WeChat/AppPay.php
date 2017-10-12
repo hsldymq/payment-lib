@@ -1,15 +1,14 @@
 <?php
-namespace Archman\PaymentLib\RequestInterface\WeChat;
+namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
-use Utils\PaymentVendor\RequestInterface\Client;
-use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
-use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
-use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
+use Archman\PaymentLib\Request\BaseClient;
+use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\MutableDateTimeInterface;
+use Archman\PaymentLib\Request\Traits\MutableDateTimeTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
- * TODO 有待验证
  * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_12&index=2
  */
 class AppPay implements MutableDateTimeInterface
@@ -18,8 +17,8 @@ class AppPay implements MutableDateTimeInterface
 
     private $config;
 
-    /** @var UnifiedOrder */
-    private $unifiedOrder = null;
+    /** @var \DateTime */
+    private $datetime;
 
     private $params = [
         'prepayid' => null,
@@ -33,19 +32,13 @@ class AppPay implements MutableDateTimeInterface
 
     public function makeParameters(): array
     {
-        if (!$this->params['prepayid'] && $this->unifiedOrder) {
-            $data = Client::sendRequest($this->unifiedOrder);
-            $this->setPrepayID($data['prepay_id']);
-        }
-
         ParameterHelper::checkRequired($this->params, ['prepayid', 'package']);
 
-        $now = $this->getDateTime();
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
         $parameters['partnerid'] = $this->config->getMerchantID();
         $parameters['noncestr'] = md5(microtime(true));
-        $parameters['timestamp'] = $now->getTimestamp();
+        $parameters['timestamp'] = $this->getTimestamp();
         $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
 
         return $parameters;
@@ -58,10 +51,15 @@ class AppPay implements MutableDateTimeInterface
         return $this;
     }
 
-    public function setUnifiedOrder(UnifiedOrder $order): self
+    public function setDatetime(\DateTime $d): self
     {
-        $this->unifiedOrder = $order;
+        $this->datetime = $d;
 
         return $this;
+    }
+
+    private function getTimestamp(): int
+    {
+        $this->datetime->getTimestamp();
     }
 }

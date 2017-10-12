@@ -1,4 +1,7 @@
 {
+  "require": {
+    "psr/http-message": "~1.0"
+  },
   "require-dev": {
   }
 }

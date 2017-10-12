@@ -1,9 +1,9 @@
 <?php
-namespace Archman\PaymentLib\RequestInterface\WeChat;
+namespace Archman\PaymentLib\Request\WeChat;
 
 use Utils\PaymentVendor\ConfigManager\WeixinConfig;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
-use Utils\PaymentVendor\RequestInterface\RequestableInterface;
+use Archman\PaymentLib\Request\RequestableInterface;
 use Utils\PaymentVendor\RequestInterface\Weixin\Traits\ResponseHandlerTrait;
 use Utils\PaymentVendor\RequestInterface\Weixin\Traits\RootCATrait;
 use Utils\PaymentVendor\SignatureHelper\Weixin\Generator;

@@ -1,5 +1,5 @@
 <?php
-namespace Archman\PaymentLib\RequestInterface\WeChat;
+namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Utils\PaymentVendor\ConfigManager\WeixinConfig;
@@ -11,7 +11,6 @@ use Utils\PaymentVendor\RequestInterface\Weixin\Traits\ResponseHandlerTrait;
 use Utils\PaymentVendor\SignatureHelper\Weixin\Generator;
 
 /**
- * TODO 有待验证
  * 申请退款接口.
  * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_4&index=6
  */

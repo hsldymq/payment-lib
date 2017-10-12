@@ -1,16 +1,14 @@
 <?php
-namespace Archman\PaymentLib\RequestInterface\WeChat;
+namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
-use Utils\PaymentVendor\ConfigManager\WeixinConfig;
-use Utils\PaymentVendor\RequestInterface\Client;
-use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
-use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
-use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
-use Utils\PaymentVendor\SignatureHelper\Weixin\Generator;
+use Archman\PaymentLib\RequestInterface\Client;
+use Archman\PaymentLib\RequestInterface\Helper\ParameterHelper;
+use Archman\PaymentLib\RequestInterface\MutableDateTimeInterface;
+use Archman\PaymentLib\RequestInterface\Traits\MutableDateTimeTrait;
+use Archman\PaymentLib\SignatureHelper\Weixin\Generator;
 
 /**
- * TODO 有待验证
  * 微信内H5调起支付.
  * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6
  */

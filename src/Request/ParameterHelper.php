@@ -1,5 +1,5 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface\Helper;
+namespace Archman\PaymentLib\Request;
 
 use Api\Exception\Logic\MakePaymentVendorParametersFailedException;
 
