@@ -3,6 +3,7 @@ namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -11,6 +12,8 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
  */
 class AppPay
 {
+    use NonceStrTrait;
+
     private $config;
 
     /** @var \DateTime */
@@ -57,11 +60,6 @@ class AppPay
         $this->datetime = $dt;
 
         return $this;
-    }
-
-    private function getNonceStr(): string
-    {
-        return md5(microtime(true));
     }
 
     private function getTimestamp(): int

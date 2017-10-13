@@ -1,39 +1,53 @@
 <?php
 namespace Archman\PaymentLib\Request\WeChat;
 
-use Utils\PaymentVendor\ConfigManager\WeixinConfig;
-use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
+use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
+use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
-use Utils\PaymentVendor\RequestInterface\Weixin\Traits\ResponseHandlerTrait;
-use Utils\PaymentVendor\RequestInterface\Weixin\Traits\RootCATrait;
-use Utils\PaymentVendor\SignatureHelper\Weixin\Generator;
-use Utils\PaymentVendor\RequestInterface\Weixin\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
  * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1
+ * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1
+ * @link https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_20&index=1
  * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=4_2
  * @link https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
  */
 class UnifiedOrder implements RequestableInterface
 {
-    use RequestPreparationTrait;
-    use ResponseHandlerTrait;
-    use RootCATrait;
+    use NonceStrTrait;
 
     private $config;
 
     private $uri = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
-    private $sign_type = 'MD5';
+    private $detail = [
+        'cost_price' => null,
+        'receipt_id' => null,
+        'goods_detail' => [],
+    ];
+
+    private $storeInfo = [
+        'id' => null,
+        'name' => null,
+        'area_code' => null,
+        'address' => null,
+    ];
+
+    private $h5Info = [
+        'type' => null,
+        'app_name' => null,
+        'bundle_id' => null,
+        'package_name' => null,
+        'wap_name' => null,
+        'wap_url' => null,
+    ];
 
     private $params = [
         'device_info' => null,
         'body' => null,                 // 必填
-        'detail' => [
-            'cost_price' => null,
-            'receipt_id' => null,
-            'goods_detail' => [],
-        ],
+        'detail' => null,
         'attach' => null,
         'out_trade_no' => null,         // 必填
         'fee_type' => null,
@@ -47,27 +61,35 @@ class UnifiedOrder implements RequestableInterface
         'product_id' => null,
         'limit_pay' => null,
         'openid' => null,
-        'scene_info' => [],
+        'scene_info' => null,
     ];
 
-    public function __construct(WeixinConfig $config)
+    public function __construct(WeChatConfigInterface $config)
     {
         $this->config = $config;
     }
 
     public function makeParameters(): array
     {
-        $callback = $this->params['trade_type'] === 'JSAPI' ? 'pay.wap' : 'pay.app';
-        $this->setNotifyUrl($this->config->getCallbackUrl($callback));
+        $detail = ParameterHelper::packValidParameters($this->detail);
+        !is_null($detail) && $this->params['detail'] = json_encode($detail);
+
+        $info = [];
+        $storeInfo = ParameterHelper::packValidParameters($this->storeInfo);
+        $h5Info = ParameterHelper::packValidParameters($this->h5Info);
+        !is_null($storeInfo) && $info['store_info'] = $storeInfo;
+        !is_null($h5Info) && $info['h5_info'] = $h5Info;
+        $info && $this->params['scene_info'] = json_encode($info);
 
         ParameterHelper::checkRequired($this->params, ['body', 'out_trade_no', 'total_fee', 'spbill_create_ip', 'notify_url', 'trade_type']);
 
+        $signType = $this->config->getDefaultSignType();
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
-        $parameters['nonce_str'] = md5(microtime(true));
-        $parameters['sign_type'] = $this->sign_type;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->sign_type);
+        $parameters['nonce_str'] = $this->getNonceStr();
+        $parameters['sign_type'] = $signType;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
 
         return $parameters;
     }
@@ -81,6 +103,8 @@ class UnifiedOrder implements RequestableInterface
 
     /**
      * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2
+     * @param string $body
+     * @return self
      */
     public function setBody(string $body): self
     {
@@ -91,55 +115,43 @@ class UnifiedOrder implements RequestableInterface
 
     /**
      * @link https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
-     * @param int $amount 单位: 分
-     * @return self
+     * @param string $field
+     * @param null|string $value
+     * @return $this
      */
-    public function setDetailCostPrice(int $amount): self
+    public function setDetail(string $field, ?string $value)
     {
-        ParameterHelper::checkAmount($amount);
+        if ($field === 'goods_detail') {
+            return $this;
+        }
 
-        $this->params['detail']['cost_price'] = $amount;
+        $this->detail[$field] = $value;
 
         return $this;
     }
 
     /**
      * @link https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
-     * @param string $receipt_id
-     * @return self
-     */
-    public function setDetailReceiptID(string $receipt_id): self
-    {
-        $this->params['detail']['receipt_id'] = $receipt_id;
-
-        return $this;
-    }
-
-    /**
-     * @link https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
-     * @param string $goods_id
+     * @param string $goodsID
+     * @param string|null $wxPayGoodsID
+     * @param string|null $goodsName
      * @param int $quantity
      * @param int $price
-     * @param string|null $wxpay_goods_id
-     * @param string|null $goods_name
      * @return self
      */
-    public function addDetailGoodsDetail(
-        string $goods_id,
-        int $quantity,
-        int $price,
-        string $wxpay_goods_id = null,
-        string $goods_name = null
-    ): self {
+    public function addGoodsDetail(string $goodsID, ?string $wxPayGoodsID, ?string $goodsName, int $quantity, int $price): self
+    {
+        ParameterHelper::checkAmount($quantity, 'The Quantity Should Be Greater Than 0');
+        ParameterHelper::checkAmount($price, 'The Price Should Be Greater Than 0');
         $detail = [
-            'goods_id' => $goods_id,
+            'goods_id' => $goodsID,
             'quantity' => $quantity,
             'price' => $price,
         ];
-        $wxpay_goods_id && $detail['wxpay_goods_id'] = $wxpay_goods_id;
-        $goods_name && $detail['goods_name'] = $goods_name;
+        $wxPayGoodsID && $detail['wxpay_goods_id'] = $wxPayGoodsID;
+        $goodsName && $detail['goods_name'] = $goodsName;
 
-        $this->params['detail']['goods_detail'][] = $detail;
+        $this->detail['goods_detail'][] = $detail;
 
         return $this;
     }
@@ -151,44 +163,45 @@ class UnifiedOrder implements RequestableInterface
         return $this;
     }
 
-    public function setOutTradeNo(string $out_trade_no): self
+    public function setOutTradeNo(string $no): self
     {
-        $this->params['out_trade_no'] = $out_trade_no;
+        $this->params['out_trade_no'] = $no;
 
         return $this;
     }
 
-    public function setFeeType(string $fee_type): self
+    public function setFeeType(string $type): self
     {
-        $this->params['fee_type'] = $fee_type;
+        $this->params['fee_type'] = $type;
 
         return $this;
     }
 
-    public function setTotalFee(int $total_fee): self
+    public function setTotalFee(int $fee): self
     {
-        $this->params['total_fee'] = $total_fee;
+        ParameterHelper::checkAmount($fee, "The Total Fee Should Be Greater Than 0");
+        $this->params['total_fee'] = $fee;
 
         return $this;
     }
 
-    public function setSpbillCreateIP(string $ip): self
+    public function setSPBillCreateIP(string $ip): self
     {
         $this->params['spbill_create_ip'] = $ip;
 
         return $this;
     }
 
-    public function setTimeStart(\DateTime $date_time): self
+    public function setTimeStart(\DateTime $dt): self
     {
-        $this->params['time_start'] = $date_time->format('YmdHis');
+        $this->params['time_start'] = $dt->format('YmdHis');
 
         return $this;
     }
 
-    public function setTimeExpire(\DateTime $date_time): self
+    public function setTimeExpire(\DateTime $dt): self
     {
-        $this->params['time_expire'] = $date_time->format('YmdHis');
+        $this->params['time_expire'] = $dt->format('YmdHis');
 
         return $this;
     }
@@ -214,6 +227,11 @@ class UnifiedOrder implements RequestableInterface
         return $this;
     }
 
+    /**
+     * trade_type=NATIVE需要设置这个.
+     * @param string $id
+     * @return self
+     */
     public function setProductID(string $id): self
     {
         $this->params['product_id'] = $id;
@@ -228,6 +246,11 @@ class UnifiedOrder implements RequestableInterface
         return $this;
     }
 
+    /**
+     * trade_type=JSAPI时需要设置这个.
+     * @param string $openid
+     * @return self
+     */
     public function setOpenID(string $openid): self
     {
         $this->params['openid'] = $openid;
@@ -235,10 +258,50 @@ class UnifiedOrder implements RequestableInterface
         return $this;
     }
 
-    public function setSceneInfo(string $key, string $value): self
+    public function setStoreInfo(?string $id = null, ?string $name = null, ?string $areaCode = null, ?string $address = null): self
     {
-        $this->params[$key] = $value;
+        $id && $this->storeInfo['id'] = $id;
+        $name && $this->storeInfo['name'] = $name;
+        $areaCode && $this->storeInfo['area_code'] = $areaCode;
+        $address && $this->storeInfo['address'] = $address;
 
         return $this;
+    }
+
+    public function setH5InfoIOS(string $appName, string $bundleID):self
+    {
+        $this->clearH5Info();
+        $this->h5Info['type'] = 'IOS';
+        $this->h5Info['app_name'] = $appName;
+        $this->h5Info['bundle_id'] = $bundleID;
+
+        return $this;
+    }
+
+    public function setH5InfoAndroid(string $appName, string $packageName): self
+    {
+        $this->clearH5Info();
+        $this->h5Info['type'] = 'Android';
+        $this->h5Info['app_name'] = $appName;
+        $this->h5Info['package_name'] = $packageName;
+
+        return $this;
+    }
+
+    public function setH5InfoWap(string $wapName, string $wapURL): self
+    {
+        $this->clearH5Info();
+        $this->h5Info['type'] = 'Wap';
+        $this->h5Info['wap_name'] = $wapName;
+        $this->h5Info['wap_url'] = $wapURL;
+
+        return $this;
+    }
+
+    private function clearH5Info()
+    {
+        foreach ($this->h5Info as $key => $value) {
+            $this->h5Info[$key] = null;
+        }
     }
 }

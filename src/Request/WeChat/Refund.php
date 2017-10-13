@@ -2,13 +2,13 @@
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
-use Utils\PaymentVendor\ConfigManager\WeixinConfig;
-use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
-use Utils\PaymentVendor\RequestInterface\RequestableInterface;
+use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\RequestableInterface;
+use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Utils\PaymentVendor\RequestInterface\Weixin\Traits\BidirectionalCertTrait;
 use Utils\PaymentVendor\RequestInterface\Weixin\Traits\RequestPreparationTrait;
 use Utils\PaymentVendor\RequestInterface\Weixin\Traits\ResponseHandlerTrait;
-use Utils\PaymentVendor\SignatureHelper\Weixin\Generator;
+use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
  * 申请退款接口.
@@ -16,13 +16,9 @@ use Utils\PaymentVendor\SignatureHelper\Weixin\Generator;
  */
 class Refund implements RequestableInterface
 {
-    use RequestPreparationTrait;
-    use ResponseHandlerTrait;
-    use BidirectionalCertTrait;
+    use NonceStrTrait;
 
     private $config;
-
-    private $sign_type = 'MD5';
 
     private $uri = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
 
@@ -46,39 +42,41 @@ class Refund implements RequestableInterface
     {
         ParameterHelper::checkRequired($this->params, ['out_refund_no', 'total_fee', 'refund_fee'], ['transaction_id', 'out_trade_no']);
 
+        $signType = $this->config->getDefaultSignType();
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
-        $parameters['nonce_str'] = md5(microtime(true));
-        $parameters['sign_type'] = $this->sign_type;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->sign_type);
+        $parameters['nonce_str'] = $this->getNonceStr();
+        $parameters['sign_type'] = $signType;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
 
         return $parameters;
     }
 
-    public function setTransactionID(string $transaction_id): self
+    public function setTransactionID(string $id): self
     {
-        $this->params['transaction_id'] = $transaction_id;
+        $this->params['transaction_id'] = $id;
 
         return $this;
     }
 
-    public function setOutTradeNo(string $out_trade_no): self
+    public function setOutTradeNo(string $no): self
     {
-        $this->params['out_trade_no'] = $out_trade_no;
+        $this->params['out_trade_no'] = $no;
 
         return $this;
     }
 
-    public function setOutRefundNo(string $out_refund_no): self
+    public function setOutRefundNo(string $no): self
     {
-        $this->params['out_refund_no'] = $out_refund_no;
+        $this->params['out_refund_no'] = $no;
 
         return $this;
     }
 
     public function setTotalFee(int $fee): self
     {
+        ParameterHelper::checkAmount($fee, "The Total Fee Should Be Greater Than 0");
         $this->params['total_fee'] = $fee;
 
         return $this;
@@ -86,6 +84,7 @@ class Refund implements RequestableInterface
 
     public function setRefundFee(int $fee): self
     {
+        ParameterHelper::checkAmount($fee, "The Refund Fee Should Be Greater Than 0");
         $this->params['refund_fee'] = $fee;
 
         return $this;

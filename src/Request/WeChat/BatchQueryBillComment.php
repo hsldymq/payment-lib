@@ -4,6 +4,7 @@ use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Exception\InvalidParameterException;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
+use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -12,6 +13,8 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
  */
 class BatchQueryBillComment implements RequestableInterface
 {
+    use NonceStrTrait;
+
     private const FIXED_SIGN_TYPE = 'HMAC-SHA256';
 
     private $config;
@@ -72,10 +75,7 @@ class BatchQueryBillComment implements RequestableInterface
         }
 
         $this->params['limit'] = $limit;
-    }
 
-    private function getNonceStr(): string
-    {
-        return md5(microtime(true));
+        return $this;
     }
 }

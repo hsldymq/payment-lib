@@ -4,6 +4,7 @@ namespace Archman\PaymentLib\Request\WeChat;
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
+use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -12,6 +13,8 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
  */
 class MicroPay implements RequestableInterface
 {
+    use NonceStrTrait;
+
     private $config;
 
     private $uri = 'https://api.mch.weixin.qq.com/pay/micropay';
@@ -84,6 +87,12 @@ class MicroPay implements RequestableInterface
         return $this;
     }
 
+    /**
+     * @link https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
+     * @param string $field
+     * @param null|string $value
+     * @return $this
+     */
     public function setDetail(string $field, ?string $value): self
     {
         if ($field === 'goods_detail') {
@@ -95,6 +104,15 @@ class MicroPay implements RequestableInterface
         return $this;
     }
 
+    /**
+     * @link https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
+     * @param string $goodsID
+     * @param string|null $wxPayGoodsID
+     * @param string|null $goodsName
+     * @param int $quantity
+     * @param int $price
+     * @return self
+     */
     public function addGoodsDetail(string $goodsID, ?string $wxPayGoodsID, ?string $goodsName, int $quantity, int $price): self
     {
         ParameterHelper::checkAmount($quantity, 'The Quantity Should Be Greater Than 0');
@@ -177,10 +195,5 @@ class MicroPay implements RequestableInterface
         $address && $this->storeInfo['address'] = $address;
 
         return $this;
-    }
-
-    private function getNonceStr(): string
-    {
-        return md5(microtime(true));
     }
 }

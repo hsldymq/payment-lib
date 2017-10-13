@@ -4,6 +4,7 @@ namespace Archman\PaymentLib\Request\WeChat;
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
+use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -12,6 +13,8 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
  */
 class AuthCodeToOpenID implements RequestableInterface
 {
+    use NonceStrTrait;
+
     private $config;
 
     private $uri = 'https://api.mch.weixin.qq.com/tools/authcodetoopenid';
@@ -43,10 +46,5 @@ class AuthCodeToOpenID implements RequestableInterface
         $this->params['auth_code'] = $code;
 
         return $this;
-    }
-
-    private function getNonceStr(): string
-    {
-        return md5(microtime(true));
     }
 }

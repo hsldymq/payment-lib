@@ -2,13 +2,10 @@
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
-use Utils\PaymentVendor\ConfigManager\WeixinConfig;
-use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
-use Utils\PaymentVendor\RequestInterface\RequestableInterface;
-use Utils\PaymentVendor\RequestInterface\Weixin\Traits\RequestPreparationTrait;
-use Utils\PaymentVendor\RequestInterface\Weixin\Traits\ResponseHandlerTrait;
-use Utils\PaymentVendor\RequestInterface\Weixin\Traits\RootCATrait;
-use Utils\PaymentVendor\SignatureHelper\Weixin\Generator;
+use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
+use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\RequestableInterface;
+use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
  * 查询退款.
@@ -16,13 +13,9 @@ use Utils\PaymentVendor\SignatureHelper\Weixin\Generator;
  */
 class RefundQuery implements RequestableInterface
 {
-    use RequestPreparationTrait;
-    use ResponseHandlerTrait;
-    use RootCATrait;
+    use NonceStrTrait;
 
     private $config;
-
-    private $sign_type = 'MD5';
 
     private $uri = 'https://api.mch.weixin.qq.com/pay/refundquery';
 
@@ -45,8 +38,8 @@ class RefundQuery implements RequestableInterface
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
-        $parameters['nonce_str'] = md5(microtime(true));
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->sign_type);
+        $parameters['nonce_str'] = $this->getNonceStr();
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
 
         return $parameters;
     }

@@ -2,11 +2,9 @@
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
-use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
+use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
+use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
-use Utils\PaymentVendor\RequestInterface\Weixin\Traits\RequestPreparationTrait;
-use Utils\PaymentVendor\RequestInterface\Weixin\Traits\ResponseHandlerTrait;
-use Utils\PaymentVendor\RequestInterface\Weixin\Traits\RootCATrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -15,13 +13,9 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
  */
 class OrderQuery implements RequestableInterface
 {
-    use RequestPreparationTrait;
-    use ResponseHandlerTrait;
-    use RootCATrait;
+    use NonceStrTrait;
 
     private $config;
-
-    private $sign_type = 'MD5';
 
     private $uri = 'https://api.mch.weixin.qq.com/pay/orderquery';
 
@@ -39,11 +33,13 @@ class OrderQuery implements RequestableInterface
     {
         ParameterHelper::checkRequired($this->params, [], ['transaction_id', 'out_trade_no']);
 
+        $signType = $this->config->getDefaultSignType();
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
-        $parameters['nonce_str'] = md5(microtime(true));
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->sign_type);
+        $parameters['nonce_str'] = $this->getNonceStr();
+        $parameters['sign_type'] = $signType;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
 
         return $parameters;
     }

@@ -5,6 +5,7 @@ use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Exception\InvalidParameterException;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
+use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -13,6 +14,8 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
  */
 class DownloadBill implements RequestableInterface
 {
+    use NonceStrTrait;
+
     private $config;
 
     private $uri = 'https://api.mch.weixin.qq.com/pay/downloadbill';
@@ -106,10 +109,5 @@ class DownloadBill implements RequestableInterface
         $this->params['tar_type'] = $type;
 
         return $this;
-    }
-
-    private function getNonceStr(): string
-    {
-        return md5(microtime(true));
     }
 }
