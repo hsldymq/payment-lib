@@ -22,7 +22,6 @@ class BatchQueryBillComment implements RequestableInterface
     private $uri = 'https://api.mch.weixin.qq.com/billcommentsp/batchquerycomment';
 
     private $params = [
-        'sign_type' => self::FIXED_SIGN_TYPE,
         'begin_time' => null,
         'end_time' => null,
         'offset' => null,
@@ -42,6 +41,7 @@ class BatchQueryBillComment implements RequestableInterface
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
+        $parameters['sign_type'] => self::FIXED_SIGN_TYPE;
         $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, self::FIXED_SIGN_TYPE);
 
         return $parameters;

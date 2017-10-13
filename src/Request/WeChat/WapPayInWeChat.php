@@ -44,9 +44,9 @@ class WapPayInWeChat
         return $parameters;
     }
 
-    public function setPrepayID(string $prepay_id): self
+    public function setPrepayID(string $id): self
     {
-        $this->params['package'] = "prepay_id={$prepay_id}";
+        $this->params['package'] = "prepay_id={$id}";
 
         return $this;
     }

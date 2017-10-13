@@ -43,9 +43,9 @@ class AppPay
         return $parameters;
     }
 
-    public function setPrepayID(string $prepayID): self
+    public function setPrepayID(string $id): self
     {
-        $this->params['prepayid'] = $prepayID;
+        $this->params['prepayid'] = $id;
 
         return $this;
     }
