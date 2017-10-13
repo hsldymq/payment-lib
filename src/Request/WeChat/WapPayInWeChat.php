@@ -2,26 +2,24 @@
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
-use Archman\PaymentLib\RequestInterface\Client;
-use Archman\PaymentLib\RequestInterface\Helper\ParameterHelper;
-use Archman\PaymentLib\RequestInterface\MutableDateTimeInterface;
-use Archman\PaymentLib\RequestInterface\Traits\MutableDateTimeTrait;
-use Archman\PaymentLib\SignatureHelper\Weixin\Generator;
+use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
+use Archman\PaymentLib\SignatureHelper\Wechat\Generator;
 
 /**
  * 微信内H5调起支付.
  * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6
  */
-class WapPayInWeChat implements MutableDateTimeInterface
+class WapPayInWeChat
 {
-    use MutableDateTimeTrait;
+    use NonceStrTrait;
+
+    private const FIXED_SIGN_TYPE = 'MD5';
 
     private $config;
 
-    private $sign_type = 'MD5';
-
-    /** @var UnifiedOrder */
-    private $unified_order = null;
+    /** @var \DateTime */
+    private $datetime;
 
     private $params = [
         'package' => null,
@@ -34,19 +32,14 @@ class WapPayInWeChat implements MutableDateTimeInterface
 
     public function makeParameters(): array
     {
-        if (!$this->params['package'] && $this->unified_order) {
-            $data = Client::sendRequest($this->unified_order);
-            $this->setPrepayID($data['prepay_id']);
-        }
-
         ParameterHelper::checkRequired($this->params, ['package']);
 
-        $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appId'] = $this->config->getAppID();
-        $parameters['timeStamp'] = $this->getDateTime()->getTimestamp();
-        $parameters['nonceStr'] = md5(microtime(true));
-        $parameters['signType'] = $this->sign_type;
-        $parameters['paySign'] = (new Generator($this->config))->makeSign($parameters, $this->sign_type);
+        $parameters['timeStamp'] = $this->getTimestamp();
+        $parameters['nonceStr'] = $this->getNonceStr();
+        $parameters['signType'] = self::FIXED_SIGN_TYPE;
+        $parameters['package'] = $this->params['package'];
+        $parameters['paySign'] = (new Generator($this->config))->makeSign($parameters, self::FIXED_SIGN_TYPE);
 
         return $parameters;
     }
@@ -58,10 +51,17 @@ class WapPayInWeChat implements MutableDateTimeInterface
         return $this;
     }
 
-    public function setUnifiedOrder(UnifiedOrder $order): self
+    public function setDatetime(\DateTime $dt): self
     {
-        $this->unified_order = $order;
+        $this->datetime = $dt;
 
         return $this;
+    }
+
+    private function getTimestamp(): int
+    {
+        $datetime =  $this->datetime ?? new \DateTime('now', new \DateTimeZone('+0800'));
+
+        return $datetime->getTimestamp();
     }
 }
