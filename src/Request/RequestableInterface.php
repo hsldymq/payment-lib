@@ -9,7 +9,7 @@ interface RequestableInterface
 {
     public function prepareRequest(): RequestInterface;
 
-    public function prepareRequestOption(): RequestOption;
+    public function prepareRequestOption(): RequestOptionInterface;
 
     public function handleResponse(ResponseInterface $response): BaseResponse;
 }

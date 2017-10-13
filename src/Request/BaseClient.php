@@ -18,5 +18,5 @@ abstract class BaseClient
         return $interface->handleResponse($response);
     }
 
-    abstract protected static function doSend(RequestInterface $request, RequestOption $option): ResponseInterface;
+    abstract protected static function doSend(RequestInterface $request, RequestOptionInterface $option): ResponseInterface;
 }

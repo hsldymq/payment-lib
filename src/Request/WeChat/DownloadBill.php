@@ -2,23 +2,26 @@
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Archman\PaymentLib\Exception\InvalidParameterException;
+use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
  * 下载对账单.
  * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
  */
-class DownloadBill
+class DownloadBill implements RequestableInterface
 {
-    private const SIGN_TYPE = 'HMAC-SHA256';
-
     private $config;
 
+    private $uri = 'https://api.mch.weixin.qq.com/pay/downloadbill';
+
     private $params = [
-        'begin_time' => null,
-        'end_time' => null,
-        'offset' => null,
-        'limit' => null,
+        'device_info' => null,
+        'bill_date' => null,
+        'bill_type' => null,
+        'tar_type' => null,
     ];
 
     public function __construct(WeChatConfigInterface $config)
@@ -28,19 +31,17 @@ class DownloadBill
 
     public function makeParameters(): array
     {
-        $params = [
-            'app' => $this->config->getAppID(),
-            'mch_id' => $this->config->getMerchantID(),
-            'nonce_str' => md5(time()),
-            'sign_type' => self::SIGN_TYPE,
-            'begin_time' => $this->params['begin_time'],
-            'end_time' => $this->params['end_time'],
-            'offset' => $this->params['offset'],
-        ];
-        $this->params['limit'] && $params['limit'] = $this->params['limit'];
-        $params['sign'] = (new Generator($this->config))->makeSign($params, self::SIGN_TYPE);
+        ParameterHelper::checkRequired($this->params, ['bill_date', 'bill_type']);
 
-        return $params;
+        $signType = $this->config->getDefaultSignType();
+        $parameters = ParameterHelper::packValidParameters($this->params);
+        $parameters['appid'] = $this->config->getAppID();
+        $parameters['mch_id'] = $this->config->getMerchantID();
+        $parameters['nonce_str'] = $this->getNonceStr();
+        $parameters['sign_type'] = $signType;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
+
+        return $parameters;
     }
 
     public function setBeginTime(\DateTime $datetime): self
@@ -69,5 +70,46 @@ class DownloadBill
         $this->params['limit'] = $limit;
 
         return $this;
+    }
+
+    public function setDeviceInfo(?string $info): self
+    {
+        $this->params['device_info'] = $info;
+
+        return $this;
+    }
+
+    public function setBillDate(\DateTime $dt): self
+    {
+        $this->params['bill_date'] = $dt->format('Ymd');
+
+        return $this;
+    }
+
+    public function setBillType(string $type): self
+    {
+        if (!in_array($type, ['ALL', 'SUCCESS', 'REFUND', 'RECHARGE_REFUND'])) {
+            throw new InvalidParameterException("Invalid Value For Bill Type({$type}), Should Be One Of These(ALL/SUCCESS/REFUND/RECHARGE_REFUND).");
+        }
+
+        $this->params['bill_type'] = $type;
+
+        return $this;
+    }
+
+    public function setTarType(string $type): self
+    {
+        if ($type !== 'GZIP') {
+            throw new InvalidParameterException("The Value Of Tar Type Should Be 'GZIP' Only.");
+        }
+
+        $this->params['tar_type'] = $type;
+
+        return $this;
+    }
+
+    private function getNonceStr(): string
+    {
+        return md5(microtime(true));
     }
 }

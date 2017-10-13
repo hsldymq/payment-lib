@@ -1,7 +1,7 @@
 <?php
 namespace Archman\PaymentLib\Request;
 
-use Api\Exception\Logic\MakePaymentVendorParametersFailedException;
+use Archman\PaymentLib\Exception\InvalidParameterException;
 
 class ParameterHelper
 {
@@ -10,29 +10,28 @@ class ParameterHelper
      * @param array $parameters
      * @param array $required_list 必选列表
      * @param array $optional 多选一列表
-     * @throws MakePaymentVendorParametersFailedException
+     * @throws InvalidParameterException
      */
     public static function checkRequired(array $parameters, array $required_list, array $optional = [])
     {
         foreach ($required_list as $param_name) {
-            if (self::isInvalid($parameters[$param_name])) {
-                throw new MakePaymentVendorParametersFailedException(['message' => "Parameter {$param_name} Is Required"]);
+            if (self::isInvalid($parameters[$param_name] ?? null)) {
+                throw new InvalidParameterException("Parameter({$param_name}) Is Required.");
             }
         }
 
         $result = array_reduce($optional, function ($prev, $curr) use ($parameters) {
-            return boolval($prev) || !self::isInvalid($parameters[$curr]);
+            return boolval($prev) || !self::isInvalid($parameters[$curr] ?? null);
         }, null);
         if ($result === false) {
-            throw new MakePaymentVendorParametersFailedException([
-                'message' => 'One Of These Parameters (' . implode(',', $optional) . ') Is Required'
+            throw new InvalidParameterException([
+                'message' => 'Need One Of These Parameters(' . implode(',', $optional) . ').'
             ]);
         }
     }
 
     /**
      * 生成有效的请求参数.
-     *
      * @param array $parameters
      * @return array
      */
@@ -51,13 +50,6 @@ class ParameterHelper
         return $biz_content;
     }
 
-    public static function checkAmount(int $amount)
-    {
-        if ($amount <= 0) {
-            throw new MakePaymentVendorParametersFailedException(['message' => 'Parameter amount Should Not Less Than 1']);
-        }
-    }
-
     /**
      * 将以分为单位的金额换算为元,保留小数点后两位.
      * @param int $amount
@@ -65,7 +57,16 @@ class ParameterHelper
      */
     public static function transUnitCentToYuan(int $amount): string
     {
+        self::checkAmount($amount);
+
         return sprintf('%.2f', $amount / 100);
+    }
+
+    public static function checkAmount(int $amount)
+    {
+        if ($amount <= 0) {
+            throw new InvalidParameterException('Amount Should Be Greater Than 0');
+        }
     }
 
     /**

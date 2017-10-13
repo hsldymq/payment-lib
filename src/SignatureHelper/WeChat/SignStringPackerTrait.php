@@ -4,9 +4,9 @@ namespace Archman\PaymentLib\SignatureHelper\WeChat;
 Trait SignStringPackerTrait
 {
     /**
-     * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
+     * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3 生成待签名字符串算法
      * @param array $data
-     * @param array $exclude
+     * @param array $exclude 不参与签名的参数名列表
      * @return string
      */
     protected function packRequestSignString(array $data, array $exclude = []): string
@@ -16,7 +16,7 @@ Trait SignStringPackerTrait
 
         $concat_kv = [];
         foreach ($data as $k => $value) {
-            if (!$this->isEmpty($value) || in_array($k, $exclude)) {
+            if (!$this->isEmpty($value) && !in_array($k, $exclude)) {
                 $concat_kv[] = "{$k}={$value}";
             }
         }

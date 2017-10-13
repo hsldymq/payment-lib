@@ -2,19 +2,15 @@
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
-use Archman\PaymentLib\Request\BaseClient;
 use Archman\PaymentLib\Request\ParameterHelper;
-use Archman\PaymentLib\Request\MutableDateTimeInterface;
-use Archman\PaymentLib\Request\Traits\MutableDateTimeTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
+ * 生成调起App支付接口参数.
  * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_12&index=2
  */
-class AppPay implements MutableDateTimeInterface
+class AppPay
 {
-    use MutableDateTimeTrait;
-
     private $config;
 
     /** @var \DateTime */
@@ -37,7 +33,7 @@ class AppPay implements MutableDateTimeInterface
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
         $parameters['partnerid'] = $this->config->getMerchantID();
-        $parameters['noncestr'] = md5(microtime(true));
+        $parameters['noncestr'] = $this->getNonceStr();
         $parameters['timestamp'] = $this->getTimestamp();
         $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
 
@@ -51,15 +47,27 @@ class AppPay implements MutableDateTimeInterface
         return $this;
     }
 
-    public function setDatetime(\DateTime $d): self
+    /**
+     * 用于生成timestamp.
+     * @param \DateTime|null $dt
+     * @return AppPay
+     */
+    public function setDatetime(?\DateTime $dt): self
     {
-        $this->datetime = $d;
+        $this->datetime = $dt;
 
         return $this;
     }
 
+    private function getNonceStr(): string
+    {
+        return md5(microtime(true));
+    }
+
     private function getTimestamp(): int
     {
-        $this->datetime->getTimestamp();
+        $datetime =  $this->datetime ?? new \DateTime('now', new \DateTimeZone('+0800'));
+
+        return $datetime->getTimestamp();
     }
 }

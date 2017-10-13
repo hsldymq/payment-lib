@@ -1,55 +1,75 @@
 <?php
 namespace Archman\PaymentLib\Request;
 
-class RequestOption
+class RequestOption implements RequestOptionInterface
 {
+    private $rootCAFilePath = null;
+
+    private $sslKeyFilePath = null;
+
+    private $sslPassword = null;
+
+    private $clientCertFilePath = null;
+
+    private $clientCertPassword = null;
+
     public function getRootCAFilePath(): ?string
     {
-        // TODO
+        return $this->rootCAFilePath;
     }
 
     public function getSSLKeyFilePath(): ?string
     {
-        // TODO
+        return $this->sslKeyFilePath;
     }
 
     public function getSSLPassword(): ?string
     {
-        // TODO
+        return $this->sslPassword;
     }
 
     public function getClientCertFilePath(): ?string
     {
-        // TODO
+        return $this->clientCertFilePath;
     }
 
     public function getClientCertPassword(): ?string
     {
-        // TODO
+        return $this->clientCertPassword;
     }
 
-    public function setRootCAFilePath(string $path): self
+    public function setRootCAFilePath(?string $path): self
     {
-        // TODO
+        $this->rootCAFilePath = $path;
+
+        return $this;
     }
 
-    public function setSSLKeyFilePath(string $path): self
+    public function setSSLKeyFilePath(?string $path): self
     {
-        // TODO
+        $this->sslKeyFilePath = $path;
+
+        return $this;
     }
 
-    public function setSSLPassword(string $password): self
+    public function setSSLPassword(?string $password): self
     {
-        // TODO
+        $this->sslPassword = $password;
+
+        return $this;
     }
 
-    public function setClientCertFilePath(string $path): self
+    public function setClientCertFilePath(?string $path): self
     {
-        // TODO
+        $this->clientCertFilePath = $path;
+
+        return $this;
     }
 
-    public function setClientCertPassword(string $password): self
+    public function setClientCertPassword(?string $password): self
     {
-        // TODO
+        $this->clientCertPassword = $password;
+
+        return $this;
     }
 }
