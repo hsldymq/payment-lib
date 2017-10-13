@@ -5,6 +5,7 @@ use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
+use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -14,6 +15,7 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 class OrderQuery implements RequestableInterface
 {
     use NonceStrTrait;
+    use RequestPreparationTrait;
 
     private $config;
 

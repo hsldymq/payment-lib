@@ -51,7 +51,7 @@ class WapPayInWeChat
         return $this;
     }
 
-    public function setDatetime(\DateTime $dt): self
+    public function setDatetime(?\DateTime $dt): self
     {
         $this->datetime = $dt;
 

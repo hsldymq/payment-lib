@@ -6,6 +6,7 @@ use Archman\PaymentLib\Exception\InvalidParameterException;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
+use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -15,6 +16,7 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 class DownloadBill implements RequestableInterface
 {
     use NonceStrTrait;
+    use RequestPreparationTrait;
 
     private $config;
 

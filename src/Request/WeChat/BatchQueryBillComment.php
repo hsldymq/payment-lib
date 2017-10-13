@@ -5,6 +5,7 @@ use Archman\PaymentLib\Exception\InvalidParameterException;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
+use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -14,6 +15,7 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 class BatchQueryBillComment implements RequestableInterface
 {
     use NonceStrTrait;
+    use RequestPreparationTrait;
 
     private const FIXED_SIGN_TYPE = 'HMAC-SHA256';
 
@@ -41,7 +43,7 @@ class BatchQueryBillComment implements RequestableInterface
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
-        $parameters['sign_type'] => self::FIXED_SIGN_TYPE;
+        $parameters['sign_type'] = self::FIXED_SIGN_TYPE;
         $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, self::FIXED_SIGN_TYPE);
 
         return $parameters;

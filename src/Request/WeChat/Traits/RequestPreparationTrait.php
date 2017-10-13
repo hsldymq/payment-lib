@@ -1,15 +1,16 @@
 <?php
 namespace Archman\PaymentLib\RequestInterface\WeChat\Traits;
 
+use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Archman\PaymentLib\Request\DataParser;
 use GuzzleHttp\Psr7\Request;
 use function GuzzleHttp\Psr7\stream_for;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
-use Utils\PaymentVendor\ConfigManager\WeixinConfig;
 
 /**
  * @property string $uri
- * @property WeixinConfig $config
+ * @property WeChatConfigInterface $config
  */
 trait RequestPreparationTrait
 {
@@ -17,7 +18,7 @@ trait RequestPreparationTrait
     {
         $parameters = $this->makeParameters();
         $request = new Request('POST',new Uri($this->uri));
-        $body = stream_for(\array_to_xml($parameters));
+        $body = stream_for(DataParser::arrayToXML($parameters));
 
         return $request->withBody($body);
     }
