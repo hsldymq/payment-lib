@@ -62,10 +62,10 @@ class ParameterHelper
         return sprintf('%.2f', $amount / 100);
     }
 
-    public static function checkAmount(int $amount)
+    public static function checkAmount(int $amount, string $ex_text = null)
     {
         if ($amount <= 0) {
-            throw new InvalidParameterException('Amount Should Be Greater Than 0');
+            throw new InvalidParameterException($ex_text ?? 'Amount Should Be Greater Than 0');
         }
     }
 
