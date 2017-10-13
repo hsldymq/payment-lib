@@ -4,6 +4,7 @@ namespace Archman\PaymentLib\Request\WeChat;
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
+use Archman\PaymentLib\Request\RequestOption;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
@@ -108,5 +109,16 @@ class Refund implements RequestableInterface
         $this->params['refund_account'] = $account;
 
         return $this;
+    }
+
+    protected function customRequestOption(RequestOption $option): RequestOption
+    {
+        $option->setRootCAFilePath($this->config->getRootCAPath())
+            ->setSSLKeyFilePath($this->config->getSSLKeyPath())
+            ->setSSLPassword($this->config->getSSLKeyPassword())
+            ->setClientCertFilePath($this->config->getClientCertPath())
+            ->setClientCertPassword($this->config->getClientCertPassword());
+
+        return $option;
     }
 }

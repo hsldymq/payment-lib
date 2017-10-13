@@ -21,7 +21,13 @@ interface WeChatConfigInterface
      * SSL密钥文件路径.
      * @return string
      */
-    public function getClientKeyPath(): ?string;
+    public function getSSLKeyPath(): ?string;
+
+    /**
+     * SSL密钥密码. 为设置返回null
+     * @return null|string
+     */
+    public function getSSLKeyPassword(): ?string;
 
     /**
      * SSL证书文件路径.
@@ -34,12 +40,6 @@ interface WeChatConfigInterface
      * @return null|string
      */
     public function getClientCertPassword(): ?string;
-
-    /**
-     * SSL密钥密码. 为设置返回null
-     * @return null|string
-     */
-    public function getClientKeyPassword(): ?string;
 
     public function getApiKey(): string;
 
