@@ -17,9 +17,9 @@ class AuthCodeToOpenID implements RequestableInterface
     use NonceStrTrait;
     use RequestPreparationTrait;
 
-    private $config;
+    private const URI = 'https://api.mch.weixin.qq.com/tools/authcodetoopenid';
 
-    private $uri = 'https://api.mch.weixin.qq.com/tools/authcodetoopenid';
+    private $config;
 
     private $params = [
         'auth_code' => null,

@@ -16,9 +16,9 @@ class CloseOrder implements RequestableInterface
     use NonceStrTrait;
     use RequestPreparationTrait;
 
-    private $config;
+    private const URI = 'https://api.mch.weixin.qq.com/pay/closeorder';
 
-    private $uri = 'https://api.mch.weixin.qq.com/pay/closeorder';
+    private $config;
 
     private $params = [
         'out_trade_no' => null,

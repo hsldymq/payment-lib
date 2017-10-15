@@ -17,9 +17,9 @@ class RefundQuery implements RequestableInterface
     use NonceStrTrait;
     use RequestPreparationTrait;
 
-    private $config;
+    private const URI = 'https://api.mch.weixin.qq.com/pay/refundquery';
 
-    private $uri = 'https://api.mch.weixin.qq.com/pay/refundquery';
+    private $config;
 
     private $params = [
         'transaction_id' => null,

@@ -20,9 +20,9 @@ class BatchQueryBillComment implements RequestableInterface
 
     private const FIXED_SIGN_TYPE = 'HMAC-SHA256';
 
-    private $config;
+    private const URI = 'https://api.mch.weixin.qq.com/billcommentsp/batchquerycomment';
 
-    private $uri = 'https://api.mch.weixin.qq.com/billcommentsp/batchquerycomment';
+    private $config;
 
     private $params = [
         'begin_time' => null,

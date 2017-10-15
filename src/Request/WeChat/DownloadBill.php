@@ -18,9 +18,9 @@ class DownloadBill implements RequestableInterface
     use NonceStrTrait;
     use RequestPreparationTrait;
 
-    private $config;
+    private const URI = 'https://api.mch.weixin.qq.com/pay/downloadbill';
 
-    private $uri = 'https://api.mch.weixin.qq.com/pay/downloadbill';
+    private $config;
 
     private $params = [
         'device_info' => null,

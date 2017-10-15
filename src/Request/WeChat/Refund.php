@@ -18,9 +18,9 @@ class Refund implements RequestableInterface
     use NonceStrTrait;
     use RequestPreparationTrait;
 
-    private $config;
+    private const URI = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
 
-    private $uri = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
+    private $config;
 
     private $params = [
         'transaction_id' => null,
