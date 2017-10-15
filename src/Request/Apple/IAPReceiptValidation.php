@@ -8,6 +8,7 @@ use Archman\PaymentLib\Response\BaseResponse;
 use Archman\PaymentLib\Response\GeneralResponse;
 use GuzzleHttp\Psr7\Request;
 use function GuzzleHttp\Psr7\stream_for;
+use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Archman\PaymentLib\Request\DataParser;
@@ -19,12 +20,12 @@ use Archman\PaymentLib\Request\RequestableInterface;
  */
 class IAPReceiptValidation implements RequestableInterface
 {
-    private static $sandboxURI = 'https://sandbox.itunes.apple.com/verifyReceipt';
+    private const SANDBOX_URI = 'https://sandbox.itunes.apple.com/verifyReceipt';
 
-    private static $productionURI = 'https://buy.itunes.apple.com/verifyReceipt';
+    private const PRODUCTION_URI = 'https://buy.itunes.apple.com/verifyReceipt';
 
     private $params = [
-        'receipt-data' => null,     // 必填
+        'receipt-data' => null,
         'password' => null,
         'exclude-old-transactions' => null,
     ];
@@ -33,7 +34,7 @@ class IAPReceiptValidation implements RequestableInterface
 
     public function setEnvironment(bool $isProduction): self
     {
-        $this->uri = $isProduction ? self::$productionURI : self::$sandboxURI;
+        $this->uri = $isProduction ? self::PRODUCTION_URI : self::SANDBOX_URI;
 
         return $this;
     }
@@ -59,24 +60,16 @@ class IAPReceiptValidation implements RequestableInterface
         return $this;
     }
 
-    private function getUri(): string
-    {
-        if (!$this->uri) {
-            throw new \Exception("Set Environment!!!");
-        }
-
-        return $this->uri;
-    }
-
     public function prepareRequest(): RequestInterface
     {
         ParameterHelper::checkRequired($this->params, ['receipt-data']);
 
+        $uri = $this->getUri();
         $headers = ['content-type' => 'application/x-www-form-urlencoded'];
         $params = ParameterHelper::packValidParameters($this->params);
         $body = stream_for(DataParser::arrayToJson($params));
 
-        return new Request('POST', $this->getUri(), $headers, $body);
+        return new Request('POST', $uri, $headers, $body);
     }
 
     public function handleResponse(ResponseInterface $response): BaseResponse
@@ -94,5 +87,14 @@ class IAPReceiptValidation implements RequestableInterface
     public function prepareRequestOption(): RequestOptionInterface
     {
         return new RequestOption();
+    }
+
+    private function getUri(): Uri
+    {
+        if (!$this->uri) {
+            throw new \Exception("Set Environment!!!");
+        }
+
+        return new Uri($this->uri);
     }
 }
