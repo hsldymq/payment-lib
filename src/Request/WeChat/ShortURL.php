@@ -1,11 +1,51 @@
 <?php
 namespace Archman\PaymentLib\Request\WeChat;
 
+use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\RequestableInterface;
+use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
+use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
+
 /**
  * 转换短链接.
  * @link https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_9
  */
-class ShortURL
+class ShortURL implements RequestableInterface
 {
+    use NonceStrTrait;
+    use RequestPreparationTrait;
 
+    private const URI = 'https://api.mch.weixin.qq.com/tools/shorturl';
+
+    private $config;
+
+    private $params = [
+        'long_url' => null,
+    ];
+
+    public function __construct(WeChatConfigInterface $config)
+    {
+        $this->config = $config;
+    }
+
+    public function makeParameters(): array
+    {
+        ParameterHelper::checkRequired($this->params, ['long_url']);
+
+        $signType = $this->config->getDefaultSignType();
+        $parameters['appid'] = $this->config->getAppID();
+        $parameters['mch_id'] = $this->config->getMerchantID();
+        $parameters['nonce_str'] = $this->getNonceStr();
+        $parameters['sign_type'] = $signType;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
+    }
+
+    public function setLongURL(string $url): self
+    {
+        $this->params['long_url'] = $url;
+
+        return $this;
+    }
 }
