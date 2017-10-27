@@ -15,6 +15,12 @@ abstract class BaseResponse implements \ArrayAccess
         return $this->data[$name] ?? null;
     }
 
+    public function __set($name, $value)
+    {
+        // Immutable
+        return;
+    }
+
     public function offsetGet($offset)
     {
         return $this->__get($offset);
