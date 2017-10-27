@@ -78,7 +78,7 @@ class IAPReceiptValidation implements RequestableInterface
 
         $status = strval($data['status']);
         if ($status !== '0') {
-            throw new ErrorResponseException($data['status']);
+            throw new ErrorResponseException($data['status'], null, $data);
         }
 
         return new GeneralResponse($data);
