@@ -19,7 +19,7 @@ class SandBoxSignKey implements RequestableInterface
     use NonceStrTrait;
     use ResponseHandlerTrait;
 
-    const URI = 'https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey';
+    private const URI = 'https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey';
 
     private $config;
 
@@ -48,6 +48,6 @@ class SandBoxSignKey implements RequestableInterface
 
     public function prepareRequestOption(): RequestOptionInterface
     {
-        return new RequestOption();
+        return (new RequestOption())->setRootCAFilePath($this->config->getRootCAPath());
     }
 }

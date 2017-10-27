@@ -1,6 +1,7 @@
 <?php
 namespace Archman\PaymentLib\RequestInterface\WeChat\Traits;
 
+use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\DataParser;
 use Archman\PaymentLib\Request\RequestOption;
 use Archman\PaymentLib\Request\RequestOptionInterface;
@@ -10,6 +11,9 @@ use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
 
+/**
+ * @property WeChatConfigInterface $config
+ */
 trait RequestPreparationTrait
 {
     /** @var bool 不调用setEnvironment时,默认向生产环境发起请求 */
@@ -26,13 +30,7 @@ trait RequestPreparationTrait
 
     public function prepareRequestOption(): RequestOptionInterface
     {
-        $option = new RequestOption();
-
-        if (method_exists($this, 'customRequestOption')) {
-            $option = $this->customRequestOption($option);
-        }
-
-        return $option;
+        return (new RequestOption())->setRootCAFilePath($this->config->getRootCAPath());
     }
 
     public function setEnvironment(bool $isProduction): self

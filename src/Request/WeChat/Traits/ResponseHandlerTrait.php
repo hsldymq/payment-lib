@@ -1,41 +1,54 @@
 <?php
 namespace Archman\PaymentLib\RequestInterface\WeChat\Traits;
 
-use Api\Exception\Logic\VendorInterfaceResponseErrorException;
+use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Archman\PaymentLib\Exception\ErrorResponseException;
+use Archman\PaymentLib\Exception\SignatureException;
+use Archman\PaymentLib\Request\DataParser;
+use Archman\PaymentLib\Response\BaseResponse;
+use Archman\PaymentLib\Response\GeneralResponse;
 use Psr\Http\Message\ResponseInterface;
-use Utils\PaymentVendor\ErrorMapper\Weixin;
-use Utils\PaymentVendor\SignatureHelper\Weixin\Validator;
+use Archman\PaymentLib\SignatureHelper\WeChat\Validator;
 
 /**
- * @property string $sign_type
+ * @property WeChatConfigInterface $config
  */
 trait ResponseHandlerTrait
 {
-    public function handleResponse(ResponseInterface $response): array
+    /**
+     * @param ResponseInterface $response
+     * @return BaseResponse
+     * @throws ErrorResponseException
+     * @throws SignatureException
+     */
+    public function handleResponse(ResponseInterface $response): BaseResponse
     {
-        $data = \xml_to_array($response->getBody());
+        $data = DataParser::xmlToArray($response->getBody());
 
-        $code = null;
+        $errCode = $errMsg = null;
         if (strtoupper($data['return_code']) !== 'SUCCESS') {
-            $code = Weixin::map($data['return_msg']);
+            $errCode = $data['return_code'];
+            $errMsg = $data['return_msg'];
         } elseif (strtoupper($data['result_code']) !== 'SUCCESS') {
-            $code = Weixin::map($data['err_code'], $data['err_code_des']);
+            $errCode = $data['err_code'];
         }
 
-        if ($code) {
-            throw new VendorInterfaceResponseErrorException(
-                Weixin::lastFailedCode(),
-                $data,
-                ['message' => "Weixin Request Error, Failed Code: {$code['code']}, Failed Text: {$code['text']}"]
-            );
+        if ($errCode) {
+            throw new ErrorResponseException($errCode, $errMsg, $data);
         }
 
         $signature = $data['sign'];
+        $signType = $this->signType ?? $this->config->getDefaultSignType();
 
         // 验证响应签名
         $validator = new Validator($this->config);
-        $validator->verify($signature, $this->sign_type, $data, true);
+        $validator->validate($signature, $signType, $data);
 
-        return $data;
+        return $this->getResponse($data);
+    }
+
+    protected function getResponse(array $data): BaseResponse
+    {
+        return new GeneralResponse($data);
     }
 }

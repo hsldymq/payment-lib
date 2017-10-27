@@ -18,6 +18,13 @@ class Validator
         $this->config = $config;
     }
 
+    /**
+     * @param string $signature
+     * @param string $sign_type
+     * @param array $data
+     * @param array $exclude
+     * @throws SignatureException
+     */
     public function validate(string $signature, string $sign_type, array $data, array $exclude = [])
     {
         $packed_string = $this->packRequestSignString($data, $exclude);
@@ -30,11 +37,11 @@ class Validator
                 $result = $this->validateSignSHA256($signature, $packed_string);
                 break;
             default:
-                throw new SignatureException("Unsupported WeChat Sign Type: {$sign_type}");
+                throw new SignatureException($data, "Unsupported WeChat Sign Type: {$sign_type}");
         }
 
         if (!$result) {
-            throw new SignatureException('Failed To Validate WeChat Signature.');
+            throw new SignatureException($data, 'Failed To Validate WeChat Signature.');
         }
     }
 

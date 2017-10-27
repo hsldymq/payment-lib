@@ -6,6 +6,7 @@ use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\RequestInterface\WeChat\Traits\ResponseHandlerTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -16,10 +17,13 @@ class Report implements RequestableInterface
 {
     use NonceStrTrait;
     use RequestPreparationTrait;
+    use ResponseHandlerTrait;
 
     private const URI = 'https://api.mch.weixin.qq.com/payitil/report';
 
     private $config;
+
+    private $signType;
 
     private $params = [
         'device_info' => null,
@@ -38,18 +42,18 @@ class Report implements RequestableInterface
     public function __construct(WeChatConfigInterface $config)
     {
         $this->config = $config;
+        $this->signType = $config->getDefaultSignType();
     }
 
     public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->params, ['interface_url', 'execute_time', 'return_code', 'result_code', 'user_ip']);
 
-        $signType = $this->config->getDefaultSignType();
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
-        $parameters['sign_type'] = $signType;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
+        $parameters['sign_type'] = $this->signType;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
 
         return $parameters;
     }

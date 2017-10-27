@@ -1,12 +1,15 @@
 <?php
 namespace Archman\PaymentLib\Request\WeChat;
+
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Exception\InvalidParameterException;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\RequestOption;
+use Archman\PaymentLib\Request\RequestOptionInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\RequestInterface\WeChat\Traits\ResponseHandlerTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -17,12 +20,13 @@ class BatchQueryBillComment implements RequestableInterface
 {
     use NonceStrTrait;
     use RequestPreparationTrait;
-
-    private const FIXED_SIGN_TYPE = 'HMAC-SHA256';
+    use ResponseHandlerTrait;
 
     private const URI = 'https://api.mch.weixin.qq.com/billcommentsp/batchquerycomment';
 
     private $config;
+
+    private $signType = 'HMAC-SHA256';
 
     private $params = [
         'begin_time' => null,
@@ -44,8 +48,8 @@ class BatchQueryBillComment implements RequestableInterface
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
-        $parameters['sign_type'] = self::FIXED_SIGN_TYPE;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, self::FIXED_SIGN_TYPE);
+        $parameters['sign_type'] = $this->signType;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
 
         return $parameters;
     }
@@ -74,7 +78,7 @@ class BatchQueryBillComment implements RequestableInterface
     public function setLimit(int $limit): self
     {
         if ($limit > 200 || $limit < 1) {
-            throw new InvalidParameterException("Invalid Limit Number({$limit}).");
+            throw new InvalidParameterException('limit', "Invalid Limit Number({$limit}).");
         }
 
         $this->params['limit'] = $limit;
@@ -82,9 +86,9 @@ class BatchQueryBillComment implements RequestableInterface
         return $this;
     }
 
-    protected function customRequestOption(RequestOption $option): RequestOption
+    public function prepareRequestOption(): RequestOptionInterface
     {
-        $option->setRootCAFilePath($this->config->getRootCAPath())
+        $option = (new RequestOption())->setRootCAFilePath($this->config->getRootCAPath())
             ->setClientCertFilePath($this->config->getClientCertPath())
             ->setClientCertPassword($this->config->getClientCertPassword());
 

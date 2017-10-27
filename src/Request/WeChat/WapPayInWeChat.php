@@ -14,9 +14,9 @@ class WapPayInWeChat
 {
     use NonceStrTrait;
 
-    private const FIXED_SIGN_TYPE = 'MD5';
-
     private $config;
+
+    private $signType = 'MD5';
 
     /** @var \DateTime */
     private $datetime;
@@ -37,9 +37,9 @@ class WapPayInWeChat
         $parameters['appId'] = $this->config->getAppID();
         $parameters['timeStamp'] = $this->getTimestamp();
         $parameters['nonceStr'] = $this->getNonceStr();
-        $parameters['signType'] = self::FIXED_SIGN_TYPE;
+        $parameters['signType'] = $this->signType;
         $parameters['package'] = $this->params['package'];
-        $parameters['paySign'] = (new Generator($this->config))->makeSign($parameters, self::FIXED_SIGN_TYPE);
+        $parameters['paySign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
 
         return $parameters;
     }

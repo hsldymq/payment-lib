@@ -5,8 +5,10 @@ use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\RequestOption;
+use Archman\PaymentLib\Request\RequestOptionInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\RequestInterface\WeChat\Traits\ResponseHandlerTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -17,10 +19,13 @@ class Refund implements RequestableInterface
 {
     use NonceStrTrait;
     use RequestPreparationTrait;
+    use ResponseHandlerTrait;
 
     private const URI = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
 
     private $config;
+
+    private $signType;
 
     private $params = [
         'transaction_id' => null,
@@ -36,19 +41,19 @@ class Refund implements RequestableInterface
     public function __construct(WeChatConfigInterface $config)
     {
         $this->config = $config;
+        $this->signType = $config->getDefaultSignType();
     }
 
     public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->params, ['out_refund_no', 'total_fee', 'refund_fee'], ['transaction_id', 'out_trade_no']);
 
-        $signType = $this->config->getDefaultSignType();
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
-        $parameters['sign_type'] = $signType;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
+        $parameters['sign_type'] = $this->signType;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
 
         return $parameters;
     }
@@ -111,9 +116,9 @@ class Refund implements RequestableInterface
         return $this;
     }
 
-    protected function customRequestOption(RequestOption $option): RequestOption
+    public function prepareRequestOption(): RequestOptionInterface
     {
-        $option->setRootCAFilePath($this->config->getRootCAPath())
+        $option = (new RequestOption())->setRootCAFilePath($this->config->getRootCAPath())
             ->setSSLKeyFilePath($this->config->getSSLKeyPath())
             ->setSSLPassword($this->config->getSSLKeyPassword())
             ->setClientCertFilePath($this->config->getClientCertPath())
