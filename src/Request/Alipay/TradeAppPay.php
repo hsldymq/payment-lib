@@ -21,7 +21,7 @@ class TradeAppPay
         'notify_url' => null
     ];
 
-    private $biz_content = [
+    private $bizContent = [
         'body' => null,
         'subject' => null,
         'out_trade_no' => null,
@@ -45,10 +45,10 @@ class TradeAppPay
 
     public function makeParameters(): array
     {
-        ParameterHelper::checkRequired($this->biz_content, ['out_trade_no', 'subject', 'total_amount']);
+        ParameterHelper::checkRequired($this->bizContent, ['out_trade_no', 'subject', 'total_amount']);
 
-        $biz_content = ParameterHelper::packValidParameters($this->biz_content);
-        $parameters = $this->makeSignedParameters('alipay.trade.app.pay', $biz_content);
+        $bizContent = ParameterHelper::packValidParameters($this->bizContent);
+        $parameters = $this->makeOpenAPISignedParameters('alipay.trade.app.pay', $bizContent);
 
         return $parameters;
     }
@@ -62,21 +62,21 @@ class TradeAppPay
 
     public function setBody(?string $body): self
     {
-        $this->biz_content['body'] = $body;
+        $this->bizContent['body'] = $body;
 
         return $this;
     }
 
     public function setSubject(string $subject): self
     {
-        $this->biz_content['subject'] = $subject;
+        $this->bizContent['subject'] = $subject;
 
         return $this;
     }
 
     public function setOutTradeNo(string $out_trade_no): self
     {
-        $this->biz_content['out_trade_no'] = $out_trade_no;
+        $this->bizContent['out_trade_no'] = $out_trade_no;
 
         return $this;
     }
@@ -87,7 +87,7 @@ class TradeAppPay
      */
     public function setTimeoutExpress(?int $minutes): self
     {
-        $minutes && $this->biz_content['timeout_express'] = "{$minutes}m";
+        $minutes && $this->bizContent['timeout_express'] = "{$minutes}m";
 
         return $this;
     }
@@ -99,35 +99,35 @@ class TradeAppPay
      */
     public function setTotalAmount(int $amount): self
     {
-        $this->biz_content['total_amount'] = ParameterHelper::transUnitCentToYuan($amount);
+        $this->bizContent['total_amount'] = ParameterHelper::transUnitCentToYuan($amount);
 
         return $this;
     }
 
     public function setSellerID(?string $id): self
     {
-        $this->biz_content['seller_id'] = $id;
+        $this->bizContent['seller_id'] = $id;
 
         return $this;
     }
 
     public function setGoodsType(?string $type): self
     {
-        $this->biz_content['goods_type'] = $type;
+        $this->bizContent['goods_type'] = $type;
 
         return $this;
     }
 
     public function setPassbackParams(?array $params): self
     {
-        $this->biz_content['passback_params'] = build_query($params);
+        $this->bizContent['passback_params'] = build_query($params);
 
         return $this;
     }
 
     public function setPromoParams(?array $params): self
     {
-        $this->biz_content['promo_params'] = json_encode($params);
+        $this->bizContent['promo_params'] = json_encode($params);
 
         return $this;
     }
@@ -148,7 +148,7 @@ class TradeAppPay
             'hb_fq_seller_percent' => $HBFQSellerPercent,
         ];
         $params = ParameterHelper::packValidParameters($params);
-        $params && $this->biz_content['extend_params'] = json_encode($params);
+        $params && $this->bizContent['extend_params'] = json_encode($params);
 
         return $this;
     }
@@ -156,7 +156,7 @@ class TradeAppPay
     public function setEnablePayChannels(?array $channels): self
     {
         if ($channels) {
-            $this->biz_content['enable_pay_channels'] = implode(',', $channels);
+            $this->bizContent['enable_pay_channels'] = implode(',', $channels);
         }
 
         return $this;
@@ -165,7 +165,7 @@ class TradeAppPay
     public function setDisablePayChannels(?array $channels): self
     {
         if ($channels) {
-            $this->biz_content['disable_pay_channels'] = implode(',', $channels);
+            $this->bizContent['disable_pay_channels'] = implode(',', $channels);
         }
 
         return $this;
@@ -173,7 +173,7 @@ class TradeAppPay
 
     public function setStoreID(?string $id): self
     {
-        $this->biz_content['store_id'] = $id;
+        $this->bizContent['store_id'] = $id;
 
         return $this;
     }

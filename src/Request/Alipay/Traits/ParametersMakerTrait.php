@@ -8,20 +8,20 @@ use function GuzzleHttp\json_encode;
 /**
  * @property AlipayConfigInterface $config
  * @property array $params
- * @property array $biz_content
  */
 trait ParametersMakerTrait
 {
     /** @var \DateTime */
     private $datetime;
 
-    private function makeSignedParameters(
+    private function makeOpenAPISignedParameters(
         string $method,
+        array $bizContent,
         string $format = 'JSON',
         string $charset = 'utf-8',
         string $version = '1.0'
     ): array {
-        $signType = $this->config->getOpenAPIDefaultSignType();
+        $signType = $this->signType ?? $this->config->getOpenAPIDefaultSignType();
 
         $parameters = $this->params;
         $parameters['app_id'] = $this->config->getAppID();
@@ -31,7 +31,7 @@ trait ParametersMakerTrait
         $parameters['sign_type'] = $signType;
         $parameters['timestamp'] = $this->getDatetime();
         $parameters['version'] = $version;
-        $parameters['biz_content'] = json_encode($this->biz_content, JSON_FORCE_OBJECT);
+        $parameters['biz_content'] = json_encode($bizContent, JSON_FORCE_OBJECT);
         $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
 
         return $parameters;
@@ -46,7 +46,7 @@ trait ParametersMakerTrait
 
     private function getDatetime(): string
     {
-        $dt = $this->date ?? (new \DateTime('now', new \DateTimeZone(date_default_timezone_get())));
+        $dt = $this->date ?? (new \DateTime('now', new \DateTimeZone('+0800')));
 
         return $dt->format('Y-m-d H:i:s');
     }

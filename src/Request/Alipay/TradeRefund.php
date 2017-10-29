@@ -4,7 +4,7 @@ namespace Archman\PaymentLib\RequestInterface\Alipay;
 use Api\Exception\Logic\MakePaymentVendorParametersFailedException;
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Utils\PaymentVendor\ConfigManager\AlipayConfig;
-use Utils\PaymentVendor\RequestInterface\Alipay\Traits\DefaultRequestPreparationTrait;
+use Utils\PaymentVendor\RequestInterface\Alipay\Traits\OpenAPIRequestPreparationTrait;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\DefaultResponseHandlerTrait;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
@@ -18,7 +18,7 @@ use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
 class TradeRefund implements RequestableInterface, MutableDateTimeInterface
 {
     use ParametersMakerTrait;
-    use DefaultRequestPreparationTrait;
+    use OpenAPIRequestPreparationTrait;
     use DefaultResponseHandlerTrait;
     use MutableDateTimeTrait;
 
@@ -56,7 +56,7 @@ class TradeRefund implements RequestableInterface, MutableDateTimeInterface
         );
 
         $biz_content = ParameterHelper::packValidParameters($this->biz_content);
-        $parameters = $this->makeSignedParameters('alipay.trade.refund', $biz_content);
+        $parameters = $this->makeOpenAPISignedParameters('alipay.trade.refund', $biz_content);
 
         return $parameters;
     }

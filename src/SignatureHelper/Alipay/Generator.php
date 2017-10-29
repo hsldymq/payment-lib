@@ -2,6 +2,7 @@
 namespace Archman\PaymentLib\SignatureHelper\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Exception\SignatureException;
 
 class Generator
 {
@@ -9,70 +10,77 @@ class Generator
 
     private $config;
 
-    public function __construct(AlipayConfigInterface $config)
+    private $isMAPI;
+
+    public function __construct(AlipayConfigInterface $config, bool $isMAPI = false)
     {
         $this->config = $config;
+        $this->isMAPI = $isMAPI;
     }
 
-    public function makeSign(array $data, string $sign_type): string
+    public function makeSign(array $data, ?string $signType = null, array $exclude = []): string
     {
-        $sign_type = strtoupper($sign_type);
-        $packed_string = $this->packRequestSignString($data);
+        $signType = $signType ?? $this->isMAPI ? $this->config->getMAPIDefaultSignType() : $this->config->getOpenAPIDefaultSignType();
+        $packed = $this->packRequestSignString($data, $exclude);
 
-        switch ($sign_type) {
+        switch (strtoupper($signType)) {
             case 'RSA':
-                $sign = $this->makeSignRSA($packed_string);
+                $sign = $this->makeSignRSA($packed);
                 break;
             case 'RSA2':
-                $sign = $this->makeSignRSA2($packed_string);
+                $sign = $this->makeSignRSA2($packed);
                 break;
             case 'MD5':
-                $sign = $this->makeSignMD5($packed_string);
+                $sign = $this->makeSignMD5($packed);
                 break;
             default:
-                // TODO
-                throw new \Exception();
+                throw new SignatureException($data, "Unsupported Alipay Sign Type: {$signType}");
         }
 
         return $sign;
     }
 
-    private function makeSignRSA(string $packed_string): string
+    private function makeSignRSA(string $packedString): string
     {
-        // TODO
-        $res = \openssl_get_privatekey($this->config->getAppPrivateKey('RSA'));
-        if (!$res) {
-            // TODO
-            throw new \Exception();
+        $pk = $this->getPrivateKey('RSA');
+        $resource = \openssl_get_privatekey($pk);
+        if (!$resource) {
+            throw new \Exception("Unable To Get RSA Private Key");
         }
 
-        \openssl_sign($packed_string, $sign, $res);
-        \openssl_free_key($res);
+        \openssl_sign($packedString, $sign, $resource);
+        \openssl_free_key($resource);
         $sign = base64_encode($sign);
 
         return $sign;
     }
 
-    private function makeSignRSA2(string $packed_string): string
+    private function makeSignRSA2(string $packedString): string
     {
-        // TODO
-        $res = \openssl_get_privatekey($this->config->getAppPrivateKey('RSA2'));
-        if (!$res) {
-            // TODO
-            throw new \Exception();
+        $pk = $this->getPrivateKey('RSA2');
+        $resource = \openssl_get_privatekey($pk);
+        if (!$resource) {
+            throw new \Exception("Unable To Get RSA2 Private Key");
         }
 
-        \openssl_sign($packed_string, $sign, $res, OPENSSL_ALGO_SHA256);
-        \openssl_free_key($res);
+        \openssl_sign($packedString, $sign, $resource, OPENSSL_ALGO_SHA256);
+        \openssl_free_key($resource);
         $sign = base64_encode($sign);
 
         return $sign;
     }
 
-    private function makeSignMD5(string $packed_string): string
+    private function makeSignMD5(string $packedString): string
     {
-        $safe_key = $this->config->getSafeKey();
+        $safeKey = $this->getPrivateKey('MD5');
 
-        return md5("{$packed_string}{$safe_key}");
+        return md5("{$packedString}{$safeKey}");
+    }
+
+    private function getPrivateKey(string $algo): string
+    {
+        $pk = $this->isMAPI ? $this->config->getMAPIPrivateKey($algo) : $this->config->getOpenAPIPrivateKey($algo);
+
+        return $pk;
     }
 }

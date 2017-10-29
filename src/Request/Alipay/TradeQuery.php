@@ -2,35 +2,33 @@
 namespace Archman\PaymentLib\RequestInterface\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
-use Utils\PaymentVendor\ConfigManager\AlipayConfig;
-use Utils\PaymentVendor\RequestInterface\Alipay\Traits\DefaultRequestPreparationTrait;
-use Utils\PaymentVendor\RequestInterface\Alipay\Traits\DefaultResponseHandlerTrait;
+use Utils\PaymentVendor\RequestInterface\Alipay\Traits\OpenAPIRequestPreparationTrait;
+use Archman\PaymentLib\RequestInterface\Alipay\Traits\OpenAPIResponseHandlerTrait;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
-use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
-use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
-use Utils\PaymentVendor\RequestInterface\RequestableInterface;
-use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
+use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
  * 支付宝交易订单查询.
- * @link https://docs.open.alipay.com/api_1/alipay.trade.query 文档地址
+ * @link https://docs.open.alipay.com/api_1/alipay.trade.query
  */
-class TradeQuery implements RequestableInterface, MutableDateTimeInterface
+class TradeQuery implements RequestableInterface
 {
-    use DefaultResponseHandlerTrait;
-    use DefaultRequestPreparationTrait;
+    use OpenAPIResponseHandlerTrait;
+    use OpenAPIRequestPreparationTrait;
     use ParametersMakerTrait;
-    use MutableDateTimeTrait;
+
+    private const SIGN_FIELD = 'sign';
+
+    private const DATA_FIELD = 'alipay_trade_query_response';
 
     private $config;
 
-    private $sign_type = 'RSA';
+    private $params = [
+        'app_auth_token' => null,
+    ];
 
-    private $response_data_field = 'alipay_trade_query_response';
-
-    private $response_sign_field = 'sign';
-
-    private $biz_content = [
+    private $bizContent = [
         'trade_no' => null,
         'out_trade_no' => null,
     ];
@@ -42,24 +40,31 @@ class TradeQuery implements RequestableInterface, MutableDateTimeInterface
 
     public function makeParameters(): array
     {
-        ParameterHelper::checkRequired($this->biz_content, [], ['trade_no', 'out_trade_no']);
+        ParameterHelper::checkRequired($this->bizContent, [], ['trade_no', 'out_trade_no']);
 
-        $biz_content = ParameterHelper::packValidParameters($this->biz_content);
-        $parameters = $this->makeSignedParameters('alipay.trade.query', $biz_content);
+        $bizContent = ParameterHelper::packValidParameters($this->bizContent);
+        $parameters = $this->makeOpenAPISignedParameters('alipay.trade.query', $bizContent);
 
         return $parameters;
     }
 
+    public function setAppAuthToken(?string $token): self
+    {
+        $this->params['app_auth_token'] = $token;
+
+        return $this;
+    }
+
     public function setOutTradeNo(string $out_trade_no): self
     {
-        $this->biz_content['out_trade_no'] = $out_trade_no;
+        $this->bizContent['out_trade_no'] = $out_trade_no;
 
         return $this;
     }
 
     public function setTradeNo(string $trade_no): self
     {
-        $this->biz_content['trade_no'] = $trade_no;
+        $this->bizContent['trade_no'] = $trade_no;
 
         return $this;
     }

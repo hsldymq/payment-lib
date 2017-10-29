@@ -20,24 +20,24 @@ class Validator
 
     /**
      * @param string $signature
-     * @param string $sign_type
+     * @param string $signType
      * @param array $data
      * @param array $exclude
      * @throws SignatureException
      */
-    public function validate(string $signature, string $sign_type, array $data, array $exclude = [])
+    public function validate(string $signature, string $signType, array $data, array $exclude = [])
     {
-        $packed_string = $this->packRequestSignString($data, $exclude);
+        $packed = $this->packRequestSignString($data, $exclude);
 
-        switch (strtoupper($sign_type)) {
+        switch (strtoupper($signType)) {
             case 'MD5':
-                $result = $this->validateSignMD5($signature, $packed_string);
+                $result = $this->validateSignMD5($signature, $packed);
                 break;
             case 'HMAC-SHA256':
-                $result = $this->validateSignSHA256($signature, $packed_string);
+                $result = $this->validateSignSHA256($signature, $packed);
                 break;
             default:
-                throw new SignatureException($data, "Unsupported WeChat Sign Type: {$sign_type}");
+                throw new SignatureException($data, "Unsupported WeChat Sign Type: {$signType}");
         }
 
         if (!$result) {
@@ -45,17 +45,17 @@ class Validator
         }
     }
 
-    private function validateSignMD5(string $signature, string $packed_string): bool
+    private function validateSignMD5(string $signature, string $packedString): bool
     {
-        $secret_key = $this->config->getApiKey();
+        $secretKey = $this->config->getApiKey();
 
-        return strtoupper(md5("{$packed_string}&key={$secret_key}")) === $signature;
+        return strtoupper(md5("{$packedString}&key={$secretKey}")) === $signature;
     }
 
-    private function validateSignSHA256(string $signature, string $packed_string): bool
+    private function validateSignSHA256(string $signature, string $packedString): bool
     {
-        $secret_key = $this->config->getApiKey();
+        $secretKey = $this->config->getApiKey();
 
-        return strtoupper(hash_hmac('sha256', "{$packed_string}&key={$secret_key}", $secret_key)) === $signature;
+        return strtoupper(hash_hmac('sha256', "{$packedString}&key={$secretKey}", $secretKey)) === $signature;
     }
 }

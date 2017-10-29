@@ -14,14 +14,14 @@ Trait SignStringPackerTrait
         unset($data['sign']);
         ksort($data);
 
-        $concat_kv = [];
-        foreach ($data as $k => $value) {
-            if (!$this->isEmpty($value) && !in_array($k, $exclude)) {
-                $concat_kv[] = "{$k}={$value}";
+        $kv = [];
+        foreach ($data as $k => $v) {
+            if (!$this->isEmpty($v) && !in_array($k, $exclude)) {
+                $kv[] = "{$k}={$v}";
             }
         }
 
-        return implode('&', $concat_kv);
+        return implode('&', $kv);
     }
 
     private function isEmpty($value): bool
