@@ -25,19 +25,6 @@ class MicroPay implements RequestableInterface
 
     private $signType;
 
-    private $detail = [
-        'cost_price' => null,
-        'receipt_id' => null,
-        'goods_detail' => [],
-    ];
-
-    private $storeInfo = [
-        'id' => null,
-        'name' => null,
-        'area_code' => null,
-        'address' => null,
-    ];
-
     private $params = [
         'device_info' => null,
         'body' => null,
@@ -51,6 +38,19 @@ class MicroPay implements RequestableInterface
         'limit_pay' => null,
         'auth_code' => null,
         'scene_info' => null,
+    ];
+
+    private $detail = [
+        'cost_price' => null,
+        'receipt_id' => null,
+        'goods_detail' => [],
+    ];
+
+    private $storeInfo = [
+        'id' => null,
+        'name' => null,
+        'area_code' => null,
+        'address' => null,
     ];
 
     public function __construct(WeChatConfigInterface $config)
