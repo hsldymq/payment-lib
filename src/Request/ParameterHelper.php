@@ -54,7 +54,7 @@ class ParameterHelper
      * @param int $amount
      * @return string
      */
-    public static function transUnitCentToYuan(int $amount): string
+    public static function transAmountUnit(int $amount): string
     {
         self::checkAmount($amount);
 

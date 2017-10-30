@@ -1,35 +1,32 @@
 <?php
 namespace Archman\PaymentLib\RequestInterface\Alipay;
 
-use Api\Exception\Logic\MakePaymentVendorParametersFailedException;
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
-use Utils\PaymentVendor\ConfigManager\AlipayConfig;
+use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\RequestInterface\Alipay\Traits\OpenAPIResponseHandlerTrait;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\OpenAPIRequestPreparationTrait;
-use Utils\PaymentVendor\RequestInterface\Alipay\Traits\DefaultResponseHandlerTrait;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
-use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
-use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
-use Utils\PaymentVendor\RequestInterface\RequestableInterface;
-use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
+use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
- * @link https://docs.open.alipay.com/api_1/alipay.trade.refund 文档地址
+ * 统一收单交易退款接口.
+ * @link https://docs.open.alipay.com/api_1/alipay.trade.refund/ 文档地址
  */
-class TradeRefund implements RequestableInterface, MutableDateTimeInterface
+class TradeRefund implements RequestableInterface
 {
     use ParametersMakerTrait;
     use OpenAPIRequestPreparationTrait;
-    use DefaultResponseHandlerTrait;
-    use MutableDateTimeTrait;
+    use OpenAPIResponseHandlerTrait;
 
-    /** @var AlipayConfig */
     private $config;
 
-    private $sign_type = 'RSA';
+    private const SIGN_FIELD = 'sign';
 
-    private $response_data_field = 'alipay_trade_refund_response';
+    private const CONTENT_FIELD = 'alipay_trade_refund_response';
 
-    private $response_sign_field = 'sign';
+    private $params = [
+        'app_auth_token' => null,
+    ];
 
     private $biz_content = [
         'out_trade_no' => null,
@@ -49,11 +46,7 @@ class TradeRefund implements RequestableInterface, MutableDateTimeInterface
 
     public function makeParameters(): array
     {
-        ParameterHelper::checkRequired(
-            $this->biz_content,
-            ['refund_amount'],
-            ['trade_no','out_trade_no']
-        );
+        ParameterHelper::checkRequired($this->biz_content, ['refund_amount'], ['trade_no','out_trade_no']);
 
         $biz_content = ParameterHelper::packValidParameters($this->biz_content);
         $parameters = $this->makeOpenAPISignedParameters('alipay.trade.refund', $biz_content);
@@ -61,24 +54,18 @@ class TradeRefund implements RequestableInterface, MutableDateTimeInterface
         return $parameters;
     }
 
-    /**
-     * 与out_trade_no必设置其一或这两者都设置,不能都为空.
-     * @param string $trade_no
-     * @return TradeRefund
-     */
-    public function setTradeNo(string $trade_no): self
+    public function setAppAuthToken(?string $token): self
     {
-        $this->biz_content['trade_no'] = $trade_no;
+        $this->params['app_auth_token'] = $token;
 
         return $this;
     }
 
     /**
-     * 与trade_no必设置其一或这两者都设置,不能都为空.
      * @param string $out_trade_no
-     * @return TradeRefund
+     * @return self
      */
-    public function setOutTradeNo(string $out_trade_no): self
+    public function setOutTradeNo(?string $out_trade_no): self
     {
         $this->biz_content['out_trade_no'] = $out_trade_no;
 
@@ -86,53 +73,61 @@ class TradeRefund implements RequestableInterface, MutableDateTimeInterface
     }
 
     /**
-     * 标识一次请求,对于支付服务来说,这里填退款事务ID. 必须设置,无论是一次退款,还是多次退款.
-     * @param string $out_request_no
-     * @return TradeRefund
+     * @param string $trade_no
+     * @return self
      */
-    public function setOutRequestNo(string $out_request_no): self
+    public function setTradeNo(?string $trade_no): self
     {
-        $this->biz_content['out_request_no'] = $out_request_no;
+        $this->biz_content['trade_no'] = $trade_no;
 
         return $this;
     }
 
     /**
      * @param int $amount 单位: 分
-     * @return TradeRefund
-     * @throws MakePaymentVendorParametersFailedException
+     * @return self
      */
     public function setRefundAmount(int $amount): self
     {
         ParameterHelper::checkAmount($amount);
-
-        $this->biz_content['refund_amount'] = ParameterHelper::transUnitCentToYuan($amount);
+        $this->biz_content['refund_amount'] = ParameterHelper::transAmountUnit($amount);
 
         return $this;
     }
 
-    public function setRefundReason(string $reason): self
+    public function setRefundReason(?string $reason): self
     {
         $this->biz_content['refund_reason'] = $reason;
 
         return $this;
     }
 
-    public function setOperatorID(string $operator_id): self
+    /**
+     * @param string $out_request_no
+     * @return TradeRefund
+     */
+    public function setOutRequestNo(?string $out_request_no): self
+    {
+        $this->biz_content['out_request_no'] = $out_request_no;
+
+        return $this;
+    }
+
+    public function setOperatorID(?string $operator_id): self
     {
         $this->biz_content['operator_id'] = $operator_id;
 
         return $this;
     }
 
-    public function setStoreID(string $store_id): self
+    public function setStoreID(?string $store_id): self
     {
         $this->biz_content['store_id'] = $store_id;
 
         return $this;
     }
 
-    public function setTerminalID(string $terminal_id): self
+    public function setTerminalID(?string $terminal_id): self
     {
         $this->biz_content['terminal_id'] = $terminal_id;
 

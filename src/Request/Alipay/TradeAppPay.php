@@ -99,7 +99,7 @@ class TradeAppPay
      */
     public function setTotalAmount(int $amount): self
     {
-        $this->bizContent['total_amount'] = ParameterHelper::transUnitCentToYuan($amount);
+        $this->bizContent['total_amount'] = ParameterHelper::transAmountUnit($amount);
 
         return $this;
     }
