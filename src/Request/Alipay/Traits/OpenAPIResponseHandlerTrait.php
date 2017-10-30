@@ -1,19 +1,16 @@
 <?php
 namespace Archman\PaymentLib\RequestInterface\Alipay\Traits;
 
-use Api\Exception\Logic\VendorInterfaceResponseErrorException;
-use Exception\UnavailablePropertyException;
+use Archman\PaymentLib\Exception\ErrorResponseException;
+use Archman\PaymentLib\Exception\SignatureException;
 use Psr\Http\Message\ResponseInterface;
 use Archman\PaymentLib\Request\DataParser;
-use Utils\PaymentVendor\ErrorMapper\Alipay;
 use Archman\PaymentLib\SignatureHelper\Alipay\Validator;
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 
 /**
  * @property AlipayConfigInterface $config
  * @property string $sign_type
- * @property string $response_data_field
- * @property string $response_sign_field
  */
 trait OpenAPIResponseHandlerTrait
 {
@@ -26,29 +23,35 @@ trait OpenAPIResponseHandlerTrait
 
         $signType = $this->signType ?? $this->config->getOpenAPIDefaultSignType();
         $signature = $data[self::SIGN_FIELD];
-        $data = $data[self::DATA_FIELD];
+        $content = $data[self::CONTENT_FIELD];
 
         // 验证响应签名
         $validator = new Validator($this->config);
-        $validator->validateSignSync($signature, $signType, $data, true);
+        try {
+            $validator->validateSignSync($signature, $signType, $content);
+        } catch (SignatureException $e) {
+            throw new SignatureException($data, $e->getMessage());
+        }
 
-        return $data;
+
+        return $content;
     }
 
     /**
      * 检查响应的错误码.
      * @param array $data
      * @return void
-     * @throws VendorInterfaceResponseErrorException
+     * @throws ErrorResponseException
      */
     private function checkError(array $data)
     {
-        $data = $data[$this->response_data_field];
-        if (intval($data['code']) !== 10000) {
-            $error = Alipay::map($data['sub_code']);
-            throw new VendorInterfaceResponseErrorException($data['sub_code'], $data, [
-                'message' => "Request Alipay Interface Error, Failed Code: {$error['code']}, Failed Text: {$error['text']}"
-            ]);
+        $content = $data[self::CONTENT_FIELD];
+        if (intval($content['code']) !== 10000) {
+            throw new ErrorResponseException(
+                $content['sub_code'],
+                $content,['sub_msg'],
+                $data
+            );
         }
     }
 }
