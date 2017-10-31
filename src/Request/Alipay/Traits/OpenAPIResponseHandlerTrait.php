@@ -3,6 +3,8 @@ namespace Archman\PaymentLib\RequestInterface\Alipay\Traits;
 
 use Archman\PaymentLib\Exception\ErrorResponseException;
 use Archman\PaymentLib\Exception\SignatureException;
+use Archman\PaymentLib\Response\BaseResponse;
+use Archman\PaymentLib\Response\GeneralResponse;
 use Psr\Http\Message\ResponseInterface;
 use Archman\PaymentLib\Request\DataParser;
 use Archman\PaymentLib\SignatureHelper\Alipay\Validator;
@@ -14,7 +16,7 @@ use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
  */
 trait OpenAPIResponseHandlerTrait
 {
-    public function handleResponse(ResponseInterface $response): array
+    public function handleResponse(ResponseInterface $response): BaseResponse
     {
         $data = DataParser::jsonToArray($response->getBody());
 
@@ -33,8 +35,7 @@ trait OpenAPIResponseHandlerTrait
             throw new SignatureException($data, $e->getMessage());
         }
 
-
-        return $content;
+        return $this->getResponse($content);
     }
 
     /**
@@ -53,5 +54,10 @@ trait OpenAPIResponseHandlerTrait
                 $data
             );
         }
+    }
+
+    protected function getResponse(array $content): BaseResponse
+    {
+        return new GeneralResponse($content);
     }
 }
