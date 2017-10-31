@@ -64,14 +64,14 @@ class TradeClose implements RequestableInterface
         return $this;
     }
 
-    public function setTradeNo(string $trade_no): self
+    public function setTradeNo(?string $trade_no): self
     {
         $this->bizContent['trade_no'] = $trade_no;
 
         return $this;
     }
 
-    public function setOutTradeNo(string $out_trade_no): self
+    public function setOutTradeNo(?string $out_trade_no): self
     {
         $this->bizContent['out_trade_no'] = $out_trade_no;
 
