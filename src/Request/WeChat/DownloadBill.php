@@ -4,6 +4,7 @@ namespace Archman\PaymentLib\Request\WeChat;
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Exception\InvalidParameterException;
 use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
@@ -15,7 +16,7 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
  * 下载对账单.
  * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
  */
-class DownloadBill implements RequestableInterface
+class DownloadBill implements RequestableInterface, ParameterMakerInterface
 {
     use NonceStrTrait;
     use EnvironmentTrait;
@@ -41,7 +42,7 @@ class DownloadBill implements RequestableInterface
         $this->signType = $config->getDefaultSignType();
     }
 
-    public function makeParameters(): array
+    public function makeParameters(bool $withSign = true): array
     {
         ParameterHelper::checkRequired($this->params, ['bill_date', 'bill_type']);
 
@@ -50,7 +51,7 @@ class DownloadBill implements RequestableInterface
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
         $parameters['sign_type'] = $this->signType;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
+        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
 
         return $parameters;
     }

@@ -2,6 +2,7 @@
 namespace Archman\PaymentLib\Request\WeChat;
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\RequestOption;
 use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
@@ -14,7 +15,7 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
  * 撤销订单.
  * @link https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_11&index=3
  */
-class Reverse implements RequestableInterface
+class Reverse implements RequestableInterface, ParameterMakerInterface
 {
     use NonceStrTrait;
     use EnvironmentTrait;
@@ -35,7 +36,7 @@ class Reverse implements RequestableInterface
         $this->config = $config;
     }
 
-    public function makeParameters(): array
+    public function makeParameters(bool $withSign): array
     {
         ParameterHelper::checkRequired($this->params, [], ['transaction_id', 'out_trade_no']);
 
@@ -44,7 +45,7 @@ class Reverse implements RequestableInterface
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
         $parameters['sign_type'] = $signType;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
+        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
 
         return $parameters;
     }

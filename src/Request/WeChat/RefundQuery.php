@@ -2,6 +2,7 @@
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
@@ -14,7 +15,7 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
  * 查询退款.
  * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_5&index=7
  */
-class RefundQuery implements RequestableInterface
+class RefundQuery implements RequestableInterface, ParameterMakerInterface
 {
     use NonceStrTrait;
     use EnvironmentTrait;
@@ -37,7 +38,7 @@ class RefundQuery implements RequestableInterface
         $this->config = $config;
     }
 
-    public function makeParameters(): array
+    public function makeParameters(bool $withSign = true): array
     {
         ParameterHelper::checkRequired($this->params, [], ['transaction_id', 'out_trade_no', 'out_refund_no', 'refund_id']);
 
@@ -45,7 +46,7 @@ class RefundQuery implements RequestableInterface
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
+        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
 
         return $parameters;
     }

@@ -4,6 +4,7 @@ namespace Archman\PaymentLib\Request\WeChat;
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Exception\InvalidParameterException;
 use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\RequestOption;
 use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
@@ -16,7 +17,7 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
  * 拉取订单评价数据.
  * @link https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_17&index=11
  */
-class BatchQueryBillComment implements RequestableInterface
+class BatchQueryBillComment implements RequestableInterface, ParameterMakerInterface
 {
     use NonceStrTrait;
     use EnvironmentTrait;
@@ -41,7 +42,7 @@ class BatchQueryBillComment implements RequestableInterface
         $this->config = $config;
     }
 
-    public function makeParameters(): array
+    public function makeParameters(bool $withSign = true): array
     {
         ParameterHelper::checkRequired($this->params, ['begin_time', 'end_time', 'offset']);
 
@@ -50,7 +51,7 @@ class BatchQueryBillComment implements RequestableInterface
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
         $parameters['sign_type'] = self::FIXED_SIGN_TYPE;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, self::FIXED_SIGN_TYPE);
+        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, self::FIXED_SIGN_TYPE);
 
         return $parameters;
     }

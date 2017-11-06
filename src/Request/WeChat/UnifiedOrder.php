@@ -1,6 +1,7 @@
 <?php
 namespace Archman\PaymentLib\Request\WeChat;
 
+use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
@@ -16,7 +17,7 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
  * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=4_2
  * @link https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
  */
-class UnifiedOrder implements RequestableInterface
+class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
 {
     use NonceStrTrait;
     use RequestPreparationTrait;
@@ -76,7 +77,7 @@ class UnifiedOrder implements RequestableInterface
         $this->signType = $config->getDefaultSignType();
     }
 
-    public function makeParameters(): array
+    public function makeParameters(bool $withSign): array
     {
         $detail = ParameterHelper::packValidParameters($this->detail);
         !is_null($detail) && $this->params['detail'] = json_encode($detail);
@@ -95,7 +96,7 @@ class UnifiedOrder implements RequestableInterface
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
         $parameters['sign_type'] = $this->signType;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
+        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
 
         return $parameters;
     }

@@ -3,6 +3,7 @@ namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\SignatureHelper\Wechat\Generator;
@@ -11,7 +12,7 @@ use Archman\PaymentLib\SignatureHelper\Wechat\Generator;
  * 微信内H5调起支付.
  * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6
  */
-class WapPayInWeChat
+class WapPayInWeChat implements ParameterMakerInterface
 {
     use NonceStrTrait;
     use EnvironmentTrait;
@@ -32,7 +33,7 @@ class WapPayInWeChat
         $this->config = $config;
     }
 
-    public function makeParameters(): array
+    public function makeParameters(bool $withSign = true): array
     {
         ParameterHelper::checkRequired($this->params, ['package']);
 
@@ -41,7 +42,7 @@ class WapPayInWeChat
         $parameters['nonceStr'] = $this->getNonceStr();
         $parameters['signType'] = $this->signType;
         $parameters['package'] = $this->params['package'];
-        $parameters['paySign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
+        $withSign && $parameters['paySign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
 
         return $parameters;
     }

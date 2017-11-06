@@ -3,6 +3,7 @@ namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\DataParser;
+use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestOption;
 use Archman\PaymentLib\Request\RequestOptionInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
@@ -15,7 +16,7 @@ use Psr\Http\Message\RequestInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
-class SandBoxSignKey implements RequestableInterface
+class SandBoxSignKey implements RequestableInterface, ParameterMakerInterface
 {
     use NonceStrTrait;
     use RequestPreparationTrait;
@@ -30,11 +31,11 @@ class SandBoxSignKey implements RequestableInterface
         $this->config = $config;
     }
 
-    public function makeParameters(): array
+    public function makeParameters(bool $withSign = true): array
     {
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
+        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
 
         return $parameters;
     }

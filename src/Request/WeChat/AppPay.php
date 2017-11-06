@@ -3,6 +3,7 @@ namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
@@ -11,7 +12,7 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
  * 生成调起App支付接口参数.
  * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_12&index=2
  */
-class AppPay
+class AppPay implements ParameterMakerInterface
 {
     use NonceStrTrait;
     use EnvironmentTrait;
@@ -31,7 +32,7 @@ class AppPay
         $this->config = $config;
     }
 
-    public function makeParameters(): array
+    public function makeParameters(bool $withSign = true): array
     {
         ParameterHelper::checkRequired($this->params, ['prepayid', 'package']);
 
@@ -40,7 +41,7 @@ class AppPay
         $parameters['partnerid'] = $this->config->getMerchantID();
         $parameters['noncestr'] = $this->getNonceStr();
         $parameters['timestamp'] = $this->getTimestamp();
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
+        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
 
         return $parameters;
     }

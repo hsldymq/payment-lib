@@ -3,6 +3,7 @@ namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
@@ -14,7 +15,7 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
  * 授权码查询openid.
  * @link https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_13&index=9
  */
-class AuthCodeToOpenID implements RequestableInterface
+class AuthCodeToOpenID implements RequestableInterface, ParameterMakerInterface
 {
     use NonceStrTrait;
     use EnvironmentTrait;
@@ -34,7 +35,7 @@ class AuthCodeToOpenID implements RequestableInterface
         $this->config = $config;
     }
 
-    public function makeParameters(): array
+    public function makeParameters(bool $withSign = true): array
     {
         ParameterHelper::checkRequired($this->params, ['auth_code']);
 
@@ -42,7 +43,7 @@ class AuthCodeToOpenID implements RequestableInterface
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['auth_code'] = $this->params['auth_code'];
         $parameters['noncestr'] = $this->getNonceStr();
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
+        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
 
         return $parameters;
     }
