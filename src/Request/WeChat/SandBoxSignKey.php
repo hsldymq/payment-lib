@@ -6,6 +6,7 @@ use Archman\PaymentLib\Request\DataParser;
 use Archman\PaymentLib\Request\RequestOption;
 use Archman\PaymentLib\Request\RequestOptionInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
+use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\RequestInterface\WeChat\Traits\ResponseHandlerTrait;
 use GuzzleHttp\Psr7\Request;
 use function GuzzleHttp\Psr7\stream_for;
@@ -17,6 +18,7 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 class SandBoxSignKey implements RequestableInterface
 {
     use NonceStrTrait;
+    use RequestPreparationTrait;
     use ResponseHandlerTrait;
 
     const URI = 'https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey';

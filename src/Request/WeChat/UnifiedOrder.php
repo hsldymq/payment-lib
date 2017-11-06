@@ -6,6 +6,7 @@ use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\RequestInterface\WeChat\Traits\ResponseHandlerTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -19,6 +20,7 @@ class UnifiedOrder implements RequestableInterface
 {
     use NonceStrTrait;
     use RequestPreparationTrait;
+    use ResponseHandlerTrait;
 
     private const URI = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 

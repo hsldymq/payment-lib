@@ -3,6 +3,7 @@ namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
@@ -13,6 +14,7 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 class AppPay
 {
     use NonceStrTrait;
+    use EnvironmentTrait;
 
     private $config;
 

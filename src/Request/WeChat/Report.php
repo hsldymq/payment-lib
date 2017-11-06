@@ -4,8 +4,10 @@ namespace Archman\PaymentLib\Request\WeChat;
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
+use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\RequestInterface\WeChat\Traits\ResponseHandlerTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -15,7 +17,9 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 class Report implements RequestableInterface
 {
     use NonceStrTrait;
+    use EnvironmentTrait;
     use RequestPreparationTrait;
+    use ResponseHandlerTrait;
 
     private const URI = 'https://api.mch.weixin.qq.com/payitil/report';
 

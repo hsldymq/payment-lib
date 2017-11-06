@@ -1,6 +1,7 @@
 <?php
 namespace Archman\PaymentLib\RequestInterface\WeChat\Traits;
 
+use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\DataParser;
 use Archman\PaymentLib\Request\RequestOption;
 use Archman\PaymentLib\Request\RequestOptionInterface;
@@ -10,11 +11,12 @@ use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
 
+/**
+ * @property WeChatConfigInterface $config
+ * @property bool $isProduction
+ */
 trait RequestPreparationTrait
 {
-    /** @var bool 不调用setEnvironment时,默认向生产环境发起请求 */
-    private $isProduction = true;
-
     public function prepareRequest(): RequestInterface
     {
         $parameters = $this->makeParameters();
@@ -35,17 +37,10 @@ trait RequestPreparationTrait
         return $option;
     }
 
-    public function setEnvironment(bool $isProduction): self
-    {
-        $this->isProduction = $isProduction;
-
-        return $this;
-    }
-
-    private function getUri(): UriInterface
+    public function getUri(): UriInterface
     {
         $uri = new Uri(self::URI);
-        if (!$this->isProduction) {
+        if (!($this->isProduction ?? true)) {
             $path = '/sandboxnew/'.ltrim($uri->getPath(), '/');
             $uri = $uri->withPath($path);
         }

@@ -6,6 +6,7 @@ use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\RequestInterface\WeChat\Traits\ResponseHandlerTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -16,6 +17,7 @@ class ShortURL implements RequestableInterface
 {
     use NonceStrTrait;
     use RequestPreparationTrait;
+    use ResponseHandlerTrait;
 
     private const URI = 'https://api.mch.weixin.qq.com/tools/shorturl';
 
