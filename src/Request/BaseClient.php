@@ -1,8 +1,6 @@
 <?php
 namespace Archman\PaymentLib\Request;
 
-use Archman\PaymentLib\Request\RequestableInterface;
-use Archman\PaymentLib\Request\RequestOption;
 use Archman\PaymentLib\Response\BaseResponse;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;

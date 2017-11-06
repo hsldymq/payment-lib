@@ -25,18 +25,7 @@ class MicroPay implements RequestableInterface
 
     private $config;
 
-    private $detail = [
-        'cost_price' => null,
-        'receipt_id' => null,
-        'goods_detail' => [],
-    ];
-
-    private $storeInfo = [
-        'id' => null,
-        'name' => null,
-        'area_code' => null,
-        'address' => null,
-    ];
+    private $signType;
 
     private $params = [
         'device_info' => null,
@@ -53,9 +42,23 @@ class MicroPay implements RequestableInterface
         'scene_info' => null,
     ];
 
+    private $detail = [
+        'cost_price' => null,
+        'receipt_id' => null,
+        'goods_detail' => [],
+    ];
+
+    private $storeInfo = [
+        'id' => null,
+        'name' => null,
+        'area_code' => null,
+        'address' => null,
+    ];
+
     public function __construct(WeChatConfigInterface $config)
     {
         $this->config = $config;
+        $this->signType = $config->getDefaultSignType();
     }
 
     public function makeParameters(): array
@@ -68,13 +71,12 @@ class MicroPay implements RequestableInterface
 
         ParameterHelper::checkRequired($this->params, ['body', 'out_trade_no', 'total_fee', 'spbill_create_ip', 'auth_code']);
 
-        $signType = $this->config->getDefaultSignType();
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
-        $parameters['sign_type'] = $signType;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
+        $parameters['sign_type'] = $this->signType;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
 
         return $parameters;
     }

@@ -14,9 +14,9 @@ class ParameterHelper
      */
     public static function checkRequired(array $parameters, array $required_list, array $optional = [])
     {
-        foreach ($required_list as $param_name) {
-            if (self::isInvalid($parameters[$param_name] ?? null)) {
-                throw new InvalidParameterException("Parameter({$param_name}) Is Required.");
+        foreach ($required_list as $paramName) {
+            if (self::isInvalid($parameters[$paramName] ?? null)) {
+                throw new InvalidParameterException($paramName, "Parameter({$paramName}) Is Required.");
             }
         }
 
@@ -24,9 +24,8 @@ class ParameterHelper
             return boolval($prev) || !self::isInvalid($parameters[$curr] ?? null);
         }, null);
         if ($result === false) {
-            throw new InvalidParameterException([
-                'message' => 'Need One Of These Parameters(' . implode(',', $optional) . ').'
-            ]);
+            $paramNames = implode(',', $optional);
+            throw new InvalidParameterException($paramNames, "Need One Of These Parameters({$paramNames}).");
         }
     }
 
@@ -55,7 +54,7 @@ class ParameterHelper
      * @param int $amount
      * @return string
      */
-    public static function transUnitCentToYuan(int $amount): string
+    public static function transAmountUnit(int $amount): string
     {
         self::checkAmount($amount);
 
@@ -65,7 +64,7 @@ class ParameterHelper
     public static function checkAmount(int $amount, string $ex_text = null)
     {
         if ($amount <= 0) {
-            throw new InvalidParameterException($ex_text ?? 'Amount Should Be Greater Than 0');
+            throw new InvalidParameterException('amount', $ex_text ?? 'Amount Should Be Greater Than 0');
         }
     }
 

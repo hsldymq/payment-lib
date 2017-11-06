@@ -2,43 +2,37 @@
 namespace Archman\PaymentLib\RequestInterface\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
-use Utils\PaymentVendor\ConfigManager\AlipayConfig;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
-use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
-use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
-use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
+use Archman\PaymentLib\Request\ParameterHelper;
+use function GuzzleHttp\Psr7\build_query;
+use function GuzzleHttp\json_encode;
 
 /**
- * // TODO 有待验证,需要APP配合.
- * APP支付.
- * @link https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.4fv1t7&treeId=193&articleId=105465&docType=1 文档地址
+ * APP支付.生成请求参数
+ * @link https://docs.open.alipay.com/204/105465
  */
-class TradeAppPay implements MutableDateTimeInterface
+class TradeAppPay
 {
     use ParametersMakerTrait;
-    use MutableDateTimeTrait;
 
     private $config;
 
-    private $sign_type = 'RSA';
+    private $params = [
+        'notify_url' => null
+    ];
 
-    private $biz_content = [
+    private $bizContent = [
         'body' => null,
         'subject' => null,
         'out_trade_no' => null,
         'timeout_express' => null,
         'total_amount' => null,
+        'seller_id' => null,
         'product_code' => 'QUICK_MSECURITY_PAY', // 必填参数(固定值)
         'goods_type' => null,
         'passback_params' => null,
         'promo_params' => [],
-        'extend_params' => [
-            'sys_service_provider_id' => null,
-            'needBuyerRealnamed' => null,
-            'TRANS_MEMO' => null,
-            'hb_fq_num' => null,
-            'hb_fq_seller_percent' => null,
-        ],
+        'extend_params' => null,
         'enable_pay_channels' => null,
         'disable_pay_channels' => null,
         'store_id' => null,
@@ -51,26 +45,49 @@ class TradeAppPay implements MutableDateTimeInterface
 
     public function makeParameters(): array
     {
-        ParameterHelper::checkRequired($this->biz_content, ['out_trade_no', 'subject', 'total_amount']);
+        ParameterHelper::checkRequired($this->bizContent, ['out_trade_no', 'subject', 'total_amount']);
 
-        $biz_content = ParameterHelper::packValidParameters($this->biz_content);
-        $parameters = $this->makeSignedParameters(
-            'alipay.trade.app.pay',
-            $biz_content,
-            ['notify_url' => $this->config->getCallbackUrl('pay.app')]
-        );
+        $bizContent = ParameterHelper::packValidParameters($this->bizContent);
+        $parameters = $this->makeOpenAPISignedParameters('alipay.trade.app.pay', $bizContent);
 
         return $parameters;
     }
 
-    /**
-     * 设置商户订单事务号.
-     * @param string $out_trade_no
-     * @return TradeAppPay
-     */
+    public function setNotifyURL(string $url): self
+    {
+        $this->params['notify_url'] = $url;
+
+        return $this;
+    }
+
+    public function setBody(?string $body): self
+    {
+        $this->bizContent['body'] = $body;
+
+        return $this;
+    }
+
+    public function setSubject(string $subject): self
+    {
+        $this->bizContent['subject'] = $subject;
+
+        return $this;
+    }
+
     public function setOutTradeNo(string $out_trade_no): self
     {
-        $this->biz_content['out_trade_no'] = $out_trade_no;
+        $this->bizContent['out_trade_no'] = $out_trade_no;
+
+        return $this;
+    }
+
+    /**
+     * @param int $minutes 单位:分钟
+     * @return self
+     */
+    public function setTimeoutExpress(?int $minutes): self
+    {
+        $minutes && $this->bizContent['timeout_express'] = "{$minutes}m";
 
         return $this;
     }
@@ -78,23 +95,85 @@ class TradeAppPay implements MutableDateTimeInterface
     /**
      * 设置支付金额(单位分).
      * @param int $amount
-     * @return TradeAppPay
+     * @return self
      */
     public function setTotalAmount(int $amount): self
     {
-        $this->biz_content['total_amount'] = ParameterHelper::transUnitCentToYuan($amount);
+        $this->bizContent['total_amount'] = ParameterHelper::transAmountUnit($amount);
 
         return $this;
     }
 
-    /**
-     * 设置订单标题.
-     * @param string $subject
-     * @return TradeAppPay
-     */
-    public function setSubject(string $subject): self
+    public function setSellerID(?string $id): self
     {
-        $this->biz_content['subject'] = $subject;
+        $this->bizContent['seller_id'] = $id;
+
+        return $this;
+    }
+
+    public function setGoodsType(?string $type): self
+    {
+        $this->bizContent['goods_type'] = $type;
+
+        return $this;
+    }
+
+    public function setPassbackParams(?array $params): self
+    {
+        $this->bizContent['passback_params'] = build_query($params);
+
+        return $this;
+    }
+
+    public function setPromoParams(?array $params): self
+    {
+        $this->bizContent['promo_params'] = json_encode($params);
+
+        return $this;
+    }
+
+    public function setExtendParams(
+        ?string $sysServiceProviderID,
+        ?bool $needBuyerRealNamed,
+        ?string $transMemo,
+        ?int $HBFQNum,
+        ?int $HBFQSellerPercent
+    ): self {
+        $rn = is_null($needBuyerRealNamed) ? null : $needBuyerRealNamed ? 'T' : 'F';
+        $params = [
+            'sys_service_provider_id' => $sysServiceProviderID,
+            'needBuyerRealnamed' => $rn,
+            'TRANS_MEMO' => $transMemo,
+            'hb_fq_num' => $HBFQNum,
+            'hb_fq_seller_percent' => $HBFQSellerPercent,
+        ];
+        $params = ParameterHelper::packValidParameters($params);
+        $params && $this->bizContent['extend_params'] = json_encode($params);
+
+        return $this;
+    }
+
+    public function setEnablePayChannels(?array $channels): self
+    {
+        if ($channels) {
+            $this->bizContent['enable_pay_channels'] = implode(',', $channels);
+        }
+
+        return $this;
+    }
+
+    public function setDisablePayChannels(?array $channels): self
+    {
+        if ($channels) {
+            $this->bizContent['disable_pay_channels'] = implode(',', $channels);
+        }
+
+        return $this;
+    }
+
+    public function setStoreID(?string $id): self
+    {
+        $this->bizContent['store_id'] = $id;
 
         return $this;
     }

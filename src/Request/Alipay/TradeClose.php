@@ -9,10 +9,10 @@ use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
- * 统一收单线下交易查询.
- * @link https://docs.open.alipay.com/api_1/alipay.trade.query
+ * 统一收单交易关闭接口.
+ * @link https://docs.open.alipay.com/api_1/alipay.trade.close
  */
-class TradeQuery implements RequestableInterface
+class TradeClose implements RequestableInterface
 {
     use OpenAPIResponseHandlerTrait;
     use OpenAPIRequestPreparationTrait;
@@ -20,17 +20,19 @@ class TradeQuery implements RequestableInterface
 
     private const SIGN_FIELD = 'sign';
 
-    private const CONTENT_FIELD = 'alipay_trade_query_response';
+    private const CONTENT_FIELD = 'alipay_trade_close_response';
 
     private $config;
 
     private $params = [
+        'notify_url' => null,
         'app_auth_token' => null,
     ];
 
     private $bizContent = [
         'trade_no' => null,
         'out_trade_no' => null,
+        'operator_id' => null,
     ];
 
     public function __construct(AlipayConfigInterface $config)
@@ -43,14 +45,28 @@ class TradeQuery implements RequestableInterface
         ParameterHelper::checkRequired($this->bizContent, [], ['trade_no', 'out_trade_no']);
 
         $bizContent = ParameterHelper::packValidParameters($this->bizContent);
-        $parameters = $this->makeOpenAPISignedParameters('alipay.trade.query', $bizContent);
+        $parameters = $this->makeOpenAPISignedParameters('alipay.trade.close', $bizContent);
 
         return $parameters;
+    }
+
+    public function setNotifyURL(?string $url): self
+    {
+        $this->params['notify_url'] = $url;
+
+        return $this;
     }
 
     public function setAppAuthToken(?string $token): self
     {
         $this->params['app_auth_token'] = $token;
+
+        return $this;
+    }
+
+    public function setTradeNo(?string $trade_no): self
+    {
+        $this->bizContent['trade_no'] = $trade_no;
 
         return $this;
     }
@@ -62,9 +78,9 @@ class TradeQuery implements RequestableInterface
         return $this;
     }
 
-    public function setTradeNo(?string $trade_no): self
+    public function setOperatorID(?string $id): self
     {
-        $this->bizContent['trade_no'] = $trade_no;
+        $this->bizContent['operator_id'] = $id;
 
         return $this;
     }

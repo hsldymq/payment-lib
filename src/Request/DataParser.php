@@ -30,6 +30,6 @@ class DataParser
 
     public static function arrayToJson(array $data): string
     {
-
+        // TODO
     }
 }

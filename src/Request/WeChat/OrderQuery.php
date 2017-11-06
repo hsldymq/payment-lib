@@ -25,6 +25,8 @@ class OrderQuery implements RequestableInterface
 
     private $config;
 
+    private $signType;
+
     private $params = [
         'transaction_id' => null,
         'out_trade_no' => null,
@@ -33,19 +35,19 @@ class OrderQuery implements RequestableInterface
     public function __construct(WeChatConfigInterface $config)
     {
         $this->config = $config;
+        $this->signType = $config->getDefaultSignType();
     }
 
     public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->params, [], ['transaction_id', 'out_trade_no']);
 
-        $signType = $this->config->getDefaultSignType();
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
-        $parameters['sign_type'] = $signType;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
+        $parameters['sign_type'] = $this->signType;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
 
         return $parameters;
     }

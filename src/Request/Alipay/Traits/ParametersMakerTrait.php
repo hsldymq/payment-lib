@@ -1,47 +1,53 @@
 <?php
 namespace Utils\PaymentVendor\RequestInterface\Alipay\Traits;
 
-use Utils\PaymentVendor\ConfigManager\AlipayConfig;
-use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
-use Utils\PaymentVendor\SignatureHelper\Alipay\Generator;
+use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\SignatureHelper\Alipay\Generator;
+use function GuzzleHttp\json_encode;
 
 /**
- * @property AlipayConfig $config
- * @property string $sign_type
+ * @property AlipayConfigInterface $config
+ * @property array $params
  */
 trait ParametersMakerTrait
 {
-    private function makeSignedParameters(
+    /** @var \DateTime */
+    private $datetime;
+
+    private function makeOpenAPISignedParameters(
         string $method,
-        array $biz_content,
-        array $extra_data = [],
+        array $bizContent,
         string $format = 'JSON',
         string $charset = 'utf-8',
         string $version = '1.0'
     ): array {
-        $now = $this->now();
-        $parameters = [
-            'app_id' => $this->config->getAppID(),
-            'method' => $method,
-            'format' => $format,
-            'charset' => $charset,
-            'sign_type' => $this->sign_type,
-            'timestamp' => $now->format('Y-m-d H:i:s'),
-            'version' => $version,
-        ];
-        $parameters = array_merge($extra_data, $parameters);
-        $parameters['biz_content'] = \GuzzleHttp\json_encode($biz_content, JSON_FORCE_OBJECT);
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->sign_type);
+        $signType = $this->signType ?? $this->config->getOpenAPIDefaultSignType();
+
+        $parameters = $this->params;
+        $parameters['app_id'] = $this->config->getAppID();
+        $parameters['method'] = $method;
+        $parameters['format'] = $format;
+        $parameters['charset'] = $charset;
+        $parameters['sign_type'] = $signType;
+        $parameters['timestamp'] = $this->getDatetime();
+        $parameters['version'] = $version;
+        $parameters['biz_content'] = json_encode($bizContent, JSON_FORCE_OBJECT);
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
 
         return $parameters;
     }
 
-    private function now(): \DateTime
+    public function setTimestamp(\DateTime $dt)
     {
-        if ($this instanceof MutableDateTimeInterface) {
-            return $this->getDateTime();
-        }
+        $this->datetime = $dt;
 
-        return new \DateTime('now', new \DateTimeZone('+0800'));
+        return $this;
+    }
+
+    private function getDatetime(): string
+    {
+        $dt = $this->date ?? (new \DateTime('now', new \DateTimeZone('+0800')));
+
+        return $dt->format('Y-m-d H:i:s');
     }
 }

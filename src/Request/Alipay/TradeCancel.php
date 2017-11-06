@@ -9,10 +9,10 @@ use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
- * 统一收单线下交易查询.
- * @link https://docs.open.alipay.com/api_1/alipay.trade.query
+ * 统一收单交易撤销接口.
+ * @link https://docs.open.alipay.com/api_1/alipay.trade.cancel/
  */
-class TradeQuery implements RequestableInterface
+class TradeCancel implements RequestableInterface
 {
     use OpenAPIResponseHandlerTrait;
     use OpenAPIRequestPreparationTrait;
@@ -20,7 +20,7 @@ class TradeQuery implements RequestableInterface
 
     private const SIGN_FIELD = 'sign';
 
-    private const CONTENT_FIELD = 'alipay_trade_query_response';
+    private const CONTENT_FIELD = 'alipay_trade_cancel_response';
 
     private $config;
 
@@ -43,7 +43,7 @@ class TradeQuery implements RequestableInterface
         ParameterHelper::checkRequired($this->bizContent, [], ['trade_no', 'out_trade_no']);
 
         $bizContent = ParameterHelper::packValidParameters($this->bizContent);
-        $parameters = $this->makeOpenAPISignedParameters('alipay.trade.query', $bizContent);
+        $parameters = $this->makeOpenAPISignedParameters('alipay.trade.cancel', $bizContent);
 
         return $parameters;
     }
@@ -55,16 +55,16 @@ class TradeQuery implements RequestableInterface
         return $this;
     }
 
-    public function setOutTradeNo(?string $out_trade_no): self
+    public function setTradeNo(?string $trade_no): self
     {
-        $this->bizContent['out_trade_no'] = $out_trade_no;
+        $this->bizContent['trade_no'] = $trade_no;
 
         return $this;
     }
 
-    public function setTradeNo(?string $trade_no): self
+    public function setOutTradeNo(?string $out_trade_no): self
     {
-        $this->bizContent['trade_no'] = $trade_no;
+        $this->bizContent['out_trade_no'] = $out_trade_no;
 
         return $this;
     }

@@ -63,7 +63,7 @@ class TradeWapPay implements MutableDateTimeInterface
         $this->return_url && $extra['return_url'] = $this->return_url;
 
         $biz_content = ParameterHelper::packValidParameters($this->biz_content);
-        $parameters = $this->makeSignedParameters('alipay.trade.wap.pay', $biz_content, $extra);
+        $parameters = $this->makeOpenAPISignedParameters('alipay.trade.wap.pay', $biz_content, $extra);
 
         return $parameters;
     }

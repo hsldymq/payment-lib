@@ -3,7 +3,7 @@ namespace Archman\PaymentLib\RequestInterface\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Utils\PaymentVendor\ConfigManager\AlipayConfig;
-use Utils\PaymentVendor\RequestInterface\Alipay\Traits\DefaultRequestPreparationTrait;
+use Utils\PaymentVendor\RequestInterface\Alipay\Traits\OpenAPIRequestPreparationTrait;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\DefaultResponseHandlerTrait;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
 use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
@@ -16,7 +16,7 @@ use Utils\PaymentVendor\RequestInterface\RequestableInterface;
  */
 class FundTransToAccountTransfer implements RequestableInterface
 {
-    use DefaultRequestPreparationTrait;
+    use OpenAPIRequestPreparationTrait;
     use DefaultResponseHandlerTrait;
     use ParametersMakerTrait;
 
@@ -49,7 +49,7 @@ class FundTransToAccountTransfer implements RequestableInterface
 
         $biz_content = ParameterHelper::packValidParameters($this->biz_content);
 
-        $parameters = $this->makeSignedParameters('alipay.fund.trans.toaccount.transfer', $biz_content);
+        $parameters = $this->makeOpenAPISignedParameters('alipay.fund.trans.toaccount.transfer', $biz_content);
 
         return $parameters;
     }

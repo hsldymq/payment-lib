@@ -25,6 +25,8 @@ class Report implements RequestableInterface
 
     private $config;
 
+    private $signType;
+
     private $params = [
         'device_info' => null,
         'interface_url' => null,
@@ -42,18 +44,18 @@ class Report implements RequestableInterface
     public function __construct(WeChatConfigInterface $config)
     {
         $this->config = $config;
+        $this->signType = $config->getDefaultSignType();
     }
 
     public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->params, ['interface_url', 'execute_time', 'return_code', 'result_code', 'user_ip']);
 
-        $signType = $this->config->getDefaultSignType();
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
-        $parameters['sign_type'] = $signType;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
+        $parameters['sign_type'] = $this->signType;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
 
         return $parameters;
     }

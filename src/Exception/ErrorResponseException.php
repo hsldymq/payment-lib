@@ -1,18 +1,25 @@
 <?php
 namespace Archman\PaymentLib\Exception;
 
-use Throwable;
-
 class ErrorResponseException extends \Exception
 {
     private $errorCode = null;
 
     private $errorText = null;
 
-    public function __construct(?string $errorCode = null, ?string $errorText = null, $message = "", $code = 0, Throwable $previous = null)
-    {
+    private $responseData = null;
+
+    public function __construct(
+        ?string $errorCode = null,
+        ?string $errorText = null,
+        ?array $responseData = null,
+        $message = "",
+        $code = 0,
+        \Throwable $previous = null
+    ) {
         $this->errorCode = $errorCode;
         $this->errorText = $errorText;
+        $this->responseData = $responseData;
 
         parent::__construct($message, $code, $previous);
     }
@@ -25,5 +32,10 @@ class ErrorResponseException extends \Exception
     public function getErrorText(): ?string
     {
         return $this->errorText;
+    }
+
+    public function getResponseData(): ?array
+    {
+        return $this->responseData;
     }
 }

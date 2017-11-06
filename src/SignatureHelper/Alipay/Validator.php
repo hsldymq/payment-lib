@@ -13,101 +13,98 @@ class Validator
 
     private $config;
 
-    public function __construct(AlipayConfigInterface $config)
+    private $isMAPI;
+
+    public function __construct(AlipayConfigInterface $config, bool $isMAPI = false)
     {
         $this->config = $config;
+        $this->isMAPI = $isMAPI;
     }
 
     /**
      * 验证异步回调的签名.
      * @param string $signature 待验证的签名
-     * @param string $sign_type 验证签名的算法(RSA, MD5, ...)
+     * @param string $signType 验证签名的算法(RSA, MD5, ...)
      * @param array $data 用于验证签名的数据
-     * @param bool $throw_exception 如果验证失败是否抛出异常,这个只是在验证阶段发现签名不一致的情况下指示是否抛出异常. 如果出现其他错误是必然抛出异常.
-     * @return bool
+     * @param array $exclude
      */
-    public function validateSignAsync(string $signature, string $sign_type, array $data, bool $throw_exception = false): bool
+    public function validateSignAsync(string $signature, string $signType, array $data, array $exclude = [])
     {
-        $packed_string = $this->packVerifiedSignStringAsync($data);
+        $packed = $this->packVerifiedSignStringAsync($data, $exclude);
 
-        return $this->validate($signature, $sign_type, $packed_string, $throw_exception);
+        $this->validate($signature, $signType, $packed, $data);
     }
 
     /**
      * 验证同步返回的签名.
      * @param string $signature
-     * @param string $sign_type
+     * @param string $signType
      * @param array $data
-     * @param bool $throw_exception
-     * @return bool
+     * @param array $exclude
      */
-    public function validateSignSync(string $signature, string $sign_type, array $data, bool $throw_exception = false): bool
+    public function validateSignSync(string $signature, string $signType, array $data, array $exclude = [])
     {
-        $packed_string = $this->packVerifiedSignStringSync($data);
+        $packed = $this->packVerifiedSignStringSync($data, $exclude);
 
-        return $this->validate($signature, $sign_type, $packed_string, $throw_exception);
+        $this->validate($signature, $signType, $packed, $data);
     }
 
-    private function validate(string $signature, string $sign_type, string $packed_string, bool $throw)
-    {
-        $sign_type = strtoupper($sign_type);
-        switch ($sign_type) {
+    private function validate(
+        string $signature,
+        string $signType,
+        string $packedString,
+        array $data
+    ) {
+        $signType = strtoupper($signType);
+        switch ($signType) {
             case 'RSA':
-                $result = $this->validateSignRSA($signature, $packed_string);
+                $result = $this->validateSignRSA($signature, $packedString);
                 break;
             case 'RSA2':
-                $result = $this->validateSignRSA2($signature, $packed_string);
+                $result = $this->validateSignRSA2($signature, $packedString);
                 break;
             case 'MD5':
-                $result = $this->validateSignMD5($signature, $packed_string);
+                $result = $this->validateSignMD5($signature, $packedString);
                 break;
             default:
-                // TODO
-                throw new \Exception();
+                throw new SignatureException($data, "Unsupported Alipay Sign Type: {$signType}");
         }
 
-        if (!$result && $throw) {
-            // TODO
-            throw new \Exception();
+        if (!$result) {
+            throw new SignatureException($data, 'Failed To Validate Alipay Signature.');
         }
-
-        return $result;
     }
 
-    private function validateSignRSA(string $signature, string $packed_string): bool
+    private function validateSignRSA(string $signature, string $packedString): bool
     {
-        // TODO
-        $key_resource = \openssl_get_publickey($this->config->getAlipayPublicKey('RSA'));
-        if (!$key_resource) {
-            // TODO
-            throw new \Exception();
+        $resource = \openssl_get_publickey($this->config->getAlipayPublicKey('RSA'));
+        if (!$resource) {
+            throw new \Exception("Unable To Get RSA Public Key");
         }
 
-        $is_correct = \openssl_verify($packed_string, base64_decode($signature), $key_resource) === 1;
-        \openssl_free_key($key_resource);
+        $isCorrect = \openssl_verify($packedString, base64_decode($signature), $resource) === 1;
+        \openssl_free_key($resource);
 
-        return $is_correct;
+        return $isCorrect;
     }
 
-    private function validateSignRSA2(string $signature, string $packed_string): bool
+    private function validateSignRSA2(string $signature, string $packedString): bool
     {
-        // TODO
-        $key_resource = \openssl_get_publickey($this->config->getAlipayPublicKey('RSA2'));
-        if (!$key_resource) {
-            // TODO
-            throw new \Exception();
+        $resource = \openssl_get_publickey($this->config->getAlipayPublicKey('RSA2'));
+        if (!$resource) {
+            throw new \Exception("Unable To Get RSA2 Public Key");
         }
 
-        $is_correct = \openssl_verify($packed_string, base64_decode($signature), $key_resource, OPENSSL_ALGO_SHA256) === 1;
-        \openssl_free_key($key_resource);
+        $isCorrect = \openssl_verify($packedString, base64_decode($signature), $resource, OPENSSL_ALGO_SHA256) === 1;
+        \openssl_free_key($resource);
 
-        return $is_correct;
+        return $isCorrect;
     }
 
-    private function validateSignMD5(string $signature, string $packed_string): bool
+    private function validateSignMD5(string $signature, string $packedString): bool
     {
-        $safe_key = $this->config->getMAPIPrivateKey();
+        $safeKey = $this->config->getMAPIPrivateKey();
 
-        return md5("{$packed_string}{$safe_key}") === $signature;
+        return md5("{$packedString}{$safeKey}") === $signature;
     }
 }

@@ -26,6 +26,8 @@ class DownloadBill implements RequestableInterface
 
     private $config;
 
+    private $signType;
+
     private $params = [
         'device_info' => null,
         'bill_date' => null,
@@ -36,19 +38,19 @@ class DownloadBill implements RequestableInterface
     public function __construct(WeChatConfigInterface $config)
     {
         $this->config = $config;
+        $this->signType = $config->getDefaultSignType();
     }
 
     public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->params, ['bill_date', 'bill_type']);
 
-        $signType = $this->config->getDefaultSignType();
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
-        $parameters['sign_type'] = $signType;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
+        $parameters['sign_type'] = $this->signType;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
 
         return $parameters;
     }
@@ -98,7 +100,7 @@ class DownloadBill implements RequestableInterface
     public function setBillType(string $type): self
     {
         if (!in_array($type, ['ALL', 'SUCCESS', 'REFUND', 'RECHARGE_REFUND'])) {
-            throw new InvalidParameterException("Invalid Value For Bill Type({$type}), Should Be One Of These(ALL/SUCCESS/REFUND/RECHARGE_REFUND).");
+            throw new InvalidParameterException('bill_type', "Invalid Value For Bill Type({$type}), Should Be One Of These(ALL/SUCCESS/REFUND/RECHARGE_REFUND).");
         }
 
         $this->params['bill_type'] = $type;
@@ -109,7 +111,7 @@ class DownloadBill implements RequestableInterface
     public function setTarType(string $type): self
     {
         if ($type !== 'GZIP') {
-            throw new InvalidParameterException("The Value Of Tar Type Should Be 'GZIP' Only.");
+            throw new InvalidParameterException('tar_type', "The Value Of Tar Type Should Be 'GZIP' Only.");
         }
 
         $this->params['tar_type'] = $type;

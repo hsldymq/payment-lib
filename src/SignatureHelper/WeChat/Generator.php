@@ -20,35 +20,35 @@ class Generator
 
     public function makeSign(array $data, ?string $signType = null, array $exclude = []): string
     {
-        $packed_string = $this->packRequestSignString($data, $exclude);
+        $packed = $this->packRequestSignString($data, $exclude);
 
         $signType = $signType ?? $this->config->getDefaultSignType();
 
         switch (strtoupper($signType)) {
             case 'MD5':
-                $sign = $this->makeSignMD5($packed_string);
+                $sign = $this->makeSignMD5($packed);
                 break;
             case 'HMAC-SHA256':
-                $sign = $this->makeSignSHA256($packed_string);
+                $sign = $this->makeSignSHA256($packed);
                 break;
             default:
-                throw new SignatureException("Unsupported WeChat Sign Type: {$signType}");
+                throw new SignatureException($data, "Unsupported WeChat Sign Type: {$signType}");
         }
 
         return $sign;
     }
 
-    private function makeSignMD5(string $packed_string): string
+    private function makeSignMD5(string $packedString): string
     {
-        $secret_key = $this->config->getApiKey();
+        $secretKey = $this->config->getApiKey();
 
-        return strtoupper(md5("{$packed_string}&key={$secret_key}"));
+        return strtoupper(md5("{$packedString}&key={$secretKey}"));
     }
 
-    private function makeSignSHA256(string $packed_string): string
+    private function makeSignSHA256(string $packedString): string
     {
-        $secret_key = $this->config->getApiKey();
+        $secretKey = $this->config->getApiKey();
 
-        return strtoupper(hash_hmac('sha256', "{$packed_string}&key={$secret_key}", $secret_key));
+        return strtoupper(hash_hmac('sha256', "{$packedString}&key={$secretKey}", $secretKey));
     }
 }
