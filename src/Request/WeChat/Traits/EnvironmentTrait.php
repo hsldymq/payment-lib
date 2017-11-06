@@ -14,9 +14,6 @@ trait EnvironmentTrait
     /** @var WeChatConfigInterface */
     private $sandboxConfig;
 
-    /** @var string */
-    private $sandboxSignKey;
-
     /** @var WeChatConfigInterface */
     private $productionConfig;
 
@@ -41,17 +38,16 @@ trait EnvironmentTrait
     {
         if (!$this->productionConfig) {
             $this->productionConfig = $this->config;
-            $this->sandboxConfig = (new class implements WeChatConfigInterface {
+            $this->sandboxConfig = (new class ($this->productionConfig) implements WeChatConfigInterface {
                 /** @var WeChatConfigInterface */
                 private $productionConfig;
 
                 /** @var string */
                 private $signKey;
 
-                public function __construct(WeChatConfigInterface $prodConfig, ?string $signKey)
+                public function __construct(WeChatConfigInterface $prodConfig)
                 {
                     $this->productionConfig = $prodConfig;
-                    $this->signKey = $signKey;
                 }
                 public function getAppID(): string { return $this->productionConfig->getAppID(); }
                 public function getMerchantID(): string { return $this->productionConfig->getMerchantID(); }
@@ -62,7 +58,7 @@ trait EnvironmentTrait
                 public function getClientCertPassword(): ?string { return $this->productionConfig->getClientCertPassword(); }
                 public function getDefaultSignType(): string { return $this->productionConfig->getDefaultSignType(); }
                 public function getApiKey(): string { return $this->signKey; }
-                public function setApiKey(string $key): self { $this->signKey = $key; }
+                public function setApiKey(string $key) { $this->signKey = $key; }
             });
         }
     }
