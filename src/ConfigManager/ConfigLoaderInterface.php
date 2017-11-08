@@ -6,4 +6,6 @@ interface ConfigLoaderInterface
     public static function loadAlipayConfig(array $context): AlipayConfigInterface;
 
     public static function loadWeChatConfig(array $context): WeChatConfigInterface;
+
+    public static function loadHuaweiConfig(array $context): HuaweiConfigInterface;
 }
