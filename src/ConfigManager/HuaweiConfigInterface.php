@@ -22,10 +22,4 @@ interface HuaweiConfigInterface
      * @return string
      */
     public function getPrivateKey(): string;
-
-    /**
-     * 默认使用的签名类型(RSA, RSA2).
-     * @return string
-     */
-    public function getDefaultSignType(): string;
 }
