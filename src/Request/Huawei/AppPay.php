@@ -45,8 +45,8 @@ class AppPay implements ParameterMakerInterface
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['applicationID'] = $this->config->getAppID();
         $parameters['merchantId'] = $this->config->getMerchantID();
-
         // TODO 生成inSign
+        $this->params['ingftAmt'] && $this->makeInSign($this->params['ingftAmt'], $this->params['requestId'], ''/* TODO */);
 
         $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, ['serviceCatalog', 'merchantName', 'extReserved', 'ingftAmt', 'inSign',]);
 
@@ -175,7 +175,7 @@ class AppPay implements ParameterMakerInterface
         return $this;
     }
 
-    private function makeInSign(string $ingftAmt, string $requestId, string $developUserSign): string
+    private function makeInSign(string $ingftAmt, string $requestID, string $developUserSign): string
     {
 
     }
