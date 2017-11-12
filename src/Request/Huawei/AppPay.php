@@ -4,6 +4,8 @@ namespace Archman\PaymentLib\Request\Huawei;
 use Archman\PaymentLib\ConfigManager\HuaweiConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
+use Archman\PaymentLib\SignatureHelper\Huawei\Generator;
+use phpDocumentor\Reflection\DocBlock\Tags\Param;
 
 /**
  * @link http://developer.huawei.com/consumer/cn/service/hms/catalog/huaweiiap.html?page=hmssdk_huaweiiap_api_reference_c1
@@ -38,7 +40,17 @@ class AppPay implements ParameterMakerInterface
 
     public function makeParameters(bool $withSign = true): array
     {
-        // TODO: Implement makeParameters() method.
+        ParameterHelper::checkRequired($this->params, ['productName', 'productDesc', 'requestId', 'amount', 'serviceCatalog', 'merchantName']);
+
+        $parameters = ParameterHelper::packValidParameters($this->params);
+        $parameters['applicationID'] = $this->config->getAppID();
+        $parameters['merchantId'] = $this->config->getMerchantID();
+
+        // TODO 生成inSign
+
+        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, ['serviceCatalog', 'merchantName', 'extReserved', 'ingftAmt', 'inSign',]);
+
+        return $parameters;
     }
 
     public function setProductName(string $name): self
@@ -156,10 +168,15 @@ class AppPay implements ParameterMakerInterface
         return $this;
     }
 
-    public function setValidTime(int $seconds): self
+    public function setValidTime(?int $seconds): self
     {
         $this->params['validTime'] = $seconds;
 
         return $this;
+    }
+
+    private function makeInSign(string $ingftAmt, string $requestId, string $developUserSign): string
+    {
+
     }
 }

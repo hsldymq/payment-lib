@@ -17,9 +17,9 @@ class Generator
         $this->config = $config;
     }
 
-    public function makeSign(array $data): string
+    public function makeSign(array $data, array $exclude = []): string
     {
-        $packed = $this->packSignString($data);
+        $packed = $this->packSignString($data, $exclude);
         $sign = $this->makeSignRSA256($packed);
 
         return $sign;
