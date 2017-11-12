@@ -7,6 +7,7 @@ use function GuzzleHttp\json_encode;
 
 /**
  * @property AlipayConfigInterface $config
+ * @property string $signType
  * @property array $params
  */
 trait ParametersMakerTrait

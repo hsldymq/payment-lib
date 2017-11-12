@@ -7,12 +7,11 @@ use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
 use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
 
 /**
- * // TODO 有待验证(跳到支付宝转账界面,明细提示验证成功,但是系统不支持,无法显示密码表单)
  * 批量付款到支付宝账户有密接口.
  * @link https://docs.open.alipay.com/64/104804 文档地址
  * @link https://docs.open.alipay.com/common/104741 生成签名的方式(需要剔除掉sign_type)
  */
-class BatchTransferNotify implements MutableDateTimeInterface
+class BatchTransferNotify
 {
     use MutableDateTimeTrait;
 

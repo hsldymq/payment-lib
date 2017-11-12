@@ -32,7 +32,7 @@ class AppPay implements ParameterMakerInterface
         $this->config = $config;
     }
 
-    public function makeParameters(bool $withSign = true): array
+    public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->params, ['prepayid', 'package']);
 
@@ -41,7 +41,7 @@ class AppPay implements ParameterMakerInterface
         $parameters['partnerid'] = $this->config->getMerchantID();
         $parameters['noncestr'] = $this->getNonceStr();
         $parameters['timestamp'] = $this->getTimestamp();
-        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
 
         return $parameters;
     }

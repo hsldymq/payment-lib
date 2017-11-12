@@ -43,7 +43,7 @@ class Refund implements RequestableInterface, ParameterMakerInterface
         $this->config = $config;
     }
 
-    public function makeParameters(bool $withSign = true): array
+    public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->params, ['out_refund_no', 'total_fee', 'refund_fee'], ['transaction_id', 'out_trade_no']);
 
@@ -53,7 +53,7 @@ class Refund implements RequestableInterface, ParameterMakerInterface
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
         $parameters['sign_type'] = $signType;
-        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
 
         return $parameters;
     }

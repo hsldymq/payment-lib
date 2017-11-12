@@ -62,7 +62,7 @@ class MicroPay implements RequestableInterface, ParameterMakerInterface
         $this->signType = $config->getDefaultSignType();
     }
 
-    public function makeParameters(bool $withSign = true): array
+    public function makeParameters(): array
     {
         $detail = ParameterHelper::packValidParameters($this->detail);
         !is_null($detail) && $this->params['detail'] = json_encode($detail);
@@ -77,7 +77,7 @@ class MicroPay implements RequestableInterface, ParameterMakerInterface
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
         $parameters['sign_type'] = $this->signType;
-        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
 
         return $parameters;
     }

@@ -48,7 +48,7 @@ class Report implements RequestableInterface, ParameterMakerInterface
         $this->signType = $config->getDefaultSignType();
     }
 
-    public function makeParameters(bool $withSign = true): array
+    public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->params, ['interface_url', 'execute_time', 'return_code', 'result_code', 'user_ip']);
 
@@ -56,7 +56,7 @@ class Report implements RequestableInterface, ParameterMakerInterface
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
         $parameters['sign_type'] = $this->signType;
-        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
 
         return $parameters;
     }

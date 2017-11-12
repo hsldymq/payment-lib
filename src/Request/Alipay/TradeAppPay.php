@@ -2,6 +2,7 @@
 namespace Archman\PaymentLib\RequestInterface\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use function GuzzleHttp\Psr7\build_query;
@@ -11,14 +12,14 @@ use function GuzzleHttp\json_encode;
  * APP支付.生成请求参数
  * @link https://docs.open.alipay.com/204/105465
  */
-class TradeAppPay
+class TradeAppPay implements ParameterMakerInterface
 {
     use ParametersMakerTrait;
 
     private $config;
 
     private $params = [
-        'notify_url' => null
+        'notify_url' => null,
     ];
 
     private $bizContent = [

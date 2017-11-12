@@ -2,27 +2,26 @@
 namespace Archman\PaymentLib\RequestInterface\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
-use Utils\PaymentVendor\ConfigManager\AlipayConfig;
+use Archman\PaymentLib\Request\ParameterMakerInterface;
+use Archman\PaymentLib\RequestInterface\Alipay\Traits\OpenAPIResponseHandlerTrait;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\OpenAPIRequestPreparationTrait;
-use Utils\PaymentVendor\RequestInterface\Alipay\Traits\DefaultResponseHandlerTrait;
 use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
-use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
-use Utils\PaymentVendor\RequestInterface\RequestableInterface;
+use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
- * // TODO 有待验证
  * 单笔转账到支付宝账户接口.
  * @link https://docs.open.alipay.com/api_28/alipay.fund.trans.toaccount.transfer/ 文档地址
  */
-class FundTransToAccountTransfer implements RequestableInterface
+class FundTransToAccountTransfer implements RequestableInterface, ParameterMakerInterface
 {
     use OpenAPIRequestPreparationTrait;
-    use DefaultResponseHandlerTrait;
+    use OpenAPIResponseHandlerTrait;
     use ParametersMakerTrait;
 
     private $config;
 
-    private $sign_type = 'RSA';
+    private $signType = 'RSA';
 
     private $response_data_field = 'alipay_fund_trans_toaccount_transfer_response';
 
@@ -78,8 +77,7 @@ class FundTransToAccountTransfer implements RequestableInterface
     public function setAmount(int $amount): self
     {
         ParameterHelper::checkAmount($amount);
-
-        $this->biz_content['amount'] = ParameterHelper::transUnitCentToYuan($amount);
+        $this->biz_content['amount'] = ParameterHelper::transAmountUnit($amount);
 
         return $this;
     }

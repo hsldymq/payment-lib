@@ -35,7 +35,7 @@ class AuthCodeToOpenID implements RequestableInterface, ParameterMakerInterface
         $this->config = $config;
     }
 
-    public function makeParameters(bool $withSign = true): array
+    public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->params, ['auth_code']);
 
@@ -43,7 +43,7 @@ class AuthCodeToOpenID implements RequestableInterface, ParameterMakerInterface
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['auth_code'] = $this->params['auth_code'];
         $parameters['noncestr'] = $this->getNonceStr();
-        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
 
         return $parameters;
     }

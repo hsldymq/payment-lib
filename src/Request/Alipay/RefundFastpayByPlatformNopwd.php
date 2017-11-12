@@ -1,37 +1,44 @@
 <?php
 namespace Archman\PaymentLib\RequestInterface\Alipay;
 
-use Api\Exception\Logic\MakePaymentVendorParametersFailedException;
-use Api\Exception\Logic\VendorInterfaceResponseErrorException;
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Exception\ErrorResponseException;
+use Archman\PaymentLib\Request\DataParser;
+use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\ParameterMakerInterface;
+use Archman\PaymentLib\Request\RequestableInterface;
+use Archman\PaymentLib\Request\RequestOption;
+use Archman\PaymentLib\Request\RequestOptionInterface;
+use Archman\PaymentLib\Response\BaseResponse;
+use Archman\PaymentLib\Response\GeneralResponse;
+use Archman\PaymentLib\SignatureHelper\Alipay\Generator;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Utils\PaymentVendor\ConfigManager\AlipayConfig;
-use Utils\PaymentVendor\DataParser;
-use Utils\PaymentVendor\ErrorMapper\Alipay;
-use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
-use Utils\PaymentVendor\RequestInterface\Traits\CertVerificationLessTrait;
-use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
-use Utils\PaymentVendor\RequestInterface\RequestableInterface;
-use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
-use Utils\PaymentVendor\SignatureHelper\Alipay\Generator;
 use function GuzzleHttp\Psr7\build_query;
 
 /**
  * @link https://os.alipayobjects.com/rmsportal/UYaiBLFsoFZqVgxWkEZx.zip 文档PDF下载地址
  */
-class RefundFastpayByPlatformNopwd implements RequestableInterface, MutableDateTimeInterface
+class RefundFastpayByPlatformNopwd implements RequestableInterface, ParameterMakerInterface
 {
-    use CertVerificationLessTrait;
-    use MutableDateTimeTrait;
+    private const FIXED_SIGN_TYPE = 'MD5';
 
     private $config;
 
+    /** @var \Datetime */
+    private $datetime;
+
     private $params = [
+        'service' => 'refund_fastpay_by_platform_nopwd',
+        '_input_charset' => 'utf-8',
         'detail_data' => [],
         'serial_number' => null,
         'dback_notify_url' => null,
+        'notify_url' => null,
+        'use_freeze_amount' => null,
+        'return_type' => 'xml',
+        'sign_type' => self::FIXED_SIGN_TYPE,
     ];
 
     public function __construct(AlipayConfigInterface $config)
@@ -42,60 +49,37 @@ class RefundFastpayByPlatformNopwd implements RequestableInterface, MutableDateT
     public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->params, ['detail_data', 'serial_number']);
+        $parameters = ParameterHelper::packValidParameters($this->params);
 
-        $now = $this->getDateTime();
-        $parameters = [
-            'service'           => 'refund_fastpay_by_platform_nopwd',
-            'partner'           => $this->config->getPartnerID(),
-            '_input_charset'    => 'utf-8',
-            'notify_url'        => $this->config->getCallbackUrl('refund.batch'),
-            'batch_no'          => $this->makeBatchNo($now),
-            'refund_date'       => $now->format('Y-m-d H:i:s'),
-            'batch_num'         => count($this->params['detail_data']),
-            'detail_data'       => implode('#', $this->params['detail_data']),
-            'use_freeze_amount' => 'N',
-            'return_type'       => 'xml',
-        ];
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, 'MD5');
-        $parameters['sign_type'] = 'MD5';
+        $datetime = $this->datetime ?? $this->now();
+        $parameters['partner'] = $this->config->getPartnerID();
+        $parameters['batch_no'] = $this->makeBatchNo($datetime);
+        $parameters['refund_date'] = $datetime->format('Y-m-d H:i:s');
+        $parameters['batch_num'] = count($this->params['detail_data']);
+        $parameters['detail_data'] = implode('#', $this->params['detail_data']);
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, self::FIXED_SIGN_TYPE, ['sign_type']);
 
         return $parameters;
     }
 
-    public function prepareRequest(): RequestInterface
+    public function setNotifyURL(?string $url): self
     {
-        $parameters = $this->makeParameters();
-        $request = new Request('POST','https://mapi.alipay.com/gateway.do?'.build_query($parameters));
+        $this->params['notify_url'] = $url;
 
-        return $request;
+        return $this;
     }
 
-    /**
-     * 响应回执的数据结构:
-     *  1 成功: <alipay><is_success>T</is_success></alipay>
-     *  2 失败: <alipay><is_success>F</is_success><error>失败代码</error></alipay>
-     * @param ResponseInterface $response
-     * @return array
-     * @throws VendorInterfaceResponseErrorException
-     */
-    public function handleResponse(ResponseInterface $response): array
+    public function setDbackNotifyURL(?string $url): self
     {
-        $data = DataParser::parseXML($response->getBody());
+        $this->params['dback_notify_url'] = $url;
 
-        if (strtoupper($data['is_success']) === 'F') {
-            $error = Alipay::map($data['error']);
-            throw new VendorInterfaceResponseErrorException($data['error'], $data, [
-                'message' => "Request Alipay Batch Refund Interface Error, Failed Code: {$error['code']}, Failed Text: {$error['text']}"
-            ]);
-        }
-
-        return $data;
+        return $this;
     }
 
     /**
      * 设置流水号(3-24位). 用于生成批次号.
      * @param string $sn
-     * @return RefundFastpayByPlatformNopwd
+     * @return self
      */
     public function setSerialNumber(string $sn): self
     {
@@ -108,24 +92,66 @@ class RefundFastpayByPlatformNopwd implements RequestableInterface, MutableDateT
      * @param string $trade_no 支付宝原支付订单号
      * @param int $amount 单位:分
      * @param string $reason 退款原因
-     * @return RefundFastpayByPlatformNopwd
-     * @throws MakePaymentVendorParametersFailedException
+     * @return self
      */
     public function addDetailData(string $trade_no, int $amount, string $reason): self
     {
-        // 退款理由不能包含^,|,$,#等特殊字符
-        if (preg_match('/\^|\||\$|\#/', $reason) || preg_match('/\^|\||\$|\#/', $trade_no)) {
-            throw new MakePaymentVendorParametersFailedException(['message' => 'Refund Detail Data Should Not Include Special Characters.']);
-        }
-
-        if (isset($this->params['detail_data'][$trade_no])) {
-            throw new MakePaymentVendorParametersFailedException(['message' => 'Duplicated Trade No In Same Batch.']);
-        }
-
-        $amount = ParameterHelper::transUnitCentToYuan($amount);
+        $amount = ParameterHelper::transAmountUnit($amount);
         $this->params['detail_data'][$trade_no] = "{$trade_no}^{$amount}^{$reason}";
 
         return $this;
+    }
+
+    public function setUseFreezeAmount(?bool $doesUse): self
+    {
+        $this->params['use_freeze_amount'] = null;
+        is_bool($doesUse) && $this->params['use_freeze_amount'] = $doesUse ? 'Y' : 'N';
+
+        return $this;
+    }
+
+    public function setRefundDate(?\Datetime $datetime): self
+    {
+        $datetime && $this->datetime = $datetime;
+
+        return $this;
+    }
+
+    public function prepareRequest(): RequestInterface
+    {
+        $parameters = $this->makeParameters();
+        $request = new Request('POST','https://mapi.alipay.com/gateway.do?'.build_query($parameters));
+
+        return $request;
+    }
+
+    public function prepareRequestOption(): RequestOptionInterface
+    {
+        return new RequestOption();
+    }
+
+    /**
+     * 响应回执的数据结构:
+     *  1 成功: <alipay><is_success>T</is_success></alipay>
+     *  2 失败: <alipay><is_success>F</is_success><error>失败代码</error></alipay>
+     * @param ResponseInterface $response
+     * @return BaseResponse
+     * @throws ErrorResponseException
+     */
+    public function handleResponse(ResponseInterface $response): BaseResponse
+    {
+        $data = DataParser::xmlToArray($response->getBody());
+
+        if (strtoupper($data['is_success']) === 'F') {
+            throw new ErrorResponseException($data['error'], $data['error'], $response, $data['error']);
+        }
+
+        return new GeneralResponse($data);
+    }
+
+    private function now(): string
+    {
+         return new \DateTime('now', new \DateTimeZone('+0800'));
     }
 
     private function makeBatchNo(\DateTime $datetime): string

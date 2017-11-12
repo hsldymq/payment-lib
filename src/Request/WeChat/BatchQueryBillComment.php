@@ -42,7 +42,7 @@ class BatchQueryBillComment implements RequestableInterface, ParameterMakerInter
         $this->config = $config;
     }
 
-    public function makeParameters(bool $withSign = true): array
+    public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->params, ['begin_time', 'end_time', 'offset']);
 
@@ -51,7 +51,7 @@ class BatchQueryBillComment implements RequestableInterface, ParameterMakerInter
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
         $parameters['sign_type'] = self::FIXED_SIGN_TYPE;
-        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, self::FIXED_SIGN_TYPE);
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, self::FIXED_SIGN_TYPE);
 
         return $parameters;
     }

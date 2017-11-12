@@ -33,7 +33,7 @@ class WapPayInWeChat implements ParameterMakerInterface
         $this->config = $config;
     }
 
-    public function makeParameters(bool $withSign = true): array
+    public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->params, ['package']);
 
@@ -42,7 +42,7 @@ class WapPayInWeChat implements ParameterMakerInterface
         $parameters['nonceStr'] = $this->getNonceStr();
         $parameters['signType'] = $this->signType;
         $parameters['package'] = $this->params['package'];
-        $withSign && $parameters['paySign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
+        $parameters['paySign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
 
         return $parameters;
     }
