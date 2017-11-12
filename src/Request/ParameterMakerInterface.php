@@ -3,5 +3,5 @@ namespace Archman\PaymentLib\Request;
 
 interface ParameterMakerInterface
 {
-    public function makeParameters(bool $withSign): array;
+    public function makeParameters(bool $withSign = true): array;
 }

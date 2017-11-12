@@ -18,6 +18,7 @@ class Validator
     {
         $this->config = $config;
     }
+
     /**
      * @param string $signature
      * @param string $signType

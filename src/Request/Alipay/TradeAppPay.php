@@ -99,6 +99,7 @@ class TradeAppPay
      */
     public function setTotalAmount(int $amount): self
     {
+        ParameterHelper::checkAmount($amount);
         $this->bizContent['total_amount'] = ParameterHelper::transAmountUnit($amount);
 
         return $this;
