@@ -1,7 +1,8 @@
 {
   "require": {
     "psr/http-message": "~1.0",
-    "guzzlehttp/psr7": "^1.4"
+    "guzzlehttp/psr7": "^1.4",
+    "guzzlehttp/guzzle": "^6.3"
   },
   "require-dev": {
     "phpunit/phpunit": "^6.4",
@@ -9,7 +10,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Archman\\PaymentLib": "src/"
+      "Archman\\PaymentLib\\": "src/"
     }
   }
 }
