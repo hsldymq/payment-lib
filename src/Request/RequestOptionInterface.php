@@ -6,8 +6,8 @@ interface RequestOptionInterface
     public function getRootCAFilePath(): ?string;
 
     public function getSSLKeyFilePath(): ?string;
-    public function getSSLPassword(): ?string;
+    public function getSSLKeyPassword(): ?string;
 
-    public function getClientCertFilePath(): ?string;
-    public function getClientCertPassword(): ?string;
+    public function getSSLCertFilePath(): ?string;
+    public function getSSLCertPassword(): ?string;
 }

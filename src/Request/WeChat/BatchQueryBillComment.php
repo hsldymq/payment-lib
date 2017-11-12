@@ -91,8 +91,8 @@ class BatchQueryBillComment implements RequestableInterface, ParameterMakerInter
     protected function customRequestOption(RequestOption $option): RequestOption
     {
         $option->setRootCAFilePath($this->config->getRootCAPath())
-            ->setClientCertFilePath($this->config->getClientCertPath())
-            ->setClientCertPassword($this->config->getClientCertPassword());
+            ->setSSLCertFilePath($this->config->getClientCertPath())
+            ->setSSLCertPassword($this->config->getClientCertPassword());
 
         return $option;
     }

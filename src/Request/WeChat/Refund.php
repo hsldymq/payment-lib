@@ -120,9 +120,9 @@ class Refund implements RequestableInterface, ParameterMakerInterface
     {
         $option->setRootCAFilePath($this->config->getRootCAPath())
             ->setSSLKeyFilePath($this->config->getSSLKeyPath())
-            ->setSSLPassword($this->config->getSSLKeyPassword())
-            ->setClientCertFilePath($this->config->getClientCertPath())
-            ->setClientCertPassword($this->config->getClientCertPassword());
+            ->setSSLKeyPassword($this->config->getSSLKeyPassword())
+            ->setSSLCertFilePath($this->config->getClientCertPath())
+            ->setSSLCertPassword($this->config->getClientCertPassword());
 
         return $option;
     }

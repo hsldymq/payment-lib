@@ -7,11 +7,11 @@ class RequestOption implements RequestOptionInterface
 
     private $sslKeyFilePath = null;
 
-    private $sslPassword = null;
+    private $sslKeyPassword = null;
 
-    private $clientCertFilePath = null;
+    private $sslCertFilePath = null;
 
-    private $clientCertPassword = null;
+    private $sslCertPassword = null;
 
     public function getRootCAFilePath(): ?string
     {
@@ -23,19 +23,19 @@ class RequestOption implements RequestOptionInterface
         return $this->sslKeyFilePath;
     }
 
-    public function getSSLPassword(): ?string
+    public function getSSLKeyPassword(): ?string
     {
-        return $this->sslPassword;
+        return $this->sslKeyPassword;
     }
 
-    public function getClientCertFilePath(): ?string
+    public function getSSLCertFilePath(): ?string
     {
-        return $this->clientCertFilePath;
+        return $this->sslCertFilePath;
     }
 
-    public function getClientCertPassword(): ?string
+    public function getSSLCertPassword(): ?string
     {
-        return $this->clientCertPassword;
+        return $this->sslCertPassword;
     }
 
     public function setRootCAFilePath(?string $path): self
@@ -52,23 +52,23 @@ class RequestOption implements RequestOptionInterface
         return $this;
     }
 
-    public function setSSLPassword(?string $password): self
+    public function setSSLKeyPassword(?string $password): self
     {
-        $this->sslPassword = $password;
+        $this->sslKeyPassword = $password;
 
         return $this;
     }
 
-    public function setClientCertFilePath(?string $path): self
+    public function setSSLCertFilePath(?string $path): self
     {
-        $this->clientCertFilePath = $path;
+        $this->sslCertFilePath = $path;
 
         return $this;
     }
 
-    public function setClientCertPassword(?string $password): self
+    public function setSSLCertPassword(?string $password): self
     {
-        $this->clientCertPassword = $password;
+        $this->sslCertPassword = $password;
 
         return $this;
     }
