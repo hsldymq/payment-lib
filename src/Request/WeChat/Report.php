@@ -48,7 +48,7 @@ class Report implements RequestableInterface, ParameterMakerInterface
         $this->signType = $config->getDefaultSignType();
     }
 
-    public function makeParameters(bool $withSign): array
+    public function makeParameters(bool $withSign = true): array
     {
         ParameterHelper::checkRequired($this->params, ['interface_url', 'execute_time', 'return_code', 'result_code', 'user_ip']);
 

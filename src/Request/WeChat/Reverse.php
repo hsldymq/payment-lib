@@ -36,7 +36,7 @@ class Reverse implements RequestableInterface, ParameterMakerInterface
         $this->config = $config;
     }
 
-    public function makeParameters(bool $withSign): array
+    public function makeParameters(bool $withSign = true): array
     {
         ParameterHelper::checkRequired($this->params, [], ['transaction_id', 'out_trade_no']);
 

@@ -77,7 +77,7 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
         $this->signType = $config->getDefaultSignType();
     }
 
-    public function makeParameters(bool $withSign): array
+    public function makeParameters(bool $withSign = true): array
     {
         $detail = ParameterHelper::packValidParameters($this->detail);
         !is_null($detail) && $this->params['detail'] = json_encode($detail);
