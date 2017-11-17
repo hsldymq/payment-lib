@@ -8,7 +8,7 @@ class IAPTest extends TestCase
 {
     public function testProductionValidation()
     {
-        $receipt = Config::get('apple_receipt', 'production');
+        $receipt = Config::get('appleReceipt', 'production');
         $request = (new IAPReceiptValidation())
             ->setReceiptData($receipt)
             ->setEnvironment(true);
@@ -19,7 +19,7 @@ class IAPTest extends TestCase
 
     public function testSandboxValidation()
     {
-        $receipt = Config::get('apple_receipt', 'sandbox');
+        $receipt = Config::get('appleReceipt', 'sandbox');
         $request = (new IAPReceiptValidation())
             ->setReceiptData($receipt)
             ->setEnvironment(false);
@@ -33,7 +33,7 @@ class IAPTest extends TestCase
      */
     public function testWrongEnvReceipt_ExpectException()
     {
-        $receipt = Config::get('apple_receipt', 'production');
+        $receipt = Config::get('appleReceipt', 'production');
         $request = (new IAPReceiptValidation())
             ->setReceiptData($receipt)
             ->setEnvironment(false);

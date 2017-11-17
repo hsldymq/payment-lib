@@ -1,7 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: hsldymq
- * Date: 11/17/17
- * Time: 10:25 PM
- */
+use \PHPUnit\Framework\TestCase;
+use \Archman\PaymentLib\Test\Config\HuaweiConfig;
+use Archman\PaymentLib\Test\Config;
+
+class CalbackSignatureTest extends TestCase
+{
+    public function testCallbackSignatureValidation()
+    {
+        $config = new HuaweiConfig(Config::get('huawei', 'config'));
+        $testCases = Config::get('huawei', 'testCases', 'callback');
+        $validator = new \Archman\PaymentLib\SignatureHelper\Huawei\Validator($config);
+
+        foreach ($testCases as $case) {
+            $this->assertTrue($validator->validate($case['signature'], $case['signType'], $case['data']));
+        }
+    }
+}

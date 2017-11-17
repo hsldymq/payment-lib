@@ -7,10 +7,6 @@ class Config
 
     public static function get()
     {
-        if (self::$config === null) {
-            self::init();
-        }
-
         if (!($path = func_get_args())) {
             return null;
         }
@@ -27,8 +23,13 @@ class Config
         return $v;
     }
 
-    private static function init()
+    public static function init()
     {
-        self::$config = require __DIR__.'/data/data.php';
+        static $init;
+
+        if (!$init) {
+            self::$config = require __DIR__.'/data/data.php';
+            $init = true;
+        }
     }
 }
