@@ -31,7 +31,7 @@ class IAPTest extends TestCase
     /**
      * @expectedException \Archman\PaymentLib\Exception\ErrorResponseException
      */
-    public function testInvalidReceipt_ExpectException()
+    public function testWrongEnvReceipt_ExpectException()
     {
         $receipt = Config::get('apple_receipt', 'production');
         $request = (new IAPReceiptValidation())
