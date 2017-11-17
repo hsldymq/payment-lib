@@ -1,7 +1,34 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: hsldymq
- * Date: 11/17/17
- * Time: 6:59 PM
- */
+namespace Archman\PaymentLib\Test;
+
+class Config
+{
+    private static $config = null;
+
+    public static function get()
+    {
+        if (self::$config === null) {
+            self::init();
+        }
+
+        if (!($path = func_get_args())) {
+            return null;
+        }
+
+        $c = self::$config;
+        do {
+            $k = array_shift($path);
+            if (!isset($c[$k])) {
+                return null;
+            }
+            $v = $c = $c[$k];
+        } while ($path);
+
+        return $v;
+    }
+
+    private static function init()
+    {
+        self::$config = require __DIR__.'/data/data.php';
+    }
+}

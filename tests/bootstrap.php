@@ -1,8 +1,3 @@
 <?php
-
-(new class () {
-    public function start()
-    {
-        echo "\nbootstrap\n";
-    }
-})->start();
+require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/Config.php';
