@@ -25,11 +25,11 @@ class DataParser
 
     public static function jsonToArray(string $data): array
     {
-        // TODO
+        return json_decode($data, true);
     }
 
     public static function arrayToJson(array $data): string
     {
-        // TODO
+        return json_encode($data, JSON_FORCE_OBJECT);
     }
 }
