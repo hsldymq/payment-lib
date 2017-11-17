@@ -5,7 +5,6 @@ use Archman\PaymentLib\ConfigManager\HuaweiConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\SignatureHelper\Huawei\Generator;
-use phpDocumentor\Reflection\DocBlock\Tags\Param;
 
 /**
  * 应用内支付生成参数.

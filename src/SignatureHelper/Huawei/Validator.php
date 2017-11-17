@@ -23,9 +23,10 @@ class Validator
      * @param string $signature
      * @param string $signType
      * @param array $data
+     * @return bool
      * @throws SignatureException
      */
-    public function validate(string $signature, string $signType, array $data)
+    public function validate(string $signature, string $signType, array $data): bool
     {
         $packed = $this->packSignString($data);
 
@@ -43,6 +44,8 @@ class Validator
         if (!$result) {
             throw new SignatureException($data, 'Failed To Validate WeChat Signature.');
         }
+
+        return true;
     }
 
     private function validateSignRSA(string $signature, string $packedString, bool $sha256 = false): bool

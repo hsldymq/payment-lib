@@ -9,7 +9,7 @@ trait SignStringPackerTrait
      * @param array $exclude
      * @return string
      */
-    protected function packSignString(array $data, array $exclude): string
+    protected function packSignString(array $data, array $exclude = []): string
     {
         unset($data['sign']);
         ksort($data);
@@ -18,6 +18,8 @@ trait SignStringPackerTrait
         foreach ($data as $k => $v) {
             if ($k !== "sign" &&
                 $k !== "signType" &&
+                $v !== null &&
+                $v !== '' &&
                 !in_array($k, $exclude)
             ) {
                 $kv[] = "{$k}={$v}";
