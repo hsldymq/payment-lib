@@ -25,6 +25,18 @@ class Generator
         return $sign;
     }
 
+    /**
+     * TODO 暂不支持
+     * @param string $ingftAmt
+     * @param string $requestID
+     * @param string $developUserSign
+     * @return string
+     */
+    public function makeInSign(string $ingftAmt, string $requestID, string $developUserSign): string
+    {
+        return '';
+    }
+
     private function makeSignRSA256(string $packedString): string
     {
         $pk = $this->config->getPrivateKey();

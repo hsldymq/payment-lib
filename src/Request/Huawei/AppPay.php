@@ -8,6 +8,8 @@ use Archman\PaymentLib\SignatureHelper\Huawei\Generator;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;
 
 /**
+ * 应用内支付生成参数.
+ * @link http://developer.huawei.com/consumer/cn/wiki/index.php?title=HMS%E5%BC%80%E5%8F%91%E6%8C%87%E5%AF%BC%E4%B9%A6-%E5%BA%94%E7%94%A8%E5%86%85%E6%94%AF%E4%BB%98%E6%8E%A5%E5%8F%A3&oldid=4858
  * @link http://developer.huawei.com/consumer/cn/service/hms/catalog/huaweiiap.html?page=hmssdk_huaweiiap_api_reference_c1
  */
 class AppPay implements ParameterMakerInterface
@@ -38,17 +40,17 @@ class AppPay implements ParameterMakerInterface
         $this->config = $config;
     }
 
-    public function makeParameters(bool $withSign = true): array
+    public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->params, ['productName', 'productDesc', 'requestId', 'amount', 'serviceCatalog', 'merchantName']);
+        $generator = new Generator($this->config);
 
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['applicationID'] = $this->config->getAppID();
         $parameters['merchantId'] = $this->config->getMerchantID();
-        // TODO 生成inSign
-        $this->params['ingftAmt'] && $this->makeInSign($this->params['ingftAmt'], $this->params['requestId'], ''/* TODO */);
-
-        $withSign && $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, ['serviceCatalog', 'merchantName', 'extReserved', 'ingftAmt', 'inSign',]);
+        // TODO 生成inSign, 目前官方暂不支持
+        //$this->params['ingftAmt'] && $generator->makeInSign($this->params['ingftAmt'], $this->params['requestId'], ''/* TODO */);
+        $parameters['sign'] = $generator->makeSign($parameters, ['serviceCatalog', 'merchantName', 'extReserved', 'ingftAmt', 'inSign']);
 
         return $parameters;
     }
@@ -107,6 +109,11 @@ class AppPay implements ParameterMakerInterface
         return $this;
     }
 
+    /**
+     * 设置回调地址.
+     * @param null|string $url
+     * @return AppPay
+     */
     public function setURL(?string $url): self
     {
         $this->params['url'] = $url;
@@ -143,40 +150,51 @@ class AppPay implements ParameterMakerInterface
     }
 
     /**
+     * TODO 官方暂不支持
      * @param int $amount 单位: 分
      * @return AppPay
      */
     public function setIngftAmt(?int $amount): self
     {
-        ParameterHelper::checkAmount($amount);
-        $this->params['ingftAmt'] = $amount;
+        // ParameterHelper::checkAmount($amount);
+        // $this->params['ingftAmt'] = $amount;
 
         return $this;
     }
 
+    /**
+     * TODO 官方暂不支持
+     * @param \DateTime|null $datetime
+     * @return AppPay
+     */
     public function setExpireTime(?\DateTime $datetime): self
     {
-        $this->params['expireTime'] = $datetime->getTimestamp();
+        // $this->params['expireTime'] = $datetime->getTimestamp();
 
         return $this;
     }
 
+    /**
+     * TODO 官方暂不支持
+     * @param array|null $ids
+     * @return AppPay
+     */
     public function setPartnerIDs(?array $ids): self
     {
-        $this->params['partnerIDs'] = json_encode($ids);
+        // $this->params['partnerIDs'] = json_encode($ids);
 
         return $this;
     }
 
+    /**
+     * TODO 官方暂不支持
+     * @param int|null $seconds
+     * @return AppPay
+     */
     public function setValidTime(?int $seconds): self
     {
-        $this->params['validTime'] = $seconds;
+        // $this->params['validTime'] = $seconds;
 
         return $this;
-    }
-
-    private function makeInSign(string $ingftAmt, string $requestID, string $developUserSign): string
-    {
-
     }
 }
