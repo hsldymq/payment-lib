@@ -3,7 +3,7 @@ use \PHPUnit\Framework\TestCase;
 use \Archman\PaymentLib\Test\Config\HuaweiConfig;
 use Archman\PaymentLib\Test\Config;
 
-class CalbackSignatureTest extends TestCase
+class SignatureTest extends TestCase
 {
     public function testCallbackSignatureValidation()
     {

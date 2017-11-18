@@ -27,12 +27,13 @@ class Validator
      * @param string $signType 验证签名的算法(RSA, MD5, ...)
      * @param array $data 用于验证签名的数据
      * @param array $exclude
+     * @return bool
      */
-    public function validateSignAsync(string $signature, string $signType, array $data, array $exclude = [])
+    public function validateSignAsync(string $signature, string $signType, array $data, array $exclude = []): bool
     {
         $packed = $this->packVerifiedSignStringAsync($data, $exclude);
 
-        $this->validate($signature, $signType, $packed, $data);
+        return $this->validate($signature, $signType, $packed, $data);
     }
 
     /**
@@ -41,12 +42,13 @@ class Validator
      * @param string $signType
      * @param array $data
      * @param array $exclude
+     * @return bool
      */
-    public function validateSignSync(string $signature, string $signType, array $data, array $exclude = [])
+    public function validateSignSync(string $signature, string $signType, array $data, array $exclude = []): bool
     {
         $packed = $this->packVerifiedSignStringSync($data, $exclude);
 
-        $this->validate($signature, $signType, $packed, $data);
+        return $this->validate($signature, $signType, $packed, $data);
     }
 
     private function validate(
@@ -54,7 +56,7 @@ class Validator
         string $signType,
         string $packedString,
         array $data
-    ) {
+    ): bool {
         $signType = strtoupper($signType);
         switch ($signType) {
             case 'RSA':
@@ -73,6 +75,8 @@ class Validator
         if (!$result) {
             throw new SignatureException($data, 'Failed To Validate Alipay Signature.');
         }
+
+        return true;
     }
 
     private function validateSignRSA(string $signature, string $packedString): bool
