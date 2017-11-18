@@ -10,7 +10,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Archman\\PaymentLib\\": "src/"
+      "Archman\\PaymentLib\\": "src/",
+      "Archman\\PaymentLib\\Test\\": "tests/"
     }
   }
 }
