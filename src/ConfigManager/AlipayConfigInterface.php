@@ -47,13 +47,6 @@ interface AlipayConfigInterface
     public function getMAPIPrivateKey(?string $signType = null): string;
 
     /**
-     * MAPI网关公钥(RSA, DSA).
-     * @param null|string $signType
-     * @return string
-     */
-    public function getMAPIPublicKey(?string $signType = null): string;
-
-    /**
      * 应用公钥证书文件路径.
      * @param null|string $signType
      * @return string
