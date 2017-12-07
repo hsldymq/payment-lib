@@ -6,14 +6,38 @@ use Archman\PaymentLib\Test\Config;
 
 class PaySignatureTest extends TestCase
 {
-    public function testPaySuccess()
+    public function testPay()
     {
         $cases = Config::get('alipay', 'testCases', 'callback', 'pay');
         foreach ($cases as $each) {
-            if ($each['type'] !== 'success') {
-                continue;
-            }
+            $sign = $each['signature'];
+            $signType = $each['signType'];
+            $configData = Config::get('alipay', 'config', $each['appID']);
+            $config = new AlipayConfig($configData);
+            $validator = new Validator($config);
 
+            $this->assertTrue($validator->validateSignAsync($sign, $signType, $each['data']));
+        }
+    }
+
+    public function testBatchRefund()
+    {
+        $cases = Config::get('alipay', 'testCases', 'callback', 'batchRefund');
+        foreach ($cases as $each) {
+            $sign = $each['signature'];
+            $signType = $each['signType'];
+            $configData = Config::get('alipay', 'config', $each['appID']);
+            $config = new AlipayConfig($configData);
+            $validator = new Validator($config);
+
+            $this->assertTrue($validator->validateSignAsync($sign, $signType, $each['data']));
+        }
+    }
+
+    public function testBatchTransfer()
+    {
+        $cases = Config::get('alipay', 'testCases', 'callback', 'batchTransfer');
+        foreach ($cases as $each) {
             $sign = $each['signature'];
             $signType = $each['signType'];
             $configData = Config::get('alipay', 'config', $each['appID']);

@@ -39,4 +39,15 @@ class IAPTest extends TestCase
             ->setEnvironment(false);
         Client::sendRequest($request);
     }
+
+    /**
+     * @expectedException \Archman\PaymentLib\Exception\ErrorResponseException
+     */
+    public function testInvalidReceipt_ExceptExcetion()
+    {
+        $request = (new IAPReceiptValidation())
+            ->setReceiptData('test')
+            ->setEnvironment(false);
+        Client::sendRequest($request);
+    }
 }
