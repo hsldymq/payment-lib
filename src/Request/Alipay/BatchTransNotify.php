@@ -1,5 +1,5 @@
 <?php
-namespace Archman\PaymentLib\RequestInterface\Alipay;
+namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
@@ -52,10 +52,10 @@ class BatchTransNotify implements ParameterMakerInterface
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['partner'] = $this->config->getPartnerID();
         $parameters['sign_type'] = $signType;
-        $parameters['batch_num'] = count($this->params['detail_data']);
+        $parameters['batch_num'] = count($this->detailDataArr);
         $parameters['batch_fee'] = $this->calcBatchFee();
-        $parameters['pay_date'] = $this->getDatetime()->format('ymd');
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType, ['sign_type']);
+        $parameters['pay_date'] = $this->getDatetime()->format('Ymd');
+        $parameters['sign'] = (new Generator($this->config, true))->makeSign($parameters, $signType, ['sign_type']);
 
         ksort($parameters);
 
@@ -164,7 +164,7 @@ class BatchTransNotify implements ParameterMakerInterface
     {
         $total_amount = 0;
 
-        foreach ($this->params['detail_data'] as $each) {
+        foreach ($this->detailDataArr as $each) {
             $total_amount += $each['amount'];
         }
 

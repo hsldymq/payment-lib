@@ -4,7 +4,7 @@ use \Archman\PaymentLib\Test\Config\AlipayConfig;
 use Archman\PaymentLib\SignatureHelper\Alipay\Validator;
 use Archman\PaymentLib\Test\Config;
 
-class PaySignatureTest extends TestCase
+class SignatureTest extends TestCase
 {
     public function testPay()
     {
