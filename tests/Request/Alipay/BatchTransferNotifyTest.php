@@ -7,7 +7,7 @@ use Archman\PaymentLib\Request\Alipay\BatchTransNotify;
 
 class BatchTransferNotifyTest extends TestCase
 {
-    public function testSigning()
+    public function testMakingURL()
     {
         $cases = Config::get('alipay', 'testCases', 'request', 'BatchTransferNotify');
         foreach ($cases as $each) {
