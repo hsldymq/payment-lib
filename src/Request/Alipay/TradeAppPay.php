@@ -1,9 +1,9 @@
 <?php
-namespace Archman\PaymentLib\RequestInterface\Alipay;
+namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
-use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
+use Archman\PaymentLib\Request\Alipay\Traits\ParametersMakerTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use function GuzzleHttp\Psr7\build_query;
 use function GuzzleHttp\json_encode;
