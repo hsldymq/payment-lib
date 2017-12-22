@@ -20,7 +20,7 @@ class Generator
 
     public function makeSign(array $data, ?string $signType = null, array $exclude = []): string
     {
-        $signType = $signType ?? $this->isMAPI ? $this->config->getMAPIDefaultSignType() : $this->config->getOpenAPIDefaultSignType();
+        $signType = $signType ?? ($this->isMAPI ? $this->config->getMAPIDefaultSignType() : $this->config->getOpenAPIDefaultSignType());
         $packed = $this->packRequestSignString($data, $exclude);
 
         switch (strtoupper($signType)) {
