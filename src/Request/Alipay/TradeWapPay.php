@@ -1,12 +1,11 @@
 <?php
-namespace Archman\PaymentLib\RequestInterface\Alipay;
+namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
-use Utils\PaymentVendor\ConfigManager\AlipayConfig;
-use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
-use Utils\PaymentVendor\RequestInterface\Helper\ParameterHelper;
-use Utils\PaymentVendor\RequestInterface\MutableDateTimeInterface;
-use Utils\PaymentVendor\RequestInterface\Traits\MutableDateTimeTrait;
+use Archman\PaymentLib\Request\Alipay\Traits\ParametersMakerTrait;
+use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\MutableDateTimeInterface;
+use Archman\PaymentLib\Request\Traits\MutableDateTimeTrait;
 
 /**
  * TODO 有待验证(需要WEB前端配合)

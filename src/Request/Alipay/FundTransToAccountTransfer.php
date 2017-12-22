@@ -1,17 +1,17 @@
 <?php
-namespace Archman\PaymentLib\RequestInterface\Alipay;
+namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
-use Archman\PaymentLib\RequestInterface\Alipay\Traits\OpenAPIResponseHandlerTrait;
-use Utils\PaymentVendor\RequestInterface\Alipay\Traits\OpenAPIRequestPreparationTrait;
-use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
+use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIResponseHandlerTrait;
+use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIRequestPreparationTrait;
+use Archman\PaymentLib\Request\Alipay\Traits\ParametersMakerTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
  * 单笔转账到支付宝账户接口.
- * @link https://docs.open.alipay.com/api_28/alipay.fund.trans.toaccount.transfer/ 文档地址
+ * @link https://docs.open.alipay.com/api_28/alipay.fund.trans.toaccount.transfer/
  */
 class FundTransToAccountTransfer implements RequestableInterface, ParameterMakerInterface
 {
@@ -19,15 +19,15 @@ class FundTransToAccountTransfer implements RequestableInterface, ParameterMaker
     use OpenAPIResponseHandlerTrait;
     use ParametersMakerTrait;
 
+    public const PAYEE_TYPE_LOGONID = 'ALIPAY_LOGONID';
+    public const PAYEE_TYPE_USERID = 'ALIPAY_USERID';
+
+    private const SIGN_FIELD = 'sign';
+    private const CONTENT_FIELD = 'alipay_fund_trans_toaccount_transfer_response';
+
     private $config;
 
-    private $signType = 'RSA';
-
-    private $response_data_field = 'alipay_fund_trans_toaccount_transfer_response';
-
-    private $response_sign_field = 'sign';
-
-    private $biz_content = [
+    private $bizContent = [
         'out_biz_no' => null,           // 必填
         'payee_type' => null,           // 必填
         'payee_account' => null,        // 必填
@@ -44,61 +44,65 @@ class FundTransToAccountTransfer implements RequestableInterface, ParameterMaker
 
     public function makeParameters(): array
     {
-        ParameterHelper::checkRequired($this->biz_content, ['out_biz_no', 'payee_type', 'payee_account', 'amount']);
+        ParameterHelper::checkRequired($this->bizContent, ['out_biz_no', 'payee_type', 'payee_account', 'amount']);
 
-        $biz_content = ParameterHelper::packValidParameters($this->biz_content);
+        $bizContent = ParameterHelper::packValidParameters($this->bizContent);
 
-        $parameters = $this->makeOpenAPISignedParameters('alipay.fund.trans.toaccount.transfer', $biz_content);
+        $parameters = $this->makeOpenAPISignedParameters('alipay.fund.trans.toaccount.transfer', $bizContent);
 
         return $parameters;
     }
 
-    public function setOutBizNo(string $out_biz_no): self
+    public function setOutBizNo(string $outBizNo): self
     {
-        $this->biz_content['out_biz_no'] = $out_biz_no;
+        $this->bizContent['out_biz_no'] = $outBizNo;
 
         return $this;
     }
 
-    public function setPayeeType(bool $byLogonID)
+    public function setPayeeType(string $type)
     {
-        $this->biz_content['payee_type'] = $byLogonID ? 'ALIPAY_LOGONID' : 'ALIPAY_USERID';
+        $this->bizContent['payee_type'] = $type;
 
         return $this;
     }
 
-    public function setPayeeAccount(string $payee_account): self
+    public function setPayeeAccount(string $account): self
     {
-        $this->biz_content['payee_account'] = $payee_account;
+        $this->bizContent['payee_account'] = $account;
 
         return $this;
     }
 
+    /**
+     * @param int $amount 单位: 分
+     * @return FundTransToAccountTransfer
+     */
     public function setAmount(int $amount): self
     {
         ParameterHelper::checkAmount($amount);
-        $this->biz_content['amount'] = ParameterHelper::transAmountUnit($amount);
+        $this->bizContent['amount'] = ParameterHelper::transAmountUnit($amount);
 
         return $this;
     }
 
-    public function setPayerShowName(string $name): self
+    public function setPayerShowName(?string $name): self
     {
-        $this->biz_content['payer_show_name'] = $name;
+        $this->bizContent['payer_show_name'] = $name;
 
         return $this;
     }
 
-    public function setPayeeRealName(string $real_name): self
+    public function setPayeeRealName(?string $name): self
     {
-        $this->biz_content['payee_real_name'] = $real_name;
+        $this->bizContent['payee_real_name'] = $name;
 
         return $this;
     }
 
-    public function setRemark(string $remark): self
+    public function setRemark(?string $remark): self
     {
-        $this->biz_content['remark'] = $remark;
+        $this->bizContent['remark'] = $remark;
 
         return $this;
     }

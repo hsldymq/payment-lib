@@ -1,5 +1,5 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface\Alipay\Traits;
+namespace Archman\PaymentLib\Request\Alipay\Traits;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Archman\PaymentLib\SignatureHelper\Alipay\Generator;
@@ -8,7 +8,7 @@ use function GuzzleHttp\json_encode;
 /**
  * @property AlipayConfigInterface $config
  * @property string $signType
- * @property array $params
+ * @property ?array $params
  */
 trait ParametersMakerTrait
 {
@@ -24,7 +24,7 @@ trait ParametersMakerTrait
     ): array {
         $signType = $this->signType ?? $this->config->getOpenAPIDefaultSignType();
 
-        $parameters = $this->params;
+        $parameters = $this->params ?? [];
         $parameters['app_id'] = $this->config->getAppID();
         $parameters['method'] = $method;
         $parameters['format'] = $format;
@@ -47,7 +47,7 @@ trait ParametersMakerTrait
 
     private function getDatetime(): string
     {
-        $dt = $this->date ?? (new \DateTime('now', new \DateTimeZone('+0800')));
+        $dt = $this->datetime ?? (new \DateTime('now', new \DateTimeZone('+0800')));
 
         return $dt->format('Y-m-d H:i:s');
     }

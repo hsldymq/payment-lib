@@ -1,5 +1,5 @@
 <?php
-namespace Archman\PaymentLib\RequestInterface\Alipay\Traits;
+namespace Archman\PaymentLib\Request\Alipay\Traits;
 
 use Archman\PaymentLib\Exception\ErrorResponseException;
 use Archman\PaymentLib\Exception\SignatureException;

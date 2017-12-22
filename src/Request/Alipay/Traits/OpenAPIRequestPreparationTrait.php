@@ -1,5 +1,5 @@
 <?php
-namespace Utils\PaymentVendor\RequestInterface\Alipay\Traits;
+namespace Archman\PaymentLib\Request\Alipay\Traits;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Archman\PaymentLib\Request\RequestOption;

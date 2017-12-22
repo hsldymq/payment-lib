@@ -69,16 +69,47 @@ class BatchTransNotify implements ParameterMakerInterface
         return $this;
     }
 
-    public function setBatchNo(string $batch_no): self
+    public function setAccountName(string $name): self
     {
-        $this->params['batch_no'] = $batch_no;
+        $this->params['account_name'] = $name;
 
         return $this;
     }
 
-    public function setAccountName(string $name): self
+    /**
+     * 增加转账数据.
+     * @param string $serialNo 商户订单号
+     * @param string $userAccount 转账目标用户账号
+     * @param string $userRealName 用户姓名
+     * @param int $amount 金额(单位:分)
+     * @param string $remark 备注
+     * @return BatchTransNotify
+     */
+    public function addDetailData(
+        string $serialNo,
+        string $userAccount,
+        string $userRealName,
+        int $amount,
+        string $remark
+    ): self {
+        ParameterHelper::checkAmount($amount);
+
+        $this->detailDataArr[$serialNo] = [
+            'serial_no' => $serialNo,
+            'user_account' => $userAccount,
+            'user_real_name' => $userRealName,
+            'amount' => $amount,
+            'remark' => $remark,
+        ];
+
+        $this->params['detail_data'] = $this->makeDetailDataString();
+
+        return $this;
+    }
+
+    public function setBatchNo(string $batchNo): self
     {
-        $this->params['account_name'] = $name;
+        $this->params['batch_no'] = $batchNo;
 
         return $this;
     }
@@ -90,33 +121,9 @@ class BatchTransNotify implements ParameterMakerInterface
         return $this;
     }
 
-    /**
-     * 增加转账数据.
-     * @param string $serial_no 商户订单号
-     * @param string $user_account 转账目标用户账号
-     * @param string $user_real_name 用户姓名
-     * @param int $amount 金额(单位:分)
-     * @param string $remark 备注
-     * @return BatchTransNotify
-     */
-    public function addDetailData(
-        string $serial_no,
-        string $user_account,
-        string $user_real_name,
-        int $amount,
-        string $remark
-    ): self {
-        ParameterHelper::checkAmount($amount);
-
-        $this->detailDataArr[$serial_no] = [
-            'serial_no' => $serial_no,
-            'user_account' => $user_account,
-            'user_real_name' => $user_real_name,
-            'amount' => $amount,
-            'remark' => $remark,
-        ];
-
-        $this->params['detail_data'] = $this->makeDetailDataString();
+    public function setPayDate(\Datetime $dt): self
+    {
+        $this->payDate = $dt;
 
         return $this;
     }
@@ -139,11 +146,6 @@ class BatchTransNotify implements ParameterMakerInterface
         return $this;
     }
 
-    public function setPayDate(\Datetime $dt): self
-    {
-        $this->payDate = $dt;
-    }
-
     protected function getDatetime(): \Datetime
     {
         return $this->payDate instanceof \Datetime ? $this->payDate : new \Datetime('now');
@@ -162,12 +164,12 @@ class BatchTransNotify implements ParameterMakerInterface
 
     private function calcBatchFee(): string
     {
-        $total_amount = 0;
+        $totalAmount = 0;
 
         foreach ($this->detailDataArr as $each) {
-            $total_amount += $each['amount'];
+            $totalAmount += $each['amount'];
         }
 
-        return ParameterHelper::transAmountUnit($total_amount);
+        return ParameterHelper::transAmountUnit($totalAmount);
     }
 }

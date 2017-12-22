@@ -1,10 +1,10 @@
 <?php
-namespace Archman\PaymentLib\RequestInterface\Alipay;
+namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
-use Utils\PaymentVendor\RequestInterface\Alipay\Traits\OpenAPIRequestPreparationTrait;
-use Archman\PaymentLib\RequestInterface\Alipay\Traits\OpenAPIResponseHandlerTrait;
-use Utils\PaymentVendor\RequestInterface\Alipay\Traits\ParametersMakerTrait;
+use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIRequestPreparationTrait;
+use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIResponseHandlerTrait;
+use Archman\PaymentLib\Request\Alipay\Traits\ParametersMakerTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 

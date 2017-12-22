@@ -7,7 +7,7 @@ use Archman\PaymentLib\Request\Alipay\BatchTransNotify;
 
 class BatchTransferNotifyTest extends TestCase
 {
-    public function testSigning()
+    public function testMakingURL()
     {
         $cases = Config::get('alipay', 'testCases', 'request', 'BatchTransferNotify');
         foreach ($cases as $each) {
@@ -19,7 +19,13 @@ class BatchTransferNotifyTest extends TestCase
                 ->setBatchNo($each['fields']['batch_no'])
                 ->setEmail($each['fields']['email'])
                 ->setNotifyURL($each['fields']['notify_url'])
-                ->addDetailData(...$each['fields']['detail_data']);
+                ->addDetailData(...$each['fields']['detail_data'])
+                ->setPayDate(new DateTime($each['fields']['pay_date']))
+                ->setBuyerAccountName($each['fields']['buyer_account_name'] ?? null);
+            foreach ($each['fields']['extend_param'] ?? [] as $params) {
+                $request->addExtendParam(...$params);
+            }
+
             $url = $request->makeTransferUrl();
 
             $this->assertEquals($each['url'], $url);
