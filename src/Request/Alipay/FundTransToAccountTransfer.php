@@ -19,6 +19,9 @@ class FundTransToAccountTransfer implements RequestableInterface, ParameterMaker
     use OpenAPIResponseHandlerTrait;
     use ParametersMakerTrait;
 
+    const PAYEE_TYPE_LOGONID = 'ALIPAY_LOGONID';
+    const PAYEE_TYPE_USERID = 'ALIPAY_USERID';
+
     private $config;
 
     private $signType = 'RSA';
@@ -60,9 +63,9 @@ class FundTransToAccountTransfer implements RequestableInterface, ParameterMaker
         return $this;
     }
 
-    public function setPayeeType(bool $byLogonID)
+    public function setPayeeType(string $type)
     {
-        $this->biz_content['payee_type'] = $byLogonID ? 'ALIPAY_LOGONID' : 'ALIPAY_USERID';
+        $this->biz_content['payee_type'] = $type;
 
         return $this;
     }
