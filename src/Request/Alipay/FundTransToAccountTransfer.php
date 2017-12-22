@@ -77,6 +77,10 @@ class FundTransToAccountTransfer implements RequestableInterface, ParameterMaker
         return $this;
     }
 
+    /**
+     * @param int $amount 单位: 分
+     * @return FundTransToAccountTransfer
+     */
     public function setAmount(int $amount): self
     {
         ParameterHelper::checkAmount($amount);
@@ -85,21 +89,21 @@ class FundTransToAccountTransfer implements RequestableInterface, ParameterMaker
         return $this;
     }
 
-    public function setPayerShowName(string $name): self
+    public function setPayerShowName(?string $name): self
     {
         $this->biz_content['payer_show_name'] = $name;
 
         return $this;
     }
 
-    public function setPayeeRealName(string $real_name): self
+    public function setPayeeRealName(?string $real_name): self
     {
         $this->biz_content['payee_real_name'] = $real_name;
 
         return $this;
     }
 
-    public function setRemark(string $remark): self
+    public function setRemark(?string $remark): self
     {
         $this->biz_content['remark'] = $remark;
 
