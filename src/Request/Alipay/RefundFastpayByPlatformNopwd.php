@@ -18,6 +18,7 @@ use Psr\Http\Message\ResponseInterface;
 use function GuzzleHttp\Psr7\build_query;
 
 /**
+ * 即时到账批量退款无密接口.
  * @link https://os.alipayobjects.com/rmsportal/UYaiBLFsoFZqVgxWkEZx.zip 文档PDF下载地址
  */
 class RefundFastpayByPlatformNopwd implements RequestableInterface, ParameterMakerInterface
@@ -29,16 +30,24 @@ class RefundFastpayByPlatformNopwd implements RequestableInterface, ParameterMak
     /** @var \Datetime */
     private $datetime;
 
+    /** @var string */
+    private $serialNumber;
+
+    /** @var array */
+    private $detailList = [];
+
     private $params = [
         'service' => 'refund_fastpay_by_platform_nopwd',
         '_input_charset' => 'utf-8',
-        'detail_data' => [],
-        'serial_number' => null,
-        'dback_notify_url' => null,
+        'sign_type' => self::FIXED_SIGN_TYPE,
         'notify_url' => null,
+        'dback_notify_url' => null,
+        'batch_no' => null,
+        'refund_date' => null,
+        'batch_num' => null,
+        'detail_data' => null,
         'use_freeze_amount' => null,
         'return_type' => 'xml',
-        'sign_type' => self::FIXED_SIGN_TYPE,
     ];
 
     public function __construct(AlipayConfigInterface $config)
@@ -48,16 +57,17 @@ class RefundFastpayByPlatformNopwd implements RequestableInterface, ParameterMak
 
     public function makeParameters(): array
     {
-        ParameterHelper::checkRequired($this->params, ['detail_data', 'serial_number']);
+        ParameterHelper::checkRequired(
+            array_merge($this->params, ['serial_number' => $this->serialNumber]),
+            ['detail_data', 'serial_number']
+        );
         $parameters = ParameterHelper::packValidParameters($this->params);
 
-        $datetime = $this->datetime ?? $this->now();
         $parameters['partner'] = $this->config->getPartnerID();
-        $parameters['batch_no'] = $this->makeBatchNo($datetime);
-        $parameters['refund_date'] = $datetime->format('Y-m-d H:i:s');
-        $parameters['batch_num'] = count($this->params['detail_data']);
-        $parameters['detail_data'] = implode('#', $this->params['detail_data']);
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, self::FIXED_SIGN_TYPE, ['sign_type']);
+        $parameters['batch_no'] = $this->makeBatchNo();
+        $parameters['refund_date'] = $this->datetime->format('Y-m-d H:i:s');
+        $parameters['batch_num'] = count($this->detailList);
+        $parameters['sign'] = (new Generator($this->config, true))->makeSign($parameters, self::FIXED_SIGN_TYPE, ['sign_type']);
 
         return $parameters;
     }
@@ -77,42 +87,44 @@ class RefundFastpayByPlatformNopwd implements RequestableInterface, ParameterMak
     }
 
     /**
-     * 设置流水号(3-24位). 用于生成批次号.
+     * 设置流水号(3-24位). 用于生成批次号, 超过24位会截断后面多余的字符.
      * @param string $sn
      * @return self
      */
     public function setSerialNumber(string $sn): self
     {
-        $this->params['serial_number'] = mb_substr($sn, 0, 24, 'utf-8');
+        $this->serialNumber = mb_substr($sn, 0, 24, 'utf-8');
 
         return $this;
     }
 
     /**
-     * @param string $trade_no 支付宝原支付订单号
+     * @param string $tradeNo 支付宝原支付订单号
      * @param int $amount 单位:分
      * @param string $reason 退款原因
      * @return self
      */
-    public function addDetailData(string $trade_no, int $amount, string $reason): self
+    public function addDetailData(string $tradeNo, int $amount, string $reason): self
     {
         $amount = ParameterHelper::transAmountUnit($amount);
-        $this->params['detail_data'][$trade_no] = "{$trade_no}^{$amount}^{$reason}";
+        $this->detailList[$tradeNo] = "{$tradeNo}^{$amount}^{$reason}";
+        $this->params['detail_data'] = implode('#', $this->detailList);
 
         return $this;
     }
 
-    public function setUseFreezeAmount(?bool $doesUse): self
+    public function setUseFreezeAmount(?bool $use): self
     {
         $this->params['use_freeze_amount'] = null;
-        is_bool($doesUse) && $this->params['use_freeze_amount'] = $doesUse ? 'Y' : 'N';
+        is_bool($use) && $this->params['use_freeze_amount'] = $use ? 'Y' : 'N';
 
         return $this;
     }
 
-    public function setRefundDate(?\Datetime $datetime): self
+    public function setRefundDate(\Datetime $datetime): self
     {
-        $datetime && $this->datetime = $datetime;
+        $this->datetime = $datetime;
+        $this->params['refund_date'] = $datetime->format('Y-m-d H:i:s');
 
         return $this;
     }
@@ -149,13 +161,8 @@ class RefundFastpayByPlatformNopwd implements RequestableInterface, ParameterMak
         return new GeneralResponse($data);
     }
 
-    private function now(): string
+    private function makeBatchNo(): string
     {
-         return new \DateTime('now', new \DateTimeZone('+0800'));
-    }
-
-    private function makeBatchNo(\DateTime $datetime): string
-    {
-        return $datetime->format('Ymd').$this->params['serial_number'];
+        return $this->datetime->format('Ymd').$this->serialNumber;
     }
 }

@@ -11,6 +11,7 @@ class DataParser
     public static function xmlToArray(string $data): array
     {
         // TODO
+        // TODO GBK编码使用simplexml库会报错
     }
 
     public static function formDataToArray(string $data): array
