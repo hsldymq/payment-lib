@@ -57,7 +57,7 @@ trait EnvironmentTrait
                 public function getClientCertPath(): ?string { return $this->productionConfig->getClientCertPath(); }
                 public function getClientCertPassword(): ?string { return $this->productionConfig->getClientCertPassword(); }
                 public function getDefaultSignType(): string { return $this->productionConfig->getDefaultSignType(); }
-                public function getApiKey(): string { return $this->signKey; }
+                public function getAPIKey(): string { return $this->signKey; }
                 public function setApiKey(string $key) { $this->signKey = $key; }
             });
         }
