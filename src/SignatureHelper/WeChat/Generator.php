@@ -40,14 +40,14 @@ class Generator
 
     private function makeSignMD5(string $packedString): string
     {
-        $secretKey = $this->config->getApiKey();
+        $secretKey = $this->config->getAPIKey();
 
         return strtoupper(md5("{$packedString}&key={$secretKey}"));
     }
 
     private function makeSignSHA256(string $packedString): string
     {
-        $secretKey = $this->config->getApiKey();
+        $secretKey = $this->config->getAPIKey();
 
         return strtoupper(hash_hmac('sha256', "{$packedString}&key={$secretKey}", $secretKey));
     }

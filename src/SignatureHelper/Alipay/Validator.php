@@ -81,26 +81,26 @@ class Validator
 
     private function validateSignRSA(string $signature, string $packedString): bool
     {
-        $resource = \openssl_get_publickey($this->config->getAlipayPublicKey('RSA'));
+        $resource = openssl_get_publickey($this->config->getAlipayPublicKey('RSA'));
         if (!$resource) {
             throw new \Exception("Unable To Get RSA Public Key");
         }
 
-        $isCorrect = \openssl_verify($packedString, base64_decode($signature), $resource) === 1;
-        \openssl_free_key($resource);
+        $isCorrect = openssl_verify($packedString, base64_decode($signature), $resource) === 1;
+        openssl_free_key($resource);
 
         return $isCorrect;
     }
 
     private function validateSignRSA2(string $signature, string $packedString): bool
     {
-        $resource = \openssl_get_publickey($this->config->getAlipayPublicKey('RSA2'));
+        $resource = openssl_get_publickey($this->config->getAlipayPublicKey('RSA2'));
         if (!$resource) {
             throw new \Exception("Unable To Get RSA2 Public Key");
         }
 
-        $isCorrect = \openssl_verify($packedString, base64_decode($signature), $resource, OPENSSL_ALGO_SHA256) === 1;
-        \openssl_free_key($resource);
+        $isCorrect = openssl_verify($packedString, base64_decode($signature), $resource, OPENSSL_ALGO_SHA256) === 1;
+        openssl_free_key($resource);
 
         return $isCorrect;
     }

@@ -43,13 +43,13 @@ class Generator
     private function makeSignRSA(string $packedString): string
     {
         $pk = $this->getPrivateKey('RSA');
-        $resource = \openssl_get_privatekey($pk);
+        $resource = openssl_get_privatekey($pk);
         if (!$resource) {
             throw new \Exception("Unable To Get RSA Private Key");
         }
 
-        \openssl_sign($packedString, $sign, $resource);
-        \openssl_free_key($resource);
+        openssl_sign($packedString, $sign, $resource);
+        openssl_free_key($resource);
         $sign = base64_encode($sign);
 
         return $sign;
@@ -58,13 +58,13 @@ class Generator
     private function makeSignRSA2(string $packedString): string
     {
         $pk = $this->getPrivateKey('RSA2');
-        $resource = \openssl_get_privatekey($pk);
+        $resource = openssl_get_privatekey($pk);
         if (!$resource) {
             throw new \Exception("Unable To Get RSA2 Private Key");
         }
 
-        \openssl_sign($packedString, $sign, $resource, OPENSSL_ALGO_SHA256);
-        \openssl_free_key($resource);
+        openssl_sign($packedString, $sign, $resource, OPENSSL_ALGO_SHA256);
+        openssl_free_key($resource);
         $sign = base64_encode($sign);
 
         return $sign;

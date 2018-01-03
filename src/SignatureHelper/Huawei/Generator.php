@@ -40,13 +40,13 @@ class Generator
     private function makeSignRSA256(string $packedString): string
     {
         $pk = $this->config->getPrivateKey();
-        $resource = \openssl_get_privatekey($pk);
+        $resource = openssl_get_privatekey($pk);
         if (!$resource) {
             throw new \Exception("Unable To Get RSA Private Key");
         }
 
-        \openssl_sign($packedString, $sign, $resource, OPENSSL_ALGO_SHA256);
-        \openssl_free_key($resource);
+        openssl_sign($packedString, $sign, $resource, OPENSSL_ALGO_SHA256);
+        openssl_free_key($resource);
         $sign = base64_encode($sign);
 
         return $sign;

@@ -47,14 +47,14 @@ class Validator
 
     private function validateSignMD5(string $signature, string $packedString): bool
     {
-        $secretKey = $this->config->getApiKey();
+        $secretKey = $this->config->getAPIKey();
 
         return strtoupper(md5("{$packedString}&key={$secretKey}")) === $signature;
     }
 
     private function validateSignSHA256(string $signature, string $packedString): bool
     {
-        $secretKey = $this->config->getApiKey();
+        $secretKey = $this->config->getAPIKey();
 
         return strtoupper(hash_hmac('sha256', "{$packedString}&key={$secretKey}", $secretKey)) === $signature;
     }

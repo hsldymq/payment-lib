@@ -50,15 +50,15 @@ class Validator
 
     private function validateSignRSA(string $signature, string $packedString, bool $sha256 = false): bool
     {
-        $resource = \openssl_get_publickey($this->config->getPublicKey());
+        $resource = openssl_get_publickey($this->config->getPublicKey());
         if (!$resource) {
             throw new \Exception("Unable To Get Public Key");
         }
 
         $params = [$packedString, base64_decode($signature), $resource];
         $sha256 && $params[] = OPENSSL_ALGO_SHA256;
-        $isCorrect = \openssl_verify(...$params) === 1;
-        \openssl_free_key($resource);
+        $isCorrect = openssl_verify(...$params) === 1;
+        openssl_free_key($resource);
 
         return $isCorrect;
     }
