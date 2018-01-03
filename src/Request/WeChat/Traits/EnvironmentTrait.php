@@ -29,7 +29,7 @@ trait EnvironmentTrait
     public function setSandboxSignKey(string $key): self
     {
         $this->initEnvConfig();
-        $this->sandboxConfig->setApiKey($key);
+        $this->sandboxConfig->setAPIKey($key);
 
         return $this;
     }
@@ -58,7 +58,7 @@ trait EnvironmentTrait
                 public function getClientCertPassword(): ?string { return $this->productionConfig->getClientCertPassword(); }
                 public function getDefaultSignType(): string { return $this->productionConfig->getDefaultSignType(); }
                 public function getAPIKey(): string { return $this->signKey; }
-                public function setApiKey(string $key) { $this->signKey = $key; }
+                public function setAPIKey(string $key) { $this->signKey = $key; }
             });
         }
     }
