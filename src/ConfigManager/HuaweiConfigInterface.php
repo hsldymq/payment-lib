@@ -13,12 +13,14 @@ interface HuaweiConfigInterface
 
     /**
      * 支付公钥.
+     * 返回的密钥值应该为PKCS格式.
      * @return string
      */
     public function getPublicKey(): string;
 
     /**
      * 支付私钥.
+     * 返回的密钥值应该为PKCS格式.
      * @return string
      */
     public function getPrivateKey(): string;

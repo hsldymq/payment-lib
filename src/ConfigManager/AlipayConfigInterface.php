@@ -13,6 +13,7 @@ interface AlipayConfigInterface
 
     /**
      * 支付宝公钥.
+     * 如果是RSA/RSA2算法,返回的公钥值应该为PKCS格式.
      * @param null|string $signType 签名类型(RSA, RSA2, ...), 不传返回默认.
      * @return string
      */
@@ -27,6 +28,7 @@ interface AlipayConfigInterface
 
     /**
      * 开放平台应用密钥.
+     * 如果是RSA/RSA2算法,应返回PKCS格式.
      * @param null|string $signType
      * @return string
      */
@@ -41,6 +43,7 @@ interface AlipayConfigInterface
 
     /**
      * MAPI网关密钥(MD5安全校验码, RSA密钥, DSA秘钥).
+     * 如果是RSA/RSA2算法,应返回PKCS格式.
      * @param null|string $signType
      * @return string
      */
