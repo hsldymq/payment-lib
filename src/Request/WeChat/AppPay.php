@@ -58,7 +58,7 @@ class AppPay implements ParameterMakerInterface
      * @param \DateTime|null $dt
      * @return AppPay
      */
-    public function setDatetime(?\DateTime $dt): self
+    public function setTimestamp(?\DateTime $dt): self
     {
         $this->datetime = $dt;
 
