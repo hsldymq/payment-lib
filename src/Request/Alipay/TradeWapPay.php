@@ -58,7 +58,7 @@ class TradeWapPay implements ParameterMakerInterface
             $fields[] = "<input name='{$name}' value='{$value}' type='hidden'>";
         }
 
-        $formID = $formID ?? 'TradePagePay_'.md5(intval(microtime(true) * 1000).random_int(10000, 99999));
+        $formID = $formID ?? 'TradeWapPay_'.md5(intval(microtime(true) * 1000).random_int(10000, 99999));
         $submitScript = $autoSubmit ? "<script>document.getElementById('{$formID}').submit();</script>" : '';
         $form = "
             <form id='{$formID}' action='https://openapi.alipay.com/gateway.do' method='POST' enctype='application/x-www-form-urlencoded'>
