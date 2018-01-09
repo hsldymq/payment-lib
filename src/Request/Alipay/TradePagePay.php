@@ -2,21 +2,16 @@
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
-use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIRequestPreparationTrait;
-use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIResponseHandlerTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\ParametersMakerTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
-use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
  * PC场景下单支付.
  * @link https://docs.open.alipay.com/270/alipay.trade.page.pay
  */
-class TradePagePay implements ParameterMakerInterface, RequestableInterface
+class TradePagePay implements ParameterMakerInterface
 {
-    use OpenAPIResponseHandlerTrait;
-    use OpenAPIRequestPreparationTrait;
     use ParametersMakerTrait;
 
     private $config;
@@ -57,8 +52,7 @@ class TradePagePay implements ParameterMakerInterface, RequestableInterface
      */
     public function makeSignedForm(bool $autoSubmit = true, ?string $formID = null): string
     {
-        $parameters = $this->makeParameters();
-        foreach ($parameters as $name => $value) {
+        foreach ($this->makeParameters() as $name => $value) {
             $fields[] = "<input name='{$name}' value='{$value}' type='hidden'>";
         }
 
