@@ -139,15 +139,15 @@ class TradeAppPay implements ParameterMakerInterface
         ?bool $needBuyerRealNamed,
         ?string $transMemo,
         ?int $HBFQNum,
-        ?int $HBFQSellerPercent
+        ?float $HBFQSellerPercent
     ): self {
         $rn = is_null($needBuyerRealNamed) ? null : $needBuyerRealNamed ? 'T' : 'F';
         $params = [
             'sys_service_provider_id' => $sysServiceProviderID,
             'needBuyerRealnamed' => $rn,
             'TRANS_MEMO' => $transMemo,
-            'hb_fq_num' => $HBFQNum,
-            'hb_fq_seller_percent' => $HBFQSellerPercent,
+            'hb_fq_num' => "$HBFQNum",
+            'hb_fq_seller_percent' => "$HBFQSellerPercent",
         ];
         $params = ParameterHelper::packValidParameters($params);
         $params && $this->bizContent['extend_params'] = json_encode($params);
@@ -157,18 +157,14 @@ class TradeAppPay implements ParameterMakerInterface
 
     public function setEnablePayChannels(?array $channels): self
     {
-        if ($channels) {
-            $this->bizContent['enable_pay_channels'] = implode(',', $channels);
-        }
+        $this->bizContent['enable_pay_channels'] = implode(',', $channels ?? []) ?: null;
 
         return $this;
     }
 
     public function setDisablePayChannels(?array $channels): self
     {
-        if ($channels) {
-            $this->bizContent['disable_pay_channels'] = implode(',', $channels);
-        }
+        $this->bizContent['disable_pay_channels'] = implode(',', $channels ?? []) ?: null;
 
         return $this;
     }
