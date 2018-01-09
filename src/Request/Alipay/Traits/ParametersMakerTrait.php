@@ -2,6 +2,7 @@
 namespace Archman\PaymentLib\Request\Alipay\Traits;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\SignatureHelper\Alipay\Generator;
 use function GuzzleHttp\json_encode;
 
@@ -24,7 +25,7 @@ trait ParametersMakerTrait
     ): array {
         $signType = $this->signType ?? $this->config->getOpenAPIDefaultSignType();
 
-        $parameters = $this->params ?? [];
+        $parameters = ParameterHelper::packValidParameters($this->params ?? []);
         $parameters['app_id'] = $this->config->getAppID();
         $parameters['method'] = $method;
         $parameters['format'] = $format;
