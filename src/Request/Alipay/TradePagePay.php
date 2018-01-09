@@ -50,7 +50,7 @@ class TradePagePay implements ParameterMakerInterface
      * @param null|string $formID form元素ID,如果不打算自动提交,可以指定form ID以便前端自己掌握提交时间
      * @return string
      */
-    public function makeSignedForm(bool $autoSubmit = true, ?string $formID = null): string
+    public function makeFormHTML(bool $autoSubmit = true, ?string $formID = null): string
     {
         foreach ($this->makeParameters() as $name => $value) {
             $fields[] = "<input name='{$name}' value='{$value}' type='hidden'>";
