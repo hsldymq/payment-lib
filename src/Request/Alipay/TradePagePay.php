@@ -160,7 +160,7 @@ class TradePagePay implements ParameterMakerInterface
 
     public function setTimeoutExpress(?int $minutes): self
     {
-        $this->bizContent['timeout_express'] = "{$minutes}m";
+        $this->bizContent['timeout_express'] = is_null($minutes) ? null : "{$minutes}m";
 
         return $this;
     }

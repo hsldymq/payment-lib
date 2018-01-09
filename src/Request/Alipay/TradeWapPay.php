@@ -117,7 +117,7 @@ class TradeWapPay implements ParameterMakerInterface
 
     public function setTimeoutExpress(?int $minutes): self
     {
-        !is_null($minutes) && $this->bizContent['timeout_express'] = "{$minutes}m";
+        $this->bizContent['timeout_express'] = is_null($minutes) ? null : "{$minutes}m";
 
         return $this;
     }
