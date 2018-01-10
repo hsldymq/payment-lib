@@ -5,7 +5,6 @@ use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\Alipay\Traits\ParametersMakerTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
-use function GuzzleHttp\Psr7\build_query;
 use function GuzzleHttp\json_encode;
 
 /**
@@ -28,15 +27,15 @@ class TradeAppPay implements ParameterMakerInterface
         'out_trade_no' => null,
         'timeout_express' => null,
         'total_amount' => null,
-        'seller_id' => null,
         'product_code' => 'QUICK_MSECURITY_PAY', // 必填参数(固定值)
         'goods_type' => null,
         'passback_params' => null,
-        'promo_params' => [],
+        'promo_params' => null,
         'extend_params' => null,
         'enable_pay_channels' => null,
         'disable_pay_channels' => null,
         'store_id' => null,
+        'ext_user_info' => null,
     ];
 
     public function __construct(AlipayConfigInterface $config)
@@ -113,23 +112,16 @@ class TradeAppPay implements ParameterMakerInterface
         return $this;
     }
 
-    public function setSellerID(?string $id): self
+    public function setPassbackParams(?string $params): self
     {
-        $this->bizContent['seller_id'] = $id;
+        $this->bizContent['passback_params'] = $params;
 
         return $this;
     }
 
-    public function setPassbackParams(?array $params): self
+    public function setPromoParams(?string $params): self
     {
-        $this->bizContent['passback_params'] = build_query($params);
-
-        return $this;
-    }
-
-    public function setPromoParams(?array $params): self
-    {
-        $this->bizContent['promo_params'] = json_encode($params);
+        $this->bizContent['promo_params'] = $params;
 
         return $this;
     }
@@ -141,16 +133,14 @@ class TradeAppPay implements ParameterMakerInterface
         ?int $HBFQNum,
         ?float $HBFQSellerPercent
     ): self {
-        $rn = is_null($needBuyerRealNamed) ? null : $needBuyerRealNamed ? 'T' : 'F';
-        $params = [
+        $data = ParameterHelper::packValidParameters([
             'sys_service_provider_id' => $sysServiceProviderID,
-            'needBuyerRealnamed' => $rn,
+            'needBuyerRealnamed' => is_null($needBuyerRealNamed) ? null : $needBuyerRealNamed ? 'T' : 'F',
             'TRANS_MEMO' => $transMemo,
             'hb_fq_num' => "$HBFQNum",
             'hb_fq_seller_percent' => "$HBFQSellerPercent",
-        ];
-        $params = ParameterHelper::packValidParameters($params);
-        $params && $this->bizContent['extend_params'] = json_encode($params);
+        ]);
+        $this->bizContent['extend_params'] = $data ? json_encode($data) : null;
 
         return $this;
     }
@@ -172,6 +162,29 @@ class TradeAppPay implements ParameterMakerInterface
     public function setStoreID(?string $id): self
     {
         $this->bizContent['store_id'] = $id;
+
+        return $this;
+    }
+
+    public function setExtUserInfo(
+        ?string $name = null,
+        ?string $mobile = null,
+        ?string $certType = null,
+        ?string $certNo = null,
+        ?int $minAge = null,
+        ?bool $fixBuyer = null,
+        ?bool $needCheckInfo = null
+    ): self {
+        $data = ParameterHelper::packValidParameters([
+            'name' => $name,
+            'mobile' => $mobile,
+            'cert_type' => $certType,
+            'cert_no' => $certNo,
+            'min_age' => "$minAge",
+            'fix_buyer' => is_null($fixBuyer) ? null : ($fixBuyer ? 'T' : 'F'),
+            'need_check_info' => is_null($needCheckInfo) ? null : ($needCheckInfo ? 'T' : 'F'),
+        ]);
+        $this->bizContent['ext_user_info'] = $data ? json_encode($data) : null;
 
         return $this;
     }
