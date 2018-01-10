@@ -31,8 +31,11 @@ trait OpenAPIResponseHandlerTrait
         $validator = new Validator($this->config);
         try {
             $validator->validateSignSync($signature, $signType, $content);
-        } catch (SignatureException $e) {
-            throw new SignatureException($data, $e->getMessage());
+        } catch (\Throwable $e) {
+            if (!($e instanceof SignatureException)) {
+                $e = new SignatureException($data, $e->getMessage(), 0, $e);
+            }
+            throw $e;
         }
 
         return $this->getResponse($content);
@@ -50,7 +53,7 @@ trait OpenAPIResponseHandlerTrait
         if (intval($content['code']) !== 10000) {
             throw new ErrorResponseException(
                 $content['sub_code'],
-                $content,['sub_msg'],
+                $content['sub_msg'],
                 $data
             );
         }
