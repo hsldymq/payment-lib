@@ -151,9 +151,9 @@ class TradePagePay implements ParameterMakerInterface
         return $this;
     }
 
-    public function setGoodsType(?int $type): self
+    public function setGoodsType(?string $type): self
     {
-        $this->bizContent['goods_type'] = "$type";
+        $this->bizContent['goods_type'] = $type;
 
         return $this;
     }

@@ -106,16 +106,16 @@ class TradeAppPay implements ParameterMakerInterface
         return $this;
     }
 
-    public function setSellerID(?string $id): self
+    public function setGoodsType(?string $type): self
     {
-        $this->bizContent['seller_id'] = $id;
+        $this->bizContent['goods_type'] = $type;
 
         return $this;
     }
 
-    public function setGoodsType(?string $type): self
+    public function setSellerID(?string $id): self
     {
-        $this->bizContent['goods_type'] = $type;
+        $this->bizContent['seller_id'] = $id;
 
         return $this;
     }
