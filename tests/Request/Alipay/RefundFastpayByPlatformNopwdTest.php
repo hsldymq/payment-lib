@@ -18,7 +18,7 @@ class RefundFastpayByPlatformNopwdTest extends \PHPUnit\Framework\TestCase
                 ->setNotifyURL($each['fields']['notify_url'])
                 ->setUseFreezeAmount($each['fields']['use_freeze_amount'])
                 ->setSerialNumber($each['fields']['serial_number'])
-                ->setRefundDate(new DateTime($each['fields']['refund_date']));
+                ->setRefundDate(new \DateTime($each['fields']['refund_date']));
             foreach ($each['fields']['detail_data'] as $d) {
                 $request->addDetailData(...$d);
             }

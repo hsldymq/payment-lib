@@ -1,5 +1,7 @@
 <phpunit bootstrap="./tests/bootstrap.php">
     <testsuites>
-
+        <testsuite name="Request">
+            <directory suffix="Test.php">tests/Request/Alipay</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

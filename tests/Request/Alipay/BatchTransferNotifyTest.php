@@ -21,7 +21,7 @@ class BatchTransferNotifyTest extends TestCase
                 ->setEmail($each['fields']['email'])
                 ->setNotifyURL($each['fields']['notify_url'])
                 ->addDetailData(...$each['fields']['detail_data'])
-                ->setPayDate(new DateTime($each['fields']['pay_date']))
+                ->setPayDate(new \DateTime($each['fields']['pay_date']))
                 ->setBuyerAccountName($each['fields']['buyer_account_name'] ?? null);
             foreach ($each['fields']['extend_param'] ?? [] as $params) {
                 $request->addExtendParam(...$params);

@@ -22,7 +22,7 @@ class FundTransTest extends TestCase
                 ->setPayeeRealName($each['fields']['payee_real_name'])
                 ->setOutBizNo($each['fields']['out_biz_no'])
                 ->setPayeeType($each['fields']['payee_type'])
-                ->setTimestamp(new DateTime($each['fields']['timestamp']))
+                ->setTimestamp(new \DateTime($each['fields']['timestamp']))
                 ->setRemark($each['fields']['remark'] ?? null)
                 ->setPayerShowName($each['fields']['payer_show_name'] ?? null);
 
@@ -38,7 +38,7 @@ class FundTransTest extends TestCase
             $config = new AlipayConfig($configData);
 
             $request = (new FundTransOrderQuery($config))
-                ->setTimestamp(new DateTime($each['fields']['timestamp']))
+                ->setTimestamp(new \DateTime($each['fields']['timestamp']))
                 ->setOrderID($each['fields']['order_id'] ?? null)
                 ->setOutBizNo($each['fields']['out_biz_no'] ?? null);
 
