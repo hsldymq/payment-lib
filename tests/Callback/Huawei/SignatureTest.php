@@ -1,7 +1,10 @@
 <?php
+namespace Archman\PaymentLib\Test\Callback\Huawei;
+
 use \PHPUnit\Framework\TestCase;
 use \Archman\PaymentLib\Test\Config\HuaweiConfig;
 use Archman\PaymentLib\Test\Config;
+use Archman\PaymentLib\SignatureHelper\Huawei\Validator;
 
 class SignatureTest extends TestCase
 {
@@ -9,7 +12,7 @@ class SignatureTest extends TestCase
     {
         $config = new HuaweiConfig(Config::get('huawei', 'config'));
         $testCases = Config::get('huawei', 'testCases', 'callback');
-        $validator = new \Archman\PaymentLib\SignatureHelper\Huawei\Validator($config);
+        $validator = new Validator($config);
 
         foreach ($testCases as $case) {
             $this->assertTrue($validator->validate($case['signature'], $case['signType'], $case['data']));

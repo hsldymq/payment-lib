@@ -1,4 +1,5 @@
 <?php
+namespace Archman\PaymentLib\Test\Request\WeChat;
 
 use PHPUnit\Framework\TestCase;
 use Archman\PaymentLib\Test\Config;

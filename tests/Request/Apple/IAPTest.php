@@ -1,4 +1,6 @@
 <?php
+namespace Archman\PaymentLib\Test\Request\Apple;
+
 use PHPUnit\Framework\TestCase;
 use Archman\PaymentLib\Test\Config;
 use Archman\PaymentLib\Request\Apple\IAPReceiptValidation;

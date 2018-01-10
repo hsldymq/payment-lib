@@ -1,4 +1,6 @@
 <?php
+namespace Archman\PaymentLib\Test\Request\Alipay;
+
 use Archman\PaymentLib\Test\Config;
 use Archman\PaymentLib\Test\Config\AlipayConfig;
 use Archman\PaymentLib\Request\Alipay\RefundFastpayByPlatformNopwd;

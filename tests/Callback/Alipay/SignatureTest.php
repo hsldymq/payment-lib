@@ -1,4 +1,6 @@
 <?php
+namespace Archman\PaymentLib\Test\Callback\Alipay;
+
 use \PHPUnit\Framework\TestCase;
 use \Archman\PaymentLib\Test\Config\AlipayConfig;
 use Archman\PaymentLib\SignatureHelper\Alipay\Validator;
