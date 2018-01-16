@@ -9,31 +9,30 @@ class AlipayConfig implements AlipayConfigInterface
 
     private $partnerID;
 
-    private $alipayPublicKey;
+    private $openAPIDefaultSignType;
 
-    private $OpenAPIDefaultSignType;
+    private $openAPIPrivateKeys;
 
-    private $openAPIPrivateKey;
-
-    private $openAPIPublicKey;
+    private $openAPIAlipayPublicKeys;
 
     private $MAPIDefaultSignType;
 
-    private $MAPIPrivateKey;
+    private $MAPIPrivateKeys;
+
+    private $MAPIAlipayPublicKeys;
 
     public function __construct(array $config)
     {
         $this->appID = $config['appID'];
         $this->partnerID = $config['partnerID'];
 
-        $this->alipayPublicKey = $config['alipayPublicKey'];
-
-        $this->OpenAPIDefaultSignType = $config['openAPIDefaultSignType'];
-        $this->openAPIPrivateKey = $config['openAPIPrivateKey'];
-        $this->openAPIPublicKey = $config['openAPIPublicKey'];
+        $this->openAPIDefaultSignType = $config['openAPIDefaultSignType'];
+        $this->openAPIPrivateKeys = $config['openAPIPrivateKeys'];
+        $this->openAPIAlipayPublicKeys = $config['openAPIAlipayPublicKeys'];
 
         $this->MAPIDefaultSignType = $config['MAPIDefaultSignType'];
-        $this->MAPIPrivateKey = $config['MAPIPrivateKey'];
+        $this->MAPIPrivateKeys = $config['MAPIPrivateKeys'];
+        $this->MAPIAlipayPublicKeys = $config['MAPIAlipayPublicKeys'];
     }
 
     public function getAppID(): string
@@ -46,24 +45,21 @@ class AlipayConfig implements AlipayConfigInterface
         return $this->partnerID;
     }
 
-    public function getAlipayPublicKey(?string $signType = null): string
+    public function getOpenAPIDefaultSignType(): string
     {
-        return $this->alipayPublicKey;
+        return $this->openAPIDefaultSignType;
     }
 
     public function getOpenAPIPrivateKey(?string $signType = null): string
     {
-        return $this->openAPIPrivateKey;
+        $signType = $signType ?? $this->getOpenAPIDefaultSignType();
+
+        return $this->openAPIPrivateKeys[$signType];
     }
 
-    public function getOpenAPIDefaultSignType(): string
+    public function getOpenAPIAlipayPublicKey(string $signType): string
     {
-        return $this->OpenAPIDefaultSignType;
-    }
-
-    public function getMAPIPrivateKey(?string $signType = null): string
-    {
-        return $this->MAPIPrivateKey;
+        return $this->openAPIAlipayPublicKeys[$signType];
     }
 
     public function getMAPIDefaultSignType(): string
@@ -71,8 +67,29 @@ class AlipayConfig implements AlipayConfigInterface
         return $this->MAPIDefaultSignType;
     }
 
-    public function getAppCertPath(?string $signType = null): ?string
+    public function getMAPIPrivateKey(?string $signType = null): string
     {
-        return null;
+        $signType = $signType ?? $this->getMAPIDefaultSignType();
+
+        return $this->MAPIPrivateKeys[$signType];
+    }
+
+    public function getMAPIAlipayPublicKey(string $signType): string
+    {
+        return $this->MAPIAlipayPublicKeys[$signType];
+    }
+
+    public function setOpenAPIDefaultSignType(string $signType): self
+    {
+        $this->openAPIDefaultSignType = $signType;
+
+        return $this;
+    }
+
+    public function setMAPIDefaultSignType(string $signType): self
+    {
+        $this->MAPIDefaultSignType = $signType;
+
+        return $this;
     }
 }

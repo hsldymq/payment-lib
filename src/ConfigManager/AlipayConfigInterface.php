@@ -5,19 +5,7 @@ interface AlipayConfigInterface
 {
     public function getAppID(): string;
 
-    /**
-     * 合作伙伴ID.
-     * @return string
-     */
     public function getPartnerID(): string;
-
-    /**
-     * 支付宝公钥.
-     * 如果是RSA/RSA2算法,返回的公钥值应该为PKCS格式.
-     * @param null|string $signType 签名类型(RSA, RSA2, ...), 不传返回默认.
-     * @return string
-     */
-    public function getAlipayPublicKey(?string $signType = null): string;
 
     /**
      * 开放平台应用密钥默认使用的签名类型.
@@ -35,6 +23,14 @@ interface AlipayConfigInterface
     public function getOpenAPIPrivateKey(?string $signType = null): string;
 
     /**
+     * 返回开放平台支付宝公钥.
+     * 如果是RSA/RSA2算法,返回的公钥值应该为PKCS格式.
+     * @param string $signType 签名类型(RSA, RSA2, ...).
+     * @return string
+     */
+    public function getOpenAPIAlipayPublicKey(string $signType): string;
+
+    /**
      * MAPI默认网关签名类型.
      * getMAPIPrivateKey不传参数得到密钥所使用的算法.
      * @return string
@@ -50,9 +46,10 @@ interface AlipayConfigInterface
     public function getMAPIPrivateKey(?string $signType = null): string;
 
     /**
-     * 应用公钥证书文件路径.
-     * @param null|string $signType
+     * 返回MAPI支付宝公钥.
+     * 如果是RSA/RSA2算法,返回的公钥值应该为PKCS格式.
+     * @param string $signType 签名类型(RSA, DSA, MD5...).
      * @return string
      */
-    public function getAppCertPath(?string $signType = null): ?string;
+    public function getMAPIAlipayPublicKey(string $signType): string;
 }
