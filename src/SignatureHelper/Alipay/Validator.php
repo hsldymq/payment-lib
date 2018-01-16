@@ -81,7 +81,7 @@ class Validator
 
     private function validateSignRSA(string $signature, string $packedString): bool
     {
-        $resource = openssl_get_publickey($this->config->getAlipayPublicKey('RSA'));
+        $resource = openssl_get_publickey($this->getAlipayPublicKey('RSA'));
         if (!$resource) {
             throw new \Exception("Unable To Get RSA Public Key");
         }
@@ -94,7 +94,7 @@ class Validator
 
     private function validateSignRSA2(string $signature, string $packedString): bool
     {
-        $resource = openssl_get_publickey($this->config->getAlipayPublicKey('RSA2'));
+        $resource = openssl_get_publickey($this->getAlipayPublicKey('RSA2'));
         if (!$resource) {
             throw new \Exception("Unable To Get RSA2 Public Key");
         }
@@ -107,8 +107,17 @@ class Validator
 
     private function validateSignMD5(string $signature, string $packedString): bool
     {
-        $safeKey = $this->config->getMAPIPrivateKey();
+        $safeKey = $this->getAlipayPublicKey('MD5');
 
         return md5("{$packedString}{$safeKey}") === $signature;
+    }
+
+    private function getAlipayPublicKey(string $signType): string
+    {
+        if ($this->isMAPI) {
+            return $this->config->getMAPIAlipayPublicKey($signType);
+        } else {
+            return $this->config->getOpenAPIAlipayPublicKey($signType);
+        }
     }
 }

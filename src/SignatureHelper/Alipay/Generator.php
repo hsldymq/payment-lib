@@ -77,10 +77,12 @@ class Generator
         return md5("{$packedString}{$safeKey}");
     }
 
-    private function getPrivateKey(string $algo): string
+    private function getPrivateKey(string $signType): string
     {
-        $pk = $this->isMAPI ? $this->config->getMAPIPrivateKey($algo) : $this->config->getOpenAPIPrivateKey($algo);
-
-        return $pk;
+        if ($this->isMAPI) {
+            return $this->config->getMAPIPrivateKey($signType);
+        } else {
+            return $this->config->getOpenAPIPrivateKey($signType);
+        }
     }
 }
