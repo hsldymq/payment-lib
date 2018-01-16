@@ -15,6 +15,7 @@ class FundTransTest extends TestCase
         foreach ($cases as $each) {
             $configData = Config::get('alipay', 'config', $each['appID']);
             $config = new AlipayConfig($configData);
+            $config->setOpenAPIDefaultSignType($each['signType']);
 
             $request = (new FundTransToAccountTransfer($config))
                 ->setAmount($each['fields']['amount'])
@@ -36,6 +37,7 @@ class FundTransTest extends TestCase
         foreach ($cases as $each) {
             $configData = Config::get('alipay', 'config', $each['appID']);
             $config = new AlipayConfig($configData);
+            $config->setOpenAPIDefaultSignType($each['signType']);
 
             $request = (new FundTransOrderQuery($config))
                 ->setTimestamp(new \DateTime($each['fields']['timestamp']))

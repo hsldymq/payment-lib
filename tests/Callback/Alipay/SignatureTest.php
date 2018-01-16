@@ -30,7 +30,7 @@ class SignatureTest extends TestCase
             $signType = $each['signType'];
             $configData = Config::get('alipay', 'config', $each['appID']);
             $config = new AlipayConfig($configData);
-            $validator = new Validator($config);
+            $validator = new Validator($config, true);
 
             $this->assertTrue($validator->validateSignAsync($sign, $signType, $each['data']));
         }
@@ -44,7 +44,7 @@ class SignatureTest extends TestCase
             $signType = $each['signType'];
             $configData = Config::get('alipay', 'config', $each['appID']);
             $config = new AlipayConfig($configData);
-            $validator = new Validator($config);
+            $validator = new Validator($config, true);
 
             $this->assertTrue($validator->validateSignAsync($sign, $signType, $each['data']));
         }

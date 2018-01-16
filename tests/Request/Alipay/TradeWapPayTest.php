@@ -14,6 +14,7 @@ class TradeWapPayTest extends TestCase
         foreach ($cases as $each) {
             $configData = Config::get('alipay', 'config', $each['appID']);
             $config = new AlipayConfig($configData);
+            $config->setOpenAPIDefaultSignType($each['signType']);
 
             $request = (new TradeWapPay($config))
                 ->setReturnURL($each['fields']['return_url'] ?? null)

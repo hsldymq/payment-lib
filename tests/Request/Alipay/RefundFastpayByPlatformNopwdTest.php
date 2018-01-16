@@ -13,6 +13,7 @@ class RefundFastpayByPlatformNopwdTest extends \PHPUnit\Framework\TestCase
         foreach ($cases as $each) {
             $configData = Config::get('alipay', 'config', $each['appID']);
             $config = new AlipayConfig($configData);
+            $config->setMAPIDefaultSignType($each['signType']);
 
             $request = (new RefundFastpayByPlatformNopwd($config))
                 ->setNotifyURL($each['fields']['notify_url'])

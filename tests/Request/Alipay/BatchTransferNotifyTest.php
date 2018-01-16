@@ -14,6 +14,7 @@ class BatchTransferNotifyTest extends TestCase
         foreach ($cases as $each) {
             $configData = Config::get('alipay', 'config', $each['appID']);
             $config = new AlipayConfig($configData);
+            $config->setMAPIDefaultSignType($each['signType']);
 
             $request = (new BatchTransNotify($config))
                 ->setAccountName($each['fields']['account_name'])
