@@ -65,6 +65,9 @@ class Validator
             case 'RSA2':
                 $result = $this->validateSignRSA2($signature, $packedString);
                 break;
+            case 'DSA':
+                $result = $this->validateSignDSA($signature, $packedString);
+                break;
             case 'MD5':
                 $result = $this->validateSignMD5($signature, $packedString);
                 break;
@@ -100,6 +103,19 @@ class Validator
         }
 
         $isCorrect = openssl_verify($packedString, base64_decode($signature), $resource, OPENSSL_ALGO_SHA256) === 1;
+        openssl_free_key($resource);
+
+        return $isCorrect;
+    }
+
+    private function validateSignDSA(string $signature, string $packedString): bool
+    {
+        $resource = openssl_get_publickey($this->getAlipayPublicKey('DSA'));
+        if (!$resource) {
+            throw new \Exception("Unable To Get DSA Public Key");
+        }
+
+        $isCorrect = openssl_verify($packedString, base64_decode($signature), $resource, OPENSSL_ALGO_DSS1) === 1;
         openssl_free_key($resource);
 
         return $isCorrect;

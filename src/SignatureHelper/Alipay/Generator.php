@@ -30,6 +30,9 @@ class Generator
             case 'RSA2':
                 $sign = $this->makeSignRSA2($packed);
                 break;
+            case 'DSA':
+                $sign = $this->makeSignDSA($packed);
+                break;
             case 'MD5':
                 $sign = $this->makeSignMD5($packed);
                 break;
@@ -64,6 +67,21 @@ class Generator
         }
 
         openssl_sign($packedString, $sign, $resource, OPENSSL_ALGO_SHA256);
+        openssl_free_key($resource);
+        $sign = base64_encode($sign);
+
+        return $sign;
+    }
+
+    private function makeSignDSA(string $packedString): string
+    {
+        $pk = $this->getPrivateKey('DSA');
+        $resource = openssl_get_privatekey($pk);
+        if (!$resource) {
+            throw new \Exception("Unable To Get DSA Private Key");
+        }
+
+        openssl_sign($packedString, $sign, $resource, OPENSSL_ALGO_DSS1);
         openssl_free_key($resource);
         $sign = base64_encode($sign);
 
