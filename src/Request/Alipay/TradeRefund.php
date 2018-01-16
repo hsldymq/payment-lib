@@ -5,7 +5,7 @@ use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIResponseHandlerTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIRequestPreparationTrait;
-use Archman\PaymentLib\Request\Alipay\Traits\ParametersMakerTrait;
+use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIParameterMakerTrait;
 use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
@@ -14,7 +14,7 @@ use Archman\PaymentLib\Request\RequestableInterface;
  */
 class TradeRefund implements RequestableInterface
 {
-    use ParametersMakerTrait;
+    use OpenAPIParameterMakerTrait;
     use OpenAPIRequestPreparationTrait;
     use OpenAPIResponseHandlerTrait;
 
@@ -49,7 +49,7 @@ class TradeRefund implements RequestableInterface
         ParameterHelper::checkRequired($this->biz_content, ['refund_amount'], ['trade_no','out_trade_no']);
 
         $biz_content = ParameterHelper::packValidParameters($this->biz_content);
-        $parameters = $this->makeOpenAPISignedParameters('alipay.trade.refund', $biz_content);
+        $parameters = $this->makeSignedParameters('alipay.trade.refund', $biz_content);
 
         return $parameters;
     }

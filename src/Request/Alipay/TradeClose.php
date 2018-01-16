@@ -4,7 +4,7 @@ namespace Archman\PaymentLib\Request\Alipay;
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIRequestPreparationTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIResponseHandlerTrait;
-use Archman\PaymentLib\Request\Alipay\Traits\ParametersMakerTrait;
+use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIParameterMakerTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 
@@ -16,7 +16,7 @@ class TradeClose implements RequestableInterface
 {
     use OpenAPIResponseHandlerTrait;
     use OpenAPIRequestPreparationTrait;
-    use ParametersMakerTrait;
+    use OpenAPIParameterMakerTrait;
 
     private const SIGN_FIELD = 'sign';
 
@@ -45,7 +45,7 @@ class TradeClose implements RequestableInterface
         ParameterHelper::checkRequired($this->bizContent, [], ['trade_no', 'out_trade_no']);
 
         $bizContent = ParameterHelper::packValidParameters($this->bizContent);
-        $parameters = $this->makeOpenAPISignedParameters('alipay.trade.close', $bizContent);
+        $parameters = $this->makeSignedParameters('alipay.trade.close', $bizContent);
 
         return $parameters;
     }

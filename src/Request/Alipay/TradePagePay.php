@@ -2,7 +2,7 @@
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
-use Archman\PaymentLib\Request\Alipay\Traits\ParametersMakerTrait;
+use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIParameterMakerTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 
@@ -12,7 +12,7 @@ use Archman\PaymentLib\Request\ParameterMakerInterface;
  */
 class TradePagePay implements ParameterMakerInterface
 {
-    use ParametersMakerTrait;
+    use OpenAPIParameterMakerTrait;
 
     private $config;
 
@@ -73,7 +73,7 @@ class TradePagePay implements ParameterMakerInterface
         ParameterHelper::checkRequired($this->bizContent, ['out_trade_no', 'subject', 'total_amount']);
 
         $bizContent = ParameterHelper::packValidParameters($this->bizContent);
-        $parameters = $this->makeOpenAPISignedParameters('alipay.trade.page.pay', $bizContent);
+        $parameters = $this->makeSignedParameters('alipay.trade.page.pay', $bizContent);
 
         return $parameters;
     }

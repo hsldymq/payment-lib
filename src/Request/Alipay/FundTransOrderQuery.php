@@ -5,7 +5,7 @@ use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIResponseHandlerTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIRequestPreparationTrait;
-use Archman\PaymentLib\Request\Alipay\Traits\ParametersMakerTrait;
+use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIParameterMakerTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 
@@ -17,7 +17,7 @@ class FundTransOrderQuery implements RequestableInterface, ParameterMakerInterfa
 {
     use OpenAPIRequestPreparationTrait;
     use OpenAPIResponseHandlerTrait;
-    use ParametersMakerTrait;
+    use OpenAPIParameterMakerTrait;
 
     private const SIGN_FIELD = 'sign';
     private const CONTENT_FIELD = 'alipay_fund_trans_order_query_response';
@@ -40,7 +40,7 @@ class FundTransOrderQuery implements RequestableInterface, ParameterMakerInterfa
 
         $bizContent = ParameterHelper::packValidParameters($this->bizContent);
 
-        $parameters = $this->makeOpenAPISignedParameters('alipay.fund.trans.order.query', $bizContent);
+        $parameters = $this->makeSignedParameters('alipay.fund.trans.order.query', $bizContent);
 
         return $parameters;
     }

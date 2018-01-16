@@ -11,12 +11,12 @@ use function GuzzleHttp\json_encode;
  * @property string $signType
  * @property ?array $params
  */
-trait ParametersMakerTrait
+trait OpenAPIParameterMakerTrait
 {
     /** @var \DateTime */
     private $datetime;
 
-    private function makeOpenAPISignedParameters(
+    private function makeSignedParameters(
         string $method,
         array $bizContent,
         string $format = 'JSON',
