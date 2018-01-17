@@ -2,6 +2,7 @@
 namespace Archman\PaymentLib\Request\Alipay\Traits;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Request\Alipay\Helper\Encryption;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\SignatureHelper\Alipay\Generator;
 use function GuzzleHttp\json_encode;
@@ -16,6 +17,29 @@ trait OpenAPIParameterMakerTrait
     /** @var \DateTime */
     private $datetime;
 
+    private $encryptionEnabled = false;
+
+    public function setTimestamp(\DateTime $dt): self
+    {
+        $this->datetime = $dt;
+
+        return $this;
+    }
+
+    public function enableEncryption(): self
+    {
+        $this->encryptionEnabled = true;
+
+        return $this;
+    }
+
+    public function disableEncryption(): self
+    {
+        $this->encryptionEnabled = false;
+
+        return $this;
+    }
+
     private function makeSignedParameters(
         string $method,
         array $bizContent,
@@ -24,6 +48,7 @@ trait OpenAPIParameterMakerTrait
         string $version = '1.0'
     ): array {
         $signType = $this->signType ?? $this->config->getOpenAPIDefaultSignType();
+        $bizContent = json_encode($bizContent, JSON_FORCE_OBJECT);
 
         $parameters = ParameterHelper::packValidParameters($this->params ?? []);
         $parameters['app_id'] = $this->config->getAppID();
@@ -33,17 +58,14 @@ trait OpenAPIParameterMakerTrait
         $parameters['sign_type'] = $signType;
         $parameters['timestamp'] = $this->getDatetime();
         $parameters['version'] = $version;
-        $parameters['biz_content'] = json_encode($bizContent, JSON_FORCE_OBJECT);
+        if ($this->encryptionEnabled) {
+            $parameters['encrypt_type'] = 'AES';
+            $bizContent = Encryption::encrypt($bizContent, $this->config->getOpenAPIEncryptionKey());
+        }
+        $parameters['biz_content'] = $bizContent;
         $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $signType);
 
         return $parameters;
-    }
-
-    public function setTimestamp(\DateTime $dt)
-    {
-        $this->datetime = $dt;
-
-        return $this;
     }
 
     private function getDatetime(): string

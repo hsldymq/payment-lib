@@ -2,7 +2,8 @@
 namespace Archman\PaymentLib\Request\Alipay\Traits;
 
 use Archman\PaymentLib\Exception\ErrorResponseException;
-use Archman\PaymentLib\Exception\SignatureException;
+use Archman\PaymentLib\Request\Alipay\Helper\Encryption;
+use Archman\PaymentLib\Request\Alipay\Helper\OpenAPIResponseParser;
 use Archman\PaymentLib\Response\BaseResponse;
 use Archman\PaymentLib\Response\GeneralResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -18,44 +19,38 @@ trait OpenAPIResponseHandlerTrait
 {
     public function handleResponse(ResponseInterface $response): BaseResponse
     {
-        $data = DataParser::jsonToArray($response->getBody());
+        $body = strval($response->getBody());
+        $contentStr = OpenAPIResponseParser::getResponseContent($body, self::CONTENT_FIELD);
 
-        // 验证错误码
-        $this->checkError($data);
-
-        $signType = $this->signType ?? $this->config->getOpenAPIDefaultSignType();
+        $data = DataParser::jsonToArray($body);
         $signature = $data[self::SIGN_FIELD];
         $content = $data[self::CONTENT_FIELD];
 
-        // 验证响应签名
-        $validator = new Validator($this->config);
-        try {
-            $validator->validateSignSync($signature, $signType, $content);
-        } catch (\Throwable $e) {
-            if (!($e instanceof SignatureException)) {
-                $e = new SignatureException($data, $e->getMessage(), 0, $e);
-            }
-            throw $e;
+        $signType = $this->signType ?? $this->config->getOpenAPIDefaultSignType();
+        (new Validator($this->config))->validateOpenAPIResponseSign($signature, $signType, $contentStr ?? $content);
+
+        // 数据已加密
+        if (is_string($content)) {
+            $content = DataParser::jsonToArray(Encryption::decrypt($content, $this->config->getOpenAPIEncryptionKey()));
         }
+
+        // 验证错误码
+        $this->checkError($content, $data);
 
         return $this->getResponse($content);
     }
 
     /**
      * 检查响应的错误码.
+     * @param array $content
      * @param array $data
      * @return void
      * @throws ErrorResponseException
      */
-    private function checkError(array $data)
+    private function checkError(array $content, array $data)
     {
-        $content = $data[self::CONTENT_FIELD];
         if (intval($content['code']) !== 10000) {
-            throw new ErrorResponseException(
-                $content['sub_code'],
-                $content['sub_msg'],
-                $data
-            );
+            throw new ErrorResponseException($content['sub_code'], $content['sub_msg'], $data);
         }
     }
 
