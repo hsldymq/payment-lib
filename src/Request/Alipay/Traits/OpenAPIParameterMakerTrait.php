@@ -26,16 +26,14 @@ trait OpenAPIParameterMakerTrait
         return $this;
     }
 
-    public function enableEncryption(): self
+    /**
+     * 是否开启加密.
+     * @param bool $enable
+     * @return self
+     */
+    public function encrypt(bool $enable): self
     {
-        $this->encryptionEnabled = true;
-
-        return $this;
-    }
-
-    public function disableEncryption(): self
-    {
-        $this->encryptionEnabled = false;
+        $this->encryptionEnabled = $enable;
 
         return $this;
     }
