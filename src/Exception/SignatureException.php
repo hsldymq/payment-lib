@@ -5,16 +5,31 @@ class SignatureException extends \Exception
 {
     private $data;
 
+    private $sign;
+
     protected $message = 'Failed To Validate Signature';
 
-    public function __construct(array $data, $message = "", $code = 0, \Throwable $previous = null)
-    {
-        $this->data = $data;
-        parent::__construct($message ?: $this->message, $code, $previous);
-    }
-
-    public function getInvalidSignedData(): array
+    public function getData()
     {
         return $this->data;
+    }
+
+    public function getSign(): ?string
+    {
+        return $this->sign;
+    }
+
+    public function setData($data): self
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    public function setSign(string $sign): self
+    {
+        $this->sign = $sign;
+
+        return $this;
     }
 }

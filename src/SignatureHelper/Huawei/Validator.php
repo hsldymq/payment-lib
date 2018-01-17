@@ -38,11 +38,11 @@ class Validator
                 $result = $this->validateSignRSA($signature, $packed, true);
                 break;
             default:
-                throw new SignatureException($data, "Unsupported WeChat Sign Type: {$signType}");
+                throw (new SignatureException("Unsupported WeChat Sign Type: {$signType}"))->setData($data)->setSign($signature);
         }
 
         if (!$result) {
-            throw new SignatureException($data, 'Failed To Validate WeChat Signature.');
+            throw (new SignatureException('Failed To Validate WeChat Signature.'))->setData($data)->setSign($signature);
         }
 
         return true;

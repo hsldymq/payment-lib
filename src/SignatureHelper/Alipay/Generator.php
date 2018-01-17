@@ -37,7 +37,7 @@ class Generator
                 $sign = $this->makeSignMD5($packed);
                 break;
             default:
-                throw new SignatureException($data, "Unsupported Alipay Sign Type: {$signType}");
+                throw (new SignatureException("Unsupported Alipay Sign Type: {$signType}"))->setData($data);
         }
 
         return $sign;

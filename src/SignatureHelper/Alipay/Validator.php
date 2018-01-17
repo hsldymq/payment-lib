@@ -28,35 +28,38 @@ class Validator
      * @param array $data 用于验证签名的数据
      * @param array $exclude
      * @return bool
+     * @throws SignatureException
      */
     public function validateSignAsync(string $signature, string $signType, array $data, array $exclude = []): bool
     {
         $packed = $this->packVerifiedSignStringAsync($data, $exclude);
 
-        return $this->validate($signature, $signType, $packed, $data);
+        try {
+            return $this->validate($signature, $signType, $packed);
+        } catch (\Throwable $e) {
+            throw (new SignatureException($e->getMessage(), 0, $e))->setData($data)->setSign($signature);
+        }
     }
 
     /**
-     * 验证同步返回的签名.
+     * 验证Open API同步响应的签名.
      * @param string $signature
      * @param string $signType
-     * @param array $data
-     * @param array $exclude
+     * @param string $data
      * @return bool
+     * @throws SignatureException
      */
-    public function validateSignSync(string $signature, string $signType, array $data, array $exclude = []): bool
+    public function validateOpenAPIResponseSign(string $signature, string $signType, string $data): bool
     {
-        $packed = $this->packVerifiedSignStringSync($data, $exclude);
-
-        return $this->validate($signature, $signType, $packed, $data);
+        try {
+            return $this->validate($signature, $signType, $data);
+        } catch (\Throwable $e) {
+            throw (new SignatureException($e->getMessage(), 0, $e))->setData($data)->setSign($signature);
+        }
     }
 
-    private function validate(
-        string $signature,
-        string $signType,
-        string $packedString,
-        array $data
-    ): bool {
+    private function validate(string $signature, string $signType, string $packedString): bool
+    {
         $signType = strtoupper($signType);
         switch ($signType) {
             case 'RSA':
@@ -72,11 +75,11 @@ class Validator
                 $result = $this->validateSignMD5($signature, $packedString);
                 break;
             default:
-                throw new SignatureException($data, "Unsupported Alipay Sign Type: {$signType}");
+                throw new \Exception("Unsupported Alipay Sign Type: {$signType}");
         }
 
         if (!$result) {
-            throw new SignatureException($data, 'Failed To Validate Alipay Signature.');
+            throw new \Exception('Failed To Validate Alipay Signature.');
         }
 
         return true;

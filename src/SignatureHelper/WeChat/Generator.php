@@ -32,7 +32,7 @@ class Generator
                 $sign = $this->makeSignSHA256($packed);
                 break;
             default:
-                throw new SignatureException($data, "Unsupported WeChat Sign Type: {$signType}");
+                throw (new SignatureException("Unsupported WeChat Sign Type: {$signType}"))->setData($data);
         }
 
         return $sign;
