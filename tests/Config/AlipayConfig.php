@@ -15,6 +15,8 @@ class AlipayConfig implements AlipayConfigInterface
 
     private $openAPIAlipayPublicKeys;
 
+    private $openAPIEncryptionKey;
+
     private $MAPIDefaultSignType;
 
     private $MAPIPrivateKeys;
@@ -29,6 +31,7 @@ class AlipayConfig implements AlipayConfigInterface
         $this->openAPIDefaultSignType = $config['openAPIDefaultSignType'];
         $this->openAPIPrivateKeys = $config['openAPIPrivateKeys'];
         $this->openAPIAlipayPublicKeys = $config['openAPIAlipayPublicKeys'];
+        $this->openAPIEncryptionKey = $config['openAPIEncryptionKey'];
 
         $this->MAPIDefaultSignType = $config['MAPIDefaultSignType'];
         $this->MAPIPrivateKeys = $config['MAPIPrivateKeys'];
@@ -62,6 +65,11 @@ class AlipayConfig implements AlipayConfigInterface
         return $this->openAPIAlipayPublicKeys[$signType];
     }
 
+    public function getOpenAPIEncryptionKey(): string
+    {
+        return $this->openAPIEncryptionKey;
+    }
+
     public function getMAPIDefaultSignType(): string
     {
         return $this->MAPIDefaultSignType;
@@ -77,6 +85,20 @@ class AlipayConfig implements AlipayConfigInterface
     public function getMAPIAlipayPublicKey(string $signType): string
     {
         return $this->MAPIAlipayPublicKeys[$signType];
+    }
+
+    public function setOpenAPIEncryptionKey(string $key): self
+    {
+        $this->openAPIEncryptionKey = $key;
+
+        return $this;
+    }
+
+    public function setOpenAPIEncryptionAlgorithm(string $algo): self
+    {
+        $this->openAPIEncryptionAlgorithm = $algo;
+
+        return $this;
     }
 
     public function setOpenAPIDefaultSignType(string $signType): self
