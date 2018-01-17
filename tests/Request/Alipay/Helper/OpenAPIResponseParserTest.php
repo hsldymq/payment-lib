@@ -30,12 +30,12 @@ class OpenAPIResponseParserTest extends TestCase
         [
             'body' => '{  "addition": 123  , "response5": "asdfakkasf3124/324=="  ,  "sign":"testSign"}',
             'fieldName' => 'response5',
-            'expect' => 'asdfakkasf3124/324==',
+            'expect' => '"asdfakkasf3124/324=="',
         ],
         [
             'body' => ' { "response5"  :   "asdfakkasf3124/bc=="    }  ',
             'fieldName' => 'response5',
-            'expect' => 'asdfakkasf3124/bc==',
+            'expect' => '"asdfakkasf3124/bc=="',
         ],
     ];
 
