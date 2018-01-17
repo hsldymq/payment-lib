@@ -27,6 +27,16 @@ class OpenAPIResponseParserTest extends TestCase
             'fieldName' => 'response4',
             'expect' => '{"f1":"v1","f2":"v2"}',
         ],
+        [
+            'body' => '{  "addition": 123  , "response5": "asdfakkasf3124/324=="  ,  "sign":"testSign"}',
+            'fieldName' => 'response5',
+            'expect' => 'asdfakkasf3124/324==',
+        ],
+        [
+            'body' => ' { "response5"  :   "asdfakkasf3124/bc=="    }  ',
+            'fieldName' => 'response5',
+            'expect' => 'asdfakkasf3124/bc==',
+        ],
     ];
 
     public function testGetResponseContent()

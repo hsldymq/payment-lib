@@ -25,18 +25,18 @@ class OpenAPIResponseParser
     {
         $parsed = DataParser::jsonToArray($body);
 
-        preg_match("/\"{$contentFieldName}\"\s*:\s*/", $body, $matches);
+        preg_match("/\"{$contentFieldName}\"\s*:\s*\"?/", $body, $matches);
         $contentFieldPos = strpos($body, $matches[0]);
         $contentFieldLen = strlen($matches[0]);
 
-        preg_match("/\s*}$/", $body, $matches);
+        preg_match("/\"?\s*}\s*$/", $body, $matches);
         $length = -strlen($matches[0]);
 
         foreach ($parsed as $field => $value) {
             if ($field === $contentFieldName) {
                 $isNext = true;
             } else if ($isNext ?? false) {
-                preg_match("/\s*,\s*\"{$field}\"/", $body, $matches);
+                preg_match("/\"?\s*,\s*\"{$field}\"/", $body, $matches);
                 $nextFieldPos = strpos($body, $matches[0]);
                 $length = $nextFieldPos - $contentFieldPos - $contentFieldLen;
                 break;
