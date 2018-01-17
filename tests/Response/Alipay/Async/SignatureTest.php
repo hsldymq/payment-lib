@@ -1,5 +1,5 @@
 <?php
-namespace Archman\PaymentLib\Test\Callback\Alipay;
+namespace Archman\PaymentLib\Test\Response\Alipay\Async;
 
 use \PHPUnit\Framework\TestCase;
 use \Archman\PaymentLib\Test\Config\AlipayConfig;
@@ -10,7 +10,7 @@ class SignatureTest extends TestCase
 {
     public function testPay()
     {
-        $cases = Config::get('alipay', 'testCases', 'callback', 'pay');
+        $cases = Config::get('alipay', 'testCases', 'asyncResponse', 'pay');
         foreach ($cases as $each) {
             $sign = $each['signature'];
             $signType = $each['signType'];
@@ -24,7 +24,7 @@ class SignatureTest extends TestCase
 
     public function testBatchRefund()
     {
-        $cases = Config::get('alipay', 'testCases', 'callback', 'batchRefund');
+        $cases = Config::get('alipay', 'testCases', 'asyncResponse', 'batchRefund');
         foreach ($cases as $each) {
             $sign = $each['signature'];
             $signType = $each['signType'];
@@ -38,7 +38,7 @@ class SignatureTest extends TestCase
 
     public function testBatchTransfer()
     {
-        $cases = Config::get('alipay', 'testCases', 'callback', 'batchTransfer');
+        $cases = Config::get('alipay', 'testCases', 'asyncResponse', 'batchTransfer');
         foreach ($cases as $each) {
             $sign = $each['signature'];
             $signType = $each['signType'];

@@ -1,5 +1,5 @@
 <?php
-namespace Archman\PaymentLib\Test\Callback\Huawei;
+namespace Archman\PaymentLib\Test\Reponse\Huawei\Async;
 
 use \PHPUnit\Framework\TestCase;
 use \Archman\PaymentLib\Test\Config\HuaweiConfig;

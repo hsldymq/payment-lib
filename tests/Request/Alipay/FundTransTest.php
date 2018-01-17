@@ -40,6 +40,7 @@ class FundTransTest extends TestCase
             $config->setOpenAPIDefaultSignType($each['signType']);
 
             $request = (new FundTransOrderQuery($config))
+                ->encrypt($each['encrypted'])
                 ->setTimestamp(new \DateTime($each['fields']['timestamp']))
                 ->setOrderID($each['fields']['order_id'] ?? null)
                 ->setOutBizNo($each['fields']['out_biz_no'] ?? null);

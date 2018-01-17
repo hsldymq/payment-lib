@@ -3,8 +3,11 @@
         <testsuite name="AlipayRequest">
             <directory suffix="Test.php">tests/Request/Alipay</directory>
         </testsuite>
-        <testsuite name="AlipayCallback">
-            <directory suffix="Test.php">tests/Callback/Alipay</directory>
+        <testsuite name="AlipayResponse">
+            <directory suffix="Test.php">tests/Response/Alipay</directory>
+        </testsuite>
+        <testsuite name="HuaweiResponse">
+            <directory suffix="Test.php">tests/Response/Huawei</directory>
         </testsuite>
     </testsuites>
 </phpunit>
