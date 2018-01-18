@@ -6,13 +6,14 @@ use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIRequestPreparationTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIResponseHandlerTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIParameterMakerTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
  * 统一收单线下交易查询.
  * @link https://docs.open.alipay.com/api_1/alipay.trade.query
  */
-class TradeQuery implements RequestableInterface
+class TradeQuery implements RequestableInterface, ParameterMakerInterface
 {
     use OpenAPIResponseHandlerTrait;
     use OpenAPIRequestPreparationTrait;
