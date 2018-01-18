@@ -26,10 +26,16 @@ class OpenAPIResponseParser
         $parsed = DataParser::jsonToArray($body);
 
         preg_match("/\"{$contentFieldName}\"\s*:\s*/", $body, $matches);
+        if (!isset($matches[0])) {
+            throw new \Exception("Alipay Open API Response Does Not Contain {$contentFieldName} Field.");
+        }
         $contentFieldPos = strpos($body, $matches[0]);
         $contentFieldLen = strlen($matches[0]);
 
         preg_match("/\s*}\s*$/", $body, $matches);
+        if (!isset($matches[0])) {
+            throw new \Exception("Error Parsed JSON: Not End With Curly Bracket(}).");
+        }
         $length = -strlen($matches[0]);
 
         foreach ($parsed as $field => $value) {
@@ -37,6 +43,9 @@ class OpenAPIResponseParser
                 $isNext = true;
             } else if ($isNext ?? false) {
                 preg_match("/\s*,\s*\"{$field}\"/", $body, $matches);
+                if (!isset($matches[0])) {
+                    throw new \Exception("Field Order Error: {$field}.");
+                }
                 $nextFieldPos = strpos($body, $matches[0]);
                 $length = $nextFieldPos - $contentFieldPos - $contentFieldLen;
                 break;
