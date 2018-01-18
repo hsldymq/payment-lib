@@ -8,7 +8,7 @@ use Archman\PaymentLib\Request\Alipay\TradePagePay;
 
 class TradePagePayTest extends TestCase
 {
-    public function testMakingTransferParameters()
+    public function testMakingParameters()
     {
         $cases = Config::get('alipay', 'testCases', 'request', 'TradePagePay');
         foreach ($cases as $each) {
