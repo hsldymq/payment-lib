@@ -63,7 +63,7 @@ class TradePagePay implements ParameterMakerInterface
                 %s
                 {$submitScript}
             </form>";
-        $form = sprintf($form, implode('', $fields ?? []));
+        $form = sprintf($form, implode("\n", $fields ?? []));
 
         return $form;
     }
