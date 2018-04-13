@@ -17,7 +17,10 @@ class Client extends BaseClient
         $option->getSSLCertFilePath() && $cert[0] = $option->getSSLCertFilePath();
         $cert && $option->getSSLCertPassword() && $cert[1] = $option->getSSLCertPassword();
 
-        $config = ['verify' => $option->getRootCAFilePath() ?: false];
+        $verify = $option->getRootCAFilePath() ?? false;        // null不验证证书
+        $verify = $verify === '' ? true : $verify;              // 空字符串使用系统默认提供的证书验证
+
+        $config = ['verify' => $verify];
         $ssl && $config['ssl_key'] = $ssl;
         $cert && $config['cert'] = $cert;
 
