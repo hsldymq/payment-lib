@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request;
 
 use Psr\Http\Message\RequestInterface;
@@ -10,12 +11,20 @@ class Client extends BaseClient
     protected static function doSend(RequestInterface $request, RequestOptionInterface $option): ResponseInterface
     {
         $ssl = [];
-        $option->getSSLKeyFilePath() && $ssl[0] = $option->getSSLKeyFilePath();
-        $ssl && $option->getSSLKeyPassword() && $ssl[1] = $option->getSSLKeyPassword();
+        if ($path = $option->getSSLKeyFilePath()) {
+            $ssl[0] = $path;
+            if ($password = $option->getSSLKeyPassword()) {
+                $ssl[1] = $password;
+            }
+        }
 
         $cert = [];
-        $option->getSSLCertFilePath() && $cert[0] = $option->getSSLCertFilePath();
-        $cert && $option->getSSLCertPassword() && $cert[1] = $option->getSSLCertPassword();
+        if ($path = $option->getSSLCertFilePath()) {
+            $cert[0] = $path;
+            if ($password = $option->getSSLCertPassword()) {
+                $cert[1] = $password;
+            }
+        }
 
         $verify = $option->getRootCAFilePath() ?? false;        // null不验证证书
         $verify = $verify === '' ? true : $verify;              // 空字符串使用系统默认提供的证书验证
