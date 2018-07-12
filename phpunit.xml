@@ -9,5 +9,8 @@
         <testsuite name="HuaweiResponse">
             <directory suffix="Test.php">tests/Response/Huawei</directory>
         </testsuite>
+        <testsuite name="WeChatRequest">
+            <directory suffix="Test.php">tests/Request/WeChat</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

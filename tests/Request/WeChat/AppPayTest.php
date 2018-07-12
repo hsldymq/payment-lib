@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Test\Request\WeChat;
 
 use PHPUnit\Framework\TestCase;
@@ -17,7 +18,7 @@ class AppPayTest extends TestCase
 
             $request = (new AppPay($config))
                 ->setPrepayID($each['fields']['prepay_id'])
-                ->setTimestamp(new DateTime($each['fields']['timestamp'], new DateTimeZone('+0800')))
+                ->setTimestamp(new \DateTime($each['fields']['timestamp'], new \DateTimeZone('+0800')))
                 ->setNonceStr($each['fields']['noncestr']);
 
             $this->assertEquals($each['parameters'], $request->makeParameters());
