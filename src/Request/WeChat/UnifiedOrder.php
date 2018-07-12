@@ -6,8 +6,8 @@ use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
-use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
-use Archman\PaymentLib\RequestInterface\WeChat\Traits\ResponseHandlerTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -22,6 +22,11 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
     use NonceStrTrait;
     use RequestPreparationTrait;
     use ResponseHandlerTrait;
+
+    const TRADE_TYPE_JS_API = 'JSAPI';
+    const TRADE_TYPE_NATIVE = 'NATIVE';
+    const TRADE_TYPE_APP = 'APP';
+    const TRADE_TYPE_MICRO_PAY = 'MICROPAY';
 
     private const URI = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
@@ -126,7 +131,7 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
      * @param null|string $value
      * @return $this
      */
-    public function setDetail(string $field, ?string $value)
+    public function setDetail(string $field, ?string $value): self
     {
         if ($field === 'goods_detail') {
             return $this;
@@ -254,11 +259,11 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
     }
 
     /**
-     * trade_type=JSAPI时需要设置这个.
+     * trade_type=JSAPI时需要设置openid.
      * @param string $openid
      * @return self
      */
-    public function setOpenID(string $openid): self
+    public function setOpenID(?string $openid): self
     {
         $this->params['openid'] = $openid;
 
@@ -271,6 +276,13 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
         $name && $this->storeInfo['name'] = $name;
         $areaCode && $this->storeInfo['area_code'] = $areaCode;
         $address && $this->storeInfo['address'] = $address;
+
+        return $this;
+    }
+
+    public function setSceneInfo(?array $info): self
+    {
+        $this->params['scene_info'] = $info;
 
         return $this;
     }
