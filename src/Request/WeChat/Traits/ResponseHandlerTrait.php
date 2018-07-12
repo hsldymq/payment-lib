@@ -1,5 +1,6 @@
 <?php
-namespace Archman\PaymentLib\RequestInterface\WeChat\Traits;
+
+namespace Archman\PaymentLib\Request\WeChat\Traits;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Exception\ErrorResponseException;
@@ -18,8 +19,7 @@ trait ResponseHandlerTrait
     /**
      * @param ResponseInterface $response
      * @return BaseResponse
-     * @throws ErrorResponseException
-     * @throws SignatureException
+     * @throws
      */
     public function handleResponse(ResponseInterface $response): BaseResponse
     {
