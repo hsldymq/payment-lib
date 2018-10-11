@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Exception;
 
 class ErrorResponseException extends \Exception
