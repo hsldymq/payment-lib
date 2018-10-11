@@ -64,8 +64,11 @@ class TradeWapPay implements ParameterMakerInterface
             <form id='{$formID}' action='https://openapi.alipay.com/gateway.do' method='POST' enctype='application/x-www-form-urlencoded'>
                 %s
                 {$submitScript}
-            </form>";
-        $form = sprintf($form, implode("\n", $fields ?? []));
+            </form>
+        ";
+
+        $indent = str_pad("", 4 * 4, " ");
+        $form = sprintf($form, implode("\n{$indent}", $fields ?? []));
 
         return $form;
     }

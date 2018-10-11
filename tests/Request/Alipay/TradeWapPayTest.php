@@ -30,6 +30,7 @@ class TradeWapPayTest extends TestCase
                 ->setQuitUrl($each['fields']['quit_url'] ?? null);
 
             $this->assertEquals($each['parameters'], $request->makeParameters());
+            $this->assertEquals($each['html'], $request->makeFormHTML($each['htmlAutoSubmit'], $each['htmlFormID']));
         }
     }
 }
