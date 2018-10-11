@@ -32,6 +32,7 @@ trait OpenAPIResponseHandlerTrait
         // 数据已加密
         if (is_string($content)) {
             $content = DataParser::jsonToArray(Encryption::decrypt($content, $this->config->getOpenAPIEncryptionKey()));
+            $data[self::CONTENT_FIELD] = $content;
         }
 
         // 验证错误码
