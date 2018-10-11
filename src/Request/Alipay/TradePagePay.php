@@ -46,8 +46,10 @@ class TradePagePay implements ParameterMakerInterface
 
     /**
      * 生成已签名的表单HTML.
+     *
      * @param bool $autoSubmit 是否在HTML嵌入自动提交的JS代码
      * @param null|string $formID form元素ID,如果不打算自动提交,可以指定form ID以便前端自己掌握提交时间
+     *
      * @return string
      */
     public function makeFormHTML(bool $autoSubmit = true, ?string $formID = null): string

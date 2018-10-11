@@ -5,8 +5,10 @@ class Encryption
 {
     /**
      * 当前仅支持AES/CBC/PKCS5Padding.
+     *
      * @param string $data
      * @param string $encryptedKey
+     *
      * @return string
      */
     public static function encrypt(string $data, string $encryptedKey): string
@@ -18,8 +20,10 @@ class Encryption
 
     /**
      * 当前仅支持AES/CBC/PKCS5Padding.
+     *
      * @param string $encryptedData
      * @param string $decryptedKey
+     *
      * @return string
      */
     public static function decrypt(string $encryptedData, string $decryptedKey): string

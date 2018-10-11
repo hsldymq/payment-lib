@@ -17,9 +17,12 @@ class OpenAPIResponseParser
      *      response字段在sign字段之后
      *      将来的一些接口增加字段并放在了response字段之前
      * 所以这里动态的运算response字段的位置,以及它下一个字段的相对位置,通过计算差来得到response的实际内容
+     *
      * @param string $body
      * @param string $contentFieldName response字段名
+     *
      * @return string
+     * @throws
      */
     public static function getResponseContent(string $body, string $contentFieldName): string
     {

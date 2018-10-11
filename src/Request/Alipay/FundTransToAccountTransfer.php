@@ -75,7 +75,10 @@ class FundTransToAccountTransfer implements RequestableInterface, ParameterMaker
     }
 
     /**
+     * 设置金额.
+     *
      * @param int $amount 单位: 分
+     *
      * @return FundTransToAccountTransfer
      */
     public function setAmount(int $amount): self

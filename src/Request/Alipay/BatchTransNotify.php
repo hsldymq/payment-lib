@@ -78,11 +78,13 @@ class BatchTransNotify implements ParameterMakerInterface
 
     /**
      * 增加转账数据.
+     *
      * @param string $serialNo 商户订单号
      * @param string $userAccount 转账目标用户账号
      * @param string $userRealName 用户姓名
      * @param int $amount 金额(单位:分)
      * @param string $remark 备注
+     *
      * @return BatchTransNotify
      */
     public function addDetailData(

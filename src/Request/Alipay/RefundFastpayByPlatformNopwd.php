@@ -88,7 +88,9 @@ class RefundFastpayByPlatformNopwd implements RequestableInterface, ParameterMak
 
     /**
      * 设置流水号(3-24位). 用于生成批次号, 超过24位会截断后面多余的字符.
+     *
      * @param string $sn
+     *
      * @return self
      */
     public function setSerialNumber(string $sn): self
@@ -102,6 +104,7 @@ class RefundFastpayByPlatformNopwd implements RequestableInterface, ParameterMak
      * @param string $tradeNo 支付宝原支付订单号
      * @param int $amount 单位:分
      * @param string $reason 退款原因
+     *
      * @return self
      */
     public function addDetailData(string $tradeNo, int $amount, string $reason): self
@@ -146,7 +149,9 @@ class RefundFastpayByPlatformNopwd implements RequestableInterface, ParameterMak
      * 响应回执的数据结构:
      *  1 成功: <alipay><is_success>T</is_success></alipay>
      *  2 失败: <alipay><is_success>F</is_success><error>失败代码</error></alipay>
+     *
      * @param ResponseInterface $response
+     *
      * @return BaseResponse
      * @throws ErrorResponseException
      */

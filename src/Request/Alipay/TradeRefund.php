@@ -63,6 +63,7 @@ class TradeRefund implements RequestableInterface
 
     /**
      * @param string $out_trade_no
+     *
      * @return self
      */
     public function setOutTradeNo(?string $out_trade_no): self
@@ -74,6 +75,7 @@ class TradeRefund implements RequestableInterface
 
     /**
      * @param string $trade_no
+     *
      * @return self
      */
     public function setTradeNo(?string $trade_no): self
@@ -85,6 +87,7 @@ class TradeRefund implements RequestableInterface
 
     /**
      * @param int $amount 单位: 分
+     *
      * @return self
      */
     public function setRefundAmount(int $amount): self
@@ -104,6 +107,7 @@ class TradeRefund implements RequestableInterface
 
     /**
      * @param string $out_request_no
+     *
      * @return TradeRefund
      */
     public function setOutRequestNo(?string $out_request_no): self

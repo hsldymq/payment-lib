@@ -83,6 +83,7 @@ class TradeAppPay implements ParameterMakerInterface
 
     /**
      * @param int $minutes 单位:分钟
+     *
      * @return self
      */
     public function setTimeoutExpress(?int $minutes): self
@@ -94,7 +95,9 @@ class TradeAppPay implements ParameterMakerInterface
 
     /**
      * 设置支付金额(单位分).
+     *
      * @param int $amount
+     *
      * @return self
      */
     public function setTotalAmount(int $amount): self
