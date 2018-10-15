@@ -42,7 +42,7 @@ interface AlipayConfigInterface
     /**
      * 返回开放平台AES密钥.
      *
-     * @reference https://docs.open.alipay.com/common/104567
+     * @see https://docs.open.alipay.com/common/104567
      *
      * @return string 返回base64_encode后的值而非原始的二进制值,否则无法正确的加解密
      */

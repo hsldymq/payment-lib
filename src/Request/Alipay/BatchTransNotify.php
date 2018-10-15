@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
@@ -8,8 +9,9 @@ use Archman\PaymentLib\SignatureHelper\Alipay\Generator;
 
 /**
  * 批量付款到支付宝账户有密接口.
- * @reference https://docs.open.alipay.com/64/104804
- * @reference https://docs.open.alipay.com/common/104741 sign_type不参与签名
+ *
+ * @see https://docs.open.alipay.com/64/104804
+ * @see https://docs.open.alipay.com/common/104741 sign_type不参与签名
  */
 class BatchTransNotify implements ParameterMakerInterface
 {

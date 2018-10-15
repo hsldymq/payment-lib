@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
@@ -8,7 +9,8 @@ use Archman\PaymentLib\Request\ParameterMakerInterface;
 
 /**
  * 手机网站支付.
- * @reference https://docs.open.alipay.com/203/107090/ 文档地址
+ *
+ * @see https://docs.open.alipay.com/203/107090/ 文档地址
  */
 class TradeWapPay implements ParameterMakerInterface
 {
@@ -48,8 +50,10 @@ class TradeWapPay implements ParameterMakerInterface
 
     /**
      * 生成已签名的表单HTML.
+     *
      * @param bool $autoSubmit 是否在HTML嵌入自动提交的JS代码
      * @param null|string $formID form元素ID,如果不打算自动提交,可以指定form ID以便前端自己掌握提交时间
+     *
      * @return string
      */
     public function makeFormHTML(bool $autoSubmit = true, ?string $formID = null): string

@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
@@ -8,7 +9,8 @@ use Archman\PaymentLib\Request\ParameterMakerInterface;
 
 /**
  * PC场景下单支付.
- * @reference https://docs.open.alipay.com/270/alipay.trade.page.pay
+ *
+ * @see https://docs.open.alipay.com/270/alipay.trade.page.pay
  */
 class TradePagePay implements ParameterMakerInterface
 {

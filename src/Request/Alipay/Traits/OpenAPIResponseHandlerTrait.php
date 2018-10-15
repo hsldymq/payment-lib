@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\Alipay\Traits;
 
 use Archman\PaymentLib\Exception\ErrorResponseException;
@@ -43,8 +44,10 @@ trait OpenAPIResponseHandlerTrait
 
     /**
      * 检查响应的错误码.
+     *
      * @param array $content
      * @param array $data
+     *
      * @return void
      * @throws ErrorResponseException
      */

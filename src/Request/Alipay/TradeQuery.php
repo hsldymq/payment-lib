@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
@@ -11,7 +12,8 @@ use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
  * 统一收单线下交易查询.
- * @reference https://docs.open.alipay.com/api_1/alipay.trade.query
+ *
+ * @see https://docs.open.alipay.com/api_1/alipay.trade.query
  */
 class TradeQuery implements RequestableInterface, ParameterMakerInterface
 {

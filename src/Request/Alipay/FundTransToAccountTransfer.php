@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
@@ -11,7 +12,8 @@ use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
  * 单笔转账到支付宝账户接口.
- * @reference https://docs.open.alipay.com/api_28/alipay.fund.trans.toaccount.transfer/
+ *
+ * @see https://docs.open.alipay.com/api_28/alipay.fund.trans.toaccount.transfer/
  */
 class FundTransToAccountTransfer implements RequestableInterface, ParameterMakerInterface
 {

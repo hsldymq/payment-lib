@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
@@ -10,7 +11,8 @@ use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
  * 统一收单交易关闭接口.
- * @reference https://docs.open.alipay.com/api_1/alipay.trade.close
+ *
+ * @ses https://docs.open.alipay.com/api_1/alipay.trade.close
  */
 class TradeClose implements RequestableInterface
 {

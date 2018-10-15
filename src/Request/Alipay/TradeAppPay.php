@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
@@ -9,7 +10,8 @@ use function GuzzleHttp\json_encode;
 
 /**
  * APP支付.生成请求参数
- * @reference https://docs.open.alipay.com/204/105465
+ *
+ * @see https://docs.open.alipay.com/204/105465
  */
 class TradeAppPay implements ParameterMakerInterface
 {

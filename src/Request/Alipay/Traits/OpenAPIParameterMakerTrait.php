@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\Alipay\Traits;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
@@ -28,7 +29,9 @@ trait OpenAPIParameterMakerTrait
 
     /**
      * 是否开启加密.
+     *
      * @param bool $enable
+     *
      * @return self
      */
     public function encrypt(bool $enable): self
