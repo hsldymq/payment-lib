@@ -19,7 +19,7 @@ use function GuzzleHttp\Psr7\build_query;
 
 /**
  * 即时到账批量退款无密接口.
- * @link https://os.alipayobjects.com/rmsportal/UYaiBLFsoFZqVgxWkEZx.zip 文档PDF下载地址
+ * @reference https://os.alipayobjects.com/rmsportal/UYaiBLFsoFZqVgxWkEZx.zip 文档PDF下载地址
  */
 class RefundFastpayByPlatformNopwd implements RequestableInterface, ParameterMakerInterface
 {

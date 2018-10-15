@@ -9,7 +9,7 @@ use function GuzzleHttp\json_encode;
 
 /**
  * APP支付.生成请求参数
- * @link https://docs.open.alipay.com/204/105465
+ * @reference https://docs.open.alipay.com/204/105465
  */
 class TradeAppPay implements ParameterMakerInterface
 {

@@ -8,7 +8,7 @@ use Archman\PaymentLib\Request\ParameterMakerInterface;
 
 /**
  * PC场景下单支付.
- * @link https://docs.open.alipay.com/270/alipay.trade.page.pay
+ * @reference https://docs.open.alipay.com/270/alipay.trade.page.pay
  */
 class TradePagePay implements ParameterMakerInterface
 {

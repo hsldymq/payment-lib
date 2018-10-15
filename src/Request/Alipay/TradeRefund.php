@@ -10,7 +10,7 @@ use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
  * 统一收单交易退款接口.
- * @link https://docs.open.alipay.com/api_1/alipay.trade.refund/ 文档地址
+ * @reference https://docs.open.alipay.com/api_1/alipay.trade.refund/ 文档地址
  */
 class TradeRefund implements RequestableInterface
 {

@@ -11,7 +11,7 @@ use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
  * 查询转账订单接口.
- * @link https://docs.open.alipay.com/api_28/alipay.fund.trans.order.query
+ * @reference https://docs.open.alipay.com/api_28/alipay.fund.trans.order.query
  */
 class FundTransOrderQuery implements RequestableInterface, ParameterMakerInterface
 {

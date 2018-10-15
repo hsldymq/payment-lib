@@ -8,8 +8,8 @@ use Archman\PaymentLib\SignatureHelper\Alipay\Generator;
 
 /**
  * 批量付款到支付宝账户有密接口.
- * @link https://docs.open.alipay.com/64/104804
- * @link https://docs.open.alipay.com/common/104741 sign_type不参与签名
+ * @reference https://docs.open.alipay.com/64/104804
+ * @reference https://docs.open.alipay.com/common/104741 sign_type不参与签名
  */
 class BatchTransNotify implements ParameterMakerInterface
 {
