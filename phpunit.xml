@@ -12,5 +12,8 @@
         <testsuite name="WeChatRequest">
             <directory suffix="Test.php">tests/Request/WeChat</directory>
         </testsuite>
+        <testsuite name="MyCardRequest">
+            <directory suffix="Test.php">tests/Request/MyCard</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
