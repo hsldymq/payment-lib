@@ -11,7 +11,7 @@ use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\SignatureHelper\MyCard\Generator;
 
 /**
- * 授权码参数生成.
+ * 向MyCard请求授权码.
  */
 class AuthGlobal implements RequestableInterface, ParameterMakerInterface
 {
