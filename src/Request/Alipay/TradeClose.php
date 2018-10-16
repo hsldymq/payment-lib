@@ -7,6 +7,7 @@ use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIRequestPreparationTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIResponseHandlerTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIParameterMakerTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
+use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
@@ -14,7 +15,7 @@ use Archman\PaymentLib\Request\RequestableInterface;
  *
  * @ses https://docs.open.alipay.com/api_1/alipay.trade.close
  */
-class TradeClose implements RequestableInterface
+class TradeClose implements RequestableInterface, ParameterMakerInterface
 {
     use OpenAPIResponseHandlerTrait;
     use OpenAPIRequestPreparationTrait;
