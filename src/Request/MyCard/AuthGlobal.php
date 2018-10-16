@@ -3,15 +3,25 @@
 namespace Archman\PaymentLib\Request\MyCard;
 
 use Archman\PaymentLib\ConfigManager\MyCardConfigInterface;
+use Archman\PaymentLib\Request\MyCard\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\Request\MyCard\Traits\ResponseHandlerTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
+use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\SignatureHelper\MyCard\Generator;
 
 /**
  * 授权码参数生成.
  */
-class AuthGlobal implements ParameterMakerInterface
+class AuthGlobal implements RequestableInterface, ParameterMakerInterface
 {
+    use RequestPreparationTrait;
+    use ResponseHandlerTrait;
+
+    private const TEST_URI = 'https://test.b2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal';
+
+    private const PROD_URI = 'https://b2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal';
+
     private $config;
 
     private $parameters = [
@@ -143,6 +153,8 @@ class AuthGlobal implements ParameterMakerInterface
     public function setSandBoxMode(bool $isSandBox): self
     {
         $this->parameters['SandBoxMode'] = $isSandBox ? 'true' : 'false';
+        // 沙盒环境的数据必须向测试地址发起请求
+        $this->setEnv($isSandBox);
 
         return $this;
     }
