@@ -6,9 +6,9 @@ trait EnvSwitchTrait
 {
     private $uri;
 
-    public function setEnv(bool $isTest): self
+    public function setEnv(bool $isProd): self
     {
-        $this->uri = $isTest ? self::TEST_URI : self::PROD_URI;
+        $this->uri = $isProd ? self::PROD_URI : self::TEST_URI;
 
         return $this;
     }

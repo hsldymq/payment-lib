@@ -154,7 +154,7 @@ class AuthGlobal implements RequestableInterface, ParameterMakerInterface
     {
         $this->parameters['SandBoxMode'] = $isSandBox ? 'true' : 'false';
         // 沙盒环境的数据必须向测试地址发起请求
-        $this->setEnv($isSandBox);
+        $this->setEnv(!$isSandBox);
 
         return $this;
     }
