@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\SignatureHelper\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
@@ -23,10 +24,12 @@ class Validator
 
     /**
      * 验证异步回调的签名.
+     *
      * @param string $signature 待验证的签名
      * @param string $signType 验证签名的算法(RSA, MD5, ...)
      * @param array $data 用于验证签名的数据
      * @param array $exclude
+     *
      * @return bool
      * @throws SignatureException
      */
@@ -43,9 +46,11 @@ class Validator
 
     /**
      * 验证Open API同步响应的签名.
+     *
      * @param string $signature
      * @param string $signType
      * @param string $data
+     *
      * @return bool
      * @throws SignatureException
      */

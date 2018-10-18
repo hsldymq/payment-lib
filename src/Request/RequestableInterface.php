@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request;
 
 use Archman\PaymentLib\Response\BaseResponse;

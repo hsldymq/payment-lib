@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\Huawei;
 
 use Archman\PaymentLib\ConfigManager\HuaweiConfigInterface;
@@ -8,8 +9,9 @@ use Archman\PaymentLib\SignatureHelper\Huawei\Generator;
 
 /**
  * 应用内支付生成参数.
- * @link http://developer.huawei.com/consumer/cn/wiki/index.php?title=HMS%E5%BC%80%E5%8F%91%E6%8C%87%E5%AF%BC%E4%B9%A6-%E5%BA%94%E7%94%A8%E5%86%85%E6%94%AF%E4%BB%98%E6%8E%A5%E5%8F%A3&oldid=4858
- * @link http://developer.huawei.com/consumer/cn/service/hms/catalog/huaweiiap.html?page=hmssdk_huaweiiap_api_reference_c1
+ *
+ * @see http://developer.huawei.com/consumer/cn/wiki/index.php?title=HMS%E5%BC%80%E5%8F%91%E6%8C%87%E5%AF%BC%E4%B9%A6-%E5%BA%94%E7%94%A8%E5%86%85%E6%94%AF%E4%BB%98%E6%8E%A5%E5%8F%A3&oldid=4858
+ * @see http://developer.huawei.com/consumer/cn/service/hms/catalog/huaweiiap.html?page=hmssdk_huaweiiap_api_reference_c1
  */
 class AppPay implements ParameterMakerInterface
 {
@@ -77,6 +79,7 @@ class AppPay implements ParameterMakerInterface
 
     /**
      * @param int $amount 单位:分
+     *
      * @return self
      */
     public function setAmount(int $amount): self
@@ -110,7 +113,9 @@ class AppPay implements ParameterMakerInterface
 
     /**
      * 设置回调地址.
+     *
      * @param null|string $url
+     *
      * @return AppPay
      */
     public function setURL(?string $url): self
@@ -150,7 +155,9 @@ class AppPay implements ParameterMakerInterface
 
     /**
      * TODO 官方暂不支持
+     *
      * @param int $amount 单位: 分
+     *
      * @return AppPay
      */
     public function setIngftAmt(?int $amount): self
@@ -163,7 +170,9 @@ class AppPay implements ParameterMakerInterface
 
     /**
      * TODO 官方暂不支持
+     *
      * @param \DateTime|null $datetime
+     *
      * @return AppPay
      */
     public function setExpireTime(?\DateTime $datetime): self
@@ -175,7 +184,9 @@ class AppPay implements ParameterMakerInterface
 
     /**
      * TODO 官方暂不支持
+     *
      * @param array|null $ids
+     *
      * @return AppPay
      */
     public function setPartnerIDs(?array $ids): self
@@ -187,7 +198,9 @@ class AppPay implements ParameterMakerInterface
 
     /**
      * TODO 官方暂不支持
+     *
      * @param int|null $seconds
+     *
      * @return AppPay
      */
     public function setValidTime(?int $seconds): self

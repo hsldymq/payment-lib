@@ -1,12 +1,13 @@
 <?php
+
 namespace Archman\PaymentLib\SignatureHelper\Huawei;
 
 use Archman\PaymentLib\ConfigManager\HuaweiConfigInterface;
 use Archman\PaymentLib\Exception\SignatureException;
 
 /**
- * @link http://developer.huawei.com/consumer/cn/service/hms/catalog/huaweiiap.html?page=hmssdk_huaweiiap_api_reference_c5
- * @link http://developer.huawei.com/consumer/cn/service/hms/catalog/huaweiiap.html?page=hmssdk_huaweiiap_sample_code_s
+ * @see http://developer.huawei.com/consumer/cn/service/hms/catalog/huaweiiap.html?page=hmssdk_huaweiiap_api_reference_c5
+ * @see http://developer.huawei.com/consumer/cn/service/hms/catalog/huaweiiap.html?page=hmssdk_huaweiiap_sample_code_s
  */
 class Validator
 {
@@ -23,6 +24,7 @@ class Validator
      * @param string $signature
      * @param string $signType
      * @param array $data
+     *
      * @return bool
      * @throws SignatureException
      */

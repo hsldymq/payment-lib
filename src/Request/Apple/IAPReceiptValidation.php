@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\Apple;
 
 use Archman\PaymentLib\Exception\ErrorResponseException;
@@ -16,7 +17,7 @@ use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 
 /**
- * @link https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html#//apple_ref/doc/uid/TP40010573-CH104-SW1 文档地址
+ * @see https://developer.apple.com/library/content/releasenotes/General/ValidateAppStoreReceipt/Chapters/ValidateRemotely.html#//apple_ref/doc/uid/TP40010573-CH104-SW1 文档地址
  */
 class IAPReceiptValidation implements RequestableInterface
 {

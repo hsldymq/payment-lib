@@ -1,10 +1,11 @@
 <?php
+
 namespace Archman\PaymentLib\SignatureHelper\Huawei;
 
 use Archman\PaymentLib\ConfigManager\HuaweiConfigInterface;
 
 /**
- * @link http://developer.huawei.com/consumer/cn/service/hms/catalog/huaweiiap.html?page=hmssdk_huaweiiap_sample_code_s
+ * @see http://developer.huawei.com/consumer/cn/service/hms/catalog/huaweiiap.html?page=hmssdk_huaweiiap_sample_code_s
  */
 class Generator
 {
@@ -27,9 +28,11 @@ class Generator
 
     /**
      * TODO 暂不支持
+     *
      * @param string $ingftAmt
      * @param string $requestID
      * @param string $developUserSign
+     *
      * @return string
      */
     public function makeInSign(string $ingftAmt, string $requestID, string $developUserSign): string

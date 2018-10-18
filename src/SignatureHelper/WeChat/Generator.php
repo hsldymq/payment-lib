@@ -1,11 +1,12 @@
 <?php
+
 namespace Archman\PaymentLib\SignatureHelper\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Exception\SignatureException;
 
 /**
- * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
+ * @see https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
  */
 class Generator
 {

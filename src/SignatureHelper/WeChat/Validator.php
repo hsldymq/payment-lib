@@ -1,11 +1,12 @@
 <?php
+
 namespace Archman\PaymentLib\SignatureHelper\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Exception\SignatureException;
 
 /**
- * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
+ * @see https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
  */
 class Validator
 {
@@ -23,6 +24,7 @@ class Validator
      * @param string $signType
      * @param array $data
      * @param array $exclude
+     *
      * @throws SignatureException
      */
     public function validate(string $signature, string $signType, array $data, array $exclude = [])

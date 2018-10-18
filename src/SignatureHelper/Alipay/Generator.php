@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\SignatureHelper\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;

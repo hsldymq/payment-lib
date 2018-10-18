@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\SignatureHelper\Google;
 
 use Archman\PaymentLib\ConfigManager\GoogleConfigInterface;

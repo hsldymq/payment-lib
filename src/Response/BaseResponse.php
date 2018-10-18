@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Response;
 
 abstract class BaseResponse implements \ArrayAccess

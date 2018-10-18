@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request;
 
 class RequestOption implements RequestOptionInterface

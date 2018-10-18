@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request;
 
 interface ParameterMakerInterface

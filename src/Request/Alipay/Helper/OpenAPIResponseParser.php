@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\Alipay\Helper;
 
 use Archman\PaymentLib\Request\DataParser;
