@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
@@ -7,13 +8,14 @@ use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
-use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
-use Archman\PaymentLib\RequestInterface\WeChat\Traits\ResponseHandlerTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
  * 查询订单.
- * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
+ *
+ * @see https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_2
  */
 class OrderQuery implements RequestableInterface, ParameterMakerInterface
 {

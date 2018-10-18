@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
@@ -7,13 +8,14 @@ use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
-use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
-use Archman\PaymentLib\RequestInterface\WeChat\Traits\ResponseHandlerTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
  * 提交刷卡支付.
- * @link https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_10&index=1
+ *
+ * @see https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_10&index=1
  */
 class MicroPay implements RequestableInterface, ParameterMakerInterface
 {
@@ -97,9 +99,11 @@ class MicroPay implements RequestableInterface, ParameterMakerInterface
     }
 
     /**
-     * @link https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
+     * @see https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
+     *
      * @param string $field
      * @param null|string $value
+     *
      * @return $this
      */
     public function setDetail(string $field, ?string $value): self
@@ -114,12 +118,14 @@ class MicroPay implements RequestableInterface, ParameterMakerInterface
     }
 
     /**
-     * @link https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
+     * @see https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
+     *
      * @param string $goodsID
      * @param string|null $wxPayGoodsID
      * @param string|null $goodsName
      * @param int $quantity
      * @param int $price
+     *
      * @return self
      */
     public function addGoodsDetail(string $goodsID, ?string $wxPayGoodsID, ?string $goodsName, int $quantity, int $price): self

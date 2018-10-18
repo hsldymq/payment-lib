@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
@@ -8,13 +9,14 @@ use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
-use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
-use Archman\PaymentLib\RequestInterface\WeChat\Traits\ResponseHandlerTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
  * 下载对账单.
- * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
+ *
+ * @see https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_6
  */
 class DownloadBill implements RequestableInterface, ParameterMakerInterface
 {

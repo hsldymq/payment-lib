@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
@@ -10,7 +11,8 @@ use Archman\PaymentLib\SignatureHelper\Wechat\Generator;
 
 /**
  * 微信内H5调起支付.
- * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6
+ *
+ * @see https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6
  */
 class WapPayInWeChat implements ParameterMakerInterface
 {

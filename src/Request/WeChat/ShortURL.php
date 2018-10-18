@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
@@ -6,13 +7,14 @@ use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
-use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
-use Archman\PaymentLib\RequestInterface\WeChat\Traits\ResponseHandlerTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
  * 转换短链接.
- * @link https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_9
+ *
+ * @see https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_9
  */
 class ShortURL implements RequestableInterface, ParameterMakerInterface
 {

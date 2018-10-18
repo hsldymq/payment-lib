@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
@@ -7,13 +8,14 @@ use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
-use Archman\PaymentLib\RequestInterface\WeChat\Traits\RequestPreparationTrait;
-use Archman\PaymentLib\RequestInterface\WeChat\Traits\ResponseHandlerTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
  * 查询退款.
- * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_5&index=7
+ *
+ * @see https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_5&index=7
  */
 class RefundQuery implements RequestableInterface, ParameterMakerInterface
 {

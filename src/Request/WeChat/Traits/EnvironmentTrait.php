@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\WeChat\Traits;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;

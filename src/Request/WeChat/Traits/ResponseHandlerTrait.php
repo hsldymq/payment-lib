@@ -18,6 +18,7 @@ trait ResponseHandlerTrait
 {
     /**
      * @param ResponseInterface $response
+     *
      * @return BaseResponse
      * @throws
      */

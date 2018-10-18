@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
@@ -10,7 +11,8 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
  * 生成调起App支付接口参数.
- * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_12&index=2
+ *
+ * @see https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_12&index=2
  */
 class AppPay implements ParameterMakerInterface
 {
@@ -55,7 +57,9 @@ class AppPay implements ParameterMakerInterface
 
     /**
      * 用于生成timestamp.
+     *
      * @param \DateTime|null $dt
+     *
      * @return AppPay
      */
     public function setTimestamp(?\DateTime $dt): self

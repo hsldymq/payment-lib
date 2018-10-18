@@ -1,4 +1,5 @@
 <?php
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\Request\ParameterMakerInterface;
@@ -11,11 +12,11 @@ use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
- * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1
- * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1
- * @link https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_20&index=1
- * @link https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=4_2
- * @link https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
+ * @see https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1
+ * @see https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1
+ * @see https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_20&index=1
+ * @see https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=4_2
+ * @see https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
  */
 class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
 {
@@ -115,7 +116,9 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
 
     /**
      * @link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_2
+     *
      * @param string $body
+     *
      * @return self
      */
     public function setBody(string $body): self
@@ -127,8 +130,10 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
 
     /**
      * @link https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
+     *
      * @param string $field
      * @param null|string $value
+     *
      * @return $this
      */
     public function setDetail(string $field, ?string $value): self
@@ -144,11 +149,13 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
 
     /**
      * @link https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_102&index=2
+     *
      * @param string $goodsID
      * @param string|null $wxPayGoodsID
      * @param string|null $goodsName
      * @param int $quantity
      * @param int $price
+     *
      * @return self
      */
     public function addGoodsDetail(string $goodsID, ?string $wxPayGoodsID, ?string $goodsName, int $quantity, int $price): self
@@ -241,7 +248,9 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
 
     /**
      * trade_type=NATIVE需要设置这个.
+     *
      * @param string $id
+     *
      * @return self
      */
     public function setProductID(string $id): self
@@ -260,7 +269,9 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
 
     /**
      * trade_type=JSAPI时需要设置openid.
+     *
      * @param string $openid
+     *
      * @return self
      */
     public function setOpenID(?string $openid): self
