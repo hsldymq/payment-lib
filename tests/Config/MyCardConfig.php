@@ -6,13 +6,20 @@ use Archman\PaymentLib\ConfigManager\MyCardConfigInterface;
 
 class MyCardConfig implements MyCardConfigInterface
 {
+    private $config;
+
+    public function __construct(array $config)
+    {
+        $this->config = $config;
+    }
+
     public function getFacServiceID(): string
     {
-        return 'test_service_id';
+        return $this->config['FacServiceID'];
     }
 
     public function getFacKey(): string
     {
-        return 'test_fac_key';
+        return $this->config['FacKey'];
     }
 }
