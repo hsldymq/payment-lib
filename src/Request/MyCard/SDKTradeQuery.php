@@ -57,14 +57,14 @@ class SDKTradeQuery implements RequestableInterface, ParameterMakerInterface
 
     public function setStartDateTime(?\DateTime $dt): self
     {
-        $this->parameters['StartDateTime'] = $dt === null ? null : $dt->format('Y-m-dTH:i:s');
+        $this->parameters['StartDateTime'] = $dt === null ? null : $dt->format('Y-m-d\TH:i:s');
 
         return $this;
     }
 
     public function setEndDateTime(?\DateTime $dt): self
     {
-        $this->parameters['EndDateTime'] = $dt === null ? null : $dt->format('Y-m-dTH:i:s');
+        $this->parameters['EndDateTime'] = $dt === null ? null : $dt->format('Y-m-d\TH:i:s');
 
         return $this;
     }
