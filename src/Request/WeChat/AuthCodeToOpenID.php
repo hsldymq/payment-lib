@@ -15,7 +15,7 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 /**
  * 授权码查询openid.
  *
- * @see https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_13&index=9
+ * @see https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_13&index=10
  */
 class AuthCodeToOpenID implements RequestableInterface, ParameterMakerInterface
 {
