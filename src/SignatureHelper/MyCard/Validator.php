@@ -15,20 +15,39 @@ class Validator
     }
 
     /**
+     * 验证支付完成回调数据Hash.
+     *
      * @param string $hash
      * @param array $data
      *
      * @return bool
      * @throws SignatureException
      */
-    public function validate(string $hash, array $data): bool
+    public function validatePayResultHash(string $hash, array $data): bool
     {
         $raw = $data;
 
-        unset($data['Hash']);
-        unset($data['ReturnMsg']);
-        $result = $hash === HashHelper::makeHash($data);
+        $fields = [
+            'ReturnCode',
+            'PayResult',
+            'FacTradeSeq',
+            'PaymentType',
+            'Amount',
+            'Currency',
+            'MyCardTradeNo',
+            'MyCardType',
+            'PromoCode',
+        ];
+        $data = [];
+        foreach ($fields as $key) {
+            if (isset($raw[$key])) {
+                $data[$key] = $raw[$key];
+            }
+        }
 
+        $data['FacKey'] = $this->config->getFacKey();
+        $sign = HashHelper::makeHash($data);
+        $result = $hash === $sign;
 
         if (!$result) {
             throw (new SignatureException('Failed To Validate MyCard Hash.'))->setData($raw)->setSign($hash);
