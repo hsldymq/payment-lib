@@ -12,17 +12,19 @@ class Client extends BaseClient
     {
         $ssl = [];
         if ($path = $option->getSSLKeyFilePath()) {
-            $ssl[0] = $path;
             if ($password = $option->getSSLKeyPassword()) {
-                $ssl[1] = $password;
+                $ssl = [$path, $password];
+            } else {
+                $ssl = $path;
             }
         }
 
         $cert = [];
         if ($path = $option->getSSLCertFilePath()) {
-            $cert[0] = $path;
             if ($password = $option->getSSLCertPassword()) {
-                $cert[1] = $password;
+                $cert = [$path, $password];
+            } else {
+                $cert = $path;
             }
         }
 
