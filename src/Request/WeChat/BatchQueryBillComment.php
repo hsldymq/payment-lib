@@ -79,7 +79,7 @@ class BatchQueryBillComment implements RequestableInterface, ParameterMakerInter
         return $this;
     }
 
-    public function setLimit(int $limit): self
+    public function setLimit(?int $limit): self
     {
         if ($limit > 200 || $limit < 1) {
             throw new InvalidParameterException("Invalid Limit Number({$limit}).");
