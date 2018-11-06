@@ -34,26 +34,26 @@ class WeChatConfig implements WeChatConfigInterface
 
     public function getClientCertPassword(): ?string
     {
-        return null;
+        return $this->config['sslCertPassword'] ?? null;
     }
 
     public function getClientCertPath(): ?string
     {
-        return null;
+        return $this->config['sslCert'] ?? null;
     }
 
     public function getRootCAPath(): ?string
     {
-        return null;
+        return $this->config['rootCA'] ?? null;
     }
 
     public function getSSLKeyPassword(): ?string
     {
-        return null;
+        return $this->config['sslKeyPassword'] ?? null;
     }
 
     public function getSSLKeyPath(): ?string
     {
-        return null;
+        return $this->config['sslKey'] ?? null;
     }
 }
