@@ -115,7 +115,7 @@ class BatchQueryBillComment implements RequestableInterface, ParameterMakerInter
     {
         $rawBody = strval($response->getBody());
 
-        $errCode = $errMsg = null;
+        $errCode = $errMsg = $data = null;
         if (strpos($rawBody, '<xml>') === 0) {
             $data = DataParser::xmlToArray($rawBody);
             if (strtoupper($data['return_code']) !== 'SUCCESS') {
