@@ -55,9 +55,8 @@ class BatchQueryBillComment implements RequestableInterface, ParameterMakerInter
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
-        // 不填写签名类型,并且签名时把limit排除,否则微信会返回签名错误
-        // $parameters['sign_type'] = self::FIXED_SIGN_TYPE;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, self::FIXED_SIGN_TYPE, ['limit']);
+        $parameters['sign_type'] = self::FIXED_SIGN_TYPE;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, self::FIXED_SIGN_TYPE, ['limit', 'sign_type']);
 
         return $parameters;
     }
