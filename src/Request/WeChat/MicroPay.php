@@ -41,6 +41,8 @@ class MicroPay implements RequestableInterface, ParameterMakerInterface
         'spbill_create_ip' => null,
         'goods_tag' => null,
         'limit_pay' => null,
+        'time_start' => null,
+        'time_expire' => null,
         'auth_code' => null,
         'scene_info' => null,
     ];
@@ -191,6 +193,20 @@ class MicroPay implements RequestableInterface, ParameterMakerInterface
     public function setLimitPay(?string $limit): self
     {
         $this->params['limit_pay'] = $limit;
+
+        return $this;
+    }
+
+    public function setTimeStart(?\DateTime $start): self
+    {
+        $this->params['time_start'] = $start === null ? null : $start->format('YmdHis');
+
+        return $this;
+    }
+
+    public function setTimeExpire(?\DateTime $expire): self
+    {
+        $this->params['time_expire'] = $expire === null ? null : $expire->format('YmdHis');
 
         return $this;
     }
