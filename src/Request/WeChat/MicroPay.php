@@ -69,10 +69,10 @@ class MicroPay implements RequestableInterface, ParameterMakerInterface
     public function makeParameters(): array
     {
         $detail = ParameterHelper::packValidParameters($this->detail);
-        !is_null($detail) && $this->params['detail'] = json_encode($detail);
+        $detail && $this->params['detail'] = json_encode($detail);
 
         $storeInfo = ParameterHelper::packValidParameters($this->storeInfo);
-        !is_null($storeInfo) && $this->params['scene_info'] = json_encode(['store_info' => $storeInfo]);
+        $storeInfo && $this->params['scene_info'] = json_encode(['store_info' => $storeInfo]);
 
         ParameterHelper::checkRequired($this->params, ['body', 'out_trade_no', 'total_fee', 'spbill_create_ip', 'auth_code']);
 
