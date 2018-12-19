@@ -2,6 +2,7 @@
 
 namespace Archman\PaymentLib\Test\Request\MyCard;
 
+use Archman\PaymentLib\SignatureHelper\MyCard\Generator;
 use Archman\PaymentLib\SignatureHelper\MyCard\Validator;
 use Archman\PaymentLib\Test\Config;
 use Archman\PaymentLib\Test\Config\MyCardConfig;
@@ -16,8 +17,14 @@ class MyCardPayHashTest extends TestCase
             $configData = Config::get('mycard', 'config', $each['FacServiceID']);
             $config = new MyCardConfig($configData);
 
-            $result = (new Validator($config))->validatePayResultHash($each['fields']['hash'], $each['data']);
-            $this->assertTrue($result);
+            if ($each['type'] === 'validating') {
+                $result = (new Validator($config))->validatePayResultHash($each['fields']['hash'], $each['data']);
+                $this->assertTrue($result);
+            } else {
+                $hash = (new Generator($config))->makeHash($each['data']);
+                $this->assertEquals($each['fields']['hash'], $hash);
+            }
+
         }
     }
 }

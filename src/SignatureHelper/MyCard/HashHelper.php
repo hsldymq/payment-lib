@@ -15,7 +15,7 @@ class HashHelper
     {
         $preHashValue = self::makePreHashValue($params);
 
-        $encoded = rawurlencode($preHashValue);
+        $encoded = urlencode($preHashValue);
         return preg_replace_callback('/%[a-zA-Z0-9]{2}/', function ($each) {
             return strtolower($each[0]);
         }, $encoded);
