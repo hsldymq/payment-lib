@@ -18,7 +18,7 @@ class AuthGlobal implements RequestableInterface, ParameterMakerInterface
     use RequestPreparationTrait;
     use ResponseHandlerTrait;
 
-    private const TEST_URI = 'https://test.b2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal';
+    private const TEST_URI = 'https://testb2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal';
 
     private const PROD_URI = 'https://b2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal';
 
