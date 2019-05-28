@@ -10,8 +10,7 @@ use Archman\PaymentLib\SignatureHelper\Huawei\Generator;
 /**
  * 应用内支付生成参数.
  *
- * @see http://developer.huawei.com/consumer/cn/wiki/index.php?title=HMS%E5%BC%80%E5%8F%91%E6%8C%87%E5%AF%BC%E4%B9%A6-%E5%BA%94%E7%94%A8%E5%86%85%E6%94%AF%E4%BB%98%E6%8E%A5%E5%8F%A3&oldid=4858
- * @see http://developer.huawei.com/consumer/cn/service/hms/catalog/huaweiiap.html?page=hmssdk_huaweiiap_api_reference_c1
+ * @see https://developer.huawei.com/consumer/cn/service/hms/catalog/fastapp.html?page=fastapp_fastapp_api_reference_pay
  */
 class AppPay implements ParameterMakerInterface
 {
@@ -28,12 +27,12 @@ class AppPay implements ParameterMakerInterface
         'url' => null,
         'currency' => null,
         'country' => null,
-        'urlver' => null,
+        'urlVer' => null,
         'extReserved' => null,
-        'ingftAmt' => null,
         'expireTime' => null,
         'partnerIDs' => null,
         'validTime' => null,
+        'publicKey' => null,
     ];
 
     public function __construct(HuaweiConfigInterface $config)
@@ -49,9 +48,11 @@ class AppPay implements ParameterMakerInterface
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['applicationID'] = $this->config->getAppID();
         $parameters['merchantId'] = $this->config->getMerchantID();
-        // TODO 生成inSign, 目前官方暂不支持
-        //$this->params['ingftAmt'] && $generator->makeInSign($this->params['ingftAmt'], $this->params['requestId'], ''/* TODO */);
-        $parameters['sign'] = $generator->makeSign($parameters, ['serviceCatalog', 'merchantName', 'extReserved', 'ingftAmt', 'inSign']);
+        // 签名时urlVer需要变为urlver
+        $p = $parameters;
+        isset($p['urlVer']) && $p['urlver'] = $p['urlVer'];
+        unset($p['urlVer']);
+        $parameters['sign'] = $generator->makeSign($p, ['serviceCatalog', 'merchantName', 'extReserved', 'inSign', 'publicKey']);
 
         return $parameters;
     }
@@ -141,7 +142,7 @@ class AppPay implements ParameterMakerInterface
 
     public function setURLVer(?string $ver): self
     {
-        $this->params['urlver'] = $ver;
+        $this->params['urlVer'] = $ver;
 
         return $this;
     }
@@ -153,17 +154,9 @@ class AppPay implements ParameterMakerInterface
         return $this;
     }
 
-    /**
-     * TODO 官方暂不支持
-     *
-     * @param int $amount 单位: 分
-     *
-     * @return AppPay
-     */
-    public function setIngftAmt(?int $amount): self
+    public function setPublicKey(string $key): self
     {
-        // ParameterHelper::checkAmount($amount);
-        // $this->params['ingftAmt'] = $amount;
+        $this->params['publicKey'] = $key;
 
         return $this;
     }
