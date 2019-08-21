@@ -55,6 +55,7 @@ class TradeWapPay implements ParameterMakerInterface
      * @param null|string $formID form元素ID,如果不打算自动提交,可以指定form ID以便前端自己掌握提交时间
      *
      * @return string
+     * @throws
      */
     public function makeFormHTML(bool $autoSubmit = true, ?string $formID = null): string
     {
@@ -77,6 +78,10 @@ class TradeWapPay implements ParameterMakerInterface
         return $form;
     }
 
+    /**
+     * @return array
+     * @throws
+     */
     public function makeParameters(): array
     {
         ParameterHelper::checkRequired($this->bizContent, ['out_trade_no', 'subject', 'total_amount']);
