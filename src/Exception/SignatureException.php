@@ -15,7 +15,10 @@ class SignatureException extends \Exception
         return $this->data;
     }
 
-    public function getSign(): ?string
+    /**
+     * @return string|null
+     */
+    public function getSign()
     {
         return $this->sign;
     }

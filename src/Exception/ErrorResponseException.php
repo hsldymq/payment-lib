@@ -25,17 +25,26 @@ class ErrorResponseException extends \Exception
         parent::__construct($message, $code, $previous);
     }
 
-    public function getErrorCode(): ?string
+    /**
+     * @return string|null
+     */
+    public function getErrorCode()
     {
         return $this->errorCode;
     }
 
-    public function getErrorText(): ?string
+    /**
+     * @return string|null
+     */
+    public function getErrorText()
     {
         return $this->errorText;
     }
 
-    public function getResponseData(): ?array
+    /**
+     * @return array|null
+     */
+    public function getResponseData()
     {
         return $this->responseData;
     }
