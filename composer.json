@@ -1,5 +1,8 @@
 {
+  "name": "hsldymq/payment-lib",
+  "license": "MIT",
   "require": {
+    "php": ">=7.0.0",
     "psr/http-message": "~1.0",
     "guzzlehttp/psr7": "^1.4",
     "guzzlehttp/guzzle": "^6.3"
