@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Exception;
 
 class ErrorResponseException extends \Exception
@@ -10,10 +12,19 @@ class ErrorResponseException extends \Exception
 
     private $responseData = null;
 
+    /**
+     * ErrorResponseException constructor.
+     * @param string|null $errorCode
+     * @param string|null $errorText
+     * @param array|null $responseData
+     * @param string $message
+     * @param int $code
+     * @param \Throwable|null $previous
+     */
     public function __construct(
-        ?string $errorCode = null,
-        ?string $errorText = null,
-        ?array $responseData = null,
+        $errorCode = null,
+        $errorText = null,
+        $responseData = null,
         $message = "",
         $code = 0,
         \Throwable $previous = null
