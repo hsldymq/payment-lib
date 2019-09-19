@@ -60,6 +60,7 @@ class ParameterHelper
      * @param int $amount
      *
      * @return string
+     * @throws
      */
     public static function transAmountUnit(int $amount): string
     {
@@ -68,6 +69,12 @@ class ParameterHelper
         return sprintf('%.2f', $amount / 100);
     }
 
+    /**
+     * @param int $amount
+     * @param string|null $ex_text
+     *
+     * @throws
+     */
     public static function checkAmount(int $amount, string $ex_text = null)
     {
         if ($amount <= 0) {
