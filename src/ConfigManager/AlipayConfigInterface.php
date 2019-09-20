@@ -24,7 +24,7 @@ interface AlipayConfigInterface
      *
      * 如果是RSA/RSA2算法,应返回PKCS格式.
      *
-     * @param null|string $signType 不传或传null返回getOpenAPIDefaultSignType方法值对应的密钥.
+     * @param string|null $signType 不传或传null返回getOpenAPIDefaultSignType方法值对应的密钥.
      *
      * @return string
      */
@@ -64,7 +64,7 @@ interface AlipayConfigInterface
      *
      * 如果是RSA/RSA2算法,应返回PKCS格式.
      *
-     * @param null|string $signType 不传或传null返回getMAPIDefaultSignType方法值对应的密钥.
+     * @param string|null $signType 不传或传null返回getMAPIDefaultSignType方法值对应的密钥.
      *
      * @return string
      */
