@@ -13,7 +13,6 @@ class ErrorResponseException extends \Exception
     private $responseData = null;
 
     /**
-     * ErrorResponseException constructor.
      * @param string|null $errorCode
      * @param string|null $errorText
      * @param array|null $responseData
