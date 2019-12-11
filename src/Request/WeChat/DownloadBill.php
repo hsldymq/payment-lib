@@ -61,7 +61,7 @@ class DownloadBill implements RequestableInterface, ParameterMakerInterface
         $parameters['nonce_str'] = $this->getNonceStr();
         $parameters['sign_type'] = $this->signType;
         $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->signType);
-        //print_r($parameters);exit();
+
         return $parameters;
     }
 
