@@ -57,5 +57,17 @@ interface WeChatConfigInterface
      */
     public function getAPIKey(): string;
 
-    public function getDefaultSignType(): string;
+    /**
+     * 签名类型.
+     *
+     * @return string
+     */
+    public function getSignType(): string;
+
+    /**
+     * 是否是沙盒环境配置
+     *
+     * @return bool
+     */
+    public function isSandbox(): bool;
 }
