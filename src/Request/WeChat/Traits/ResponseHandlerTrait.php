@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\WeChat\Traits;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Exception\ErrorResponseException;
-use Archman\PaymentLib\Request\DataParser;
+use Archman\PaymentLib\Request\DataConverter;
 use Psr\Http\Message\ResponseInterface;
 use Archman\PaymentLib\SignatureHelper\WeChat\Validator;
 
@@ -34,7 +36,7 @@ trait ResponseHandlerTrait
 
     private function parseXMLDataAndCheck(string $body): array
     {
-        $data = DataParser::xmlToArray($body);
+        $data = DataConverter::xmlToArray($body);
 
         $errCode = $errMsg = null;
         if (strtoupper($data['return_code']) !== 'SUCCESS') {

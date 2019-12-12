@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\WeChat\Traits;
 
 trait NonceStrTrait
 {
-    private $nonceStr = null;
+    private ?string $nonceStr = null;
 
     public function setNonceStr(?string $str): self
     {

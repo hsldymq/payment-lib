@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\WeChat\Traits;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
-use Archman\PaymentLib\Request\DataParser;
+use Archman\PaymentLib\Request\DataConverter;
 use Archman\PaymentLib\Request\RequestOption;
 use Archman\PaymentLib\Request\RequestOptionInterface;
 use GuzzleHttp\Psr7\Request;
@@ -21,7 +23,7 @@ trait RequestPreparationTrait
     {
         $parameters = $this->makeParameters();
         $request = new Request('POST', $this->getUri());
-        $body = stream_for(DataParser::arrayToXML($parameters));
+        $body = stream_for(DataConverter::arrayToXML($parameters));
 
         return $request->withBody($body);
     }
