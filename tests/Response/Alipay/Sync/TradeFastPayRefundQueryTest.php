@@ -4,7 +4,7 @@ namespace Archman\PaymentLib\Test\Response\Alipay\Sync;
 use Archman\PaymentLib\Request\Alipay\Helper\Encryption;
 use Archman\PaymentLib\Request\Alipay\Helper\OpenAPIResponseParser;
 use Archman\PaymentLib\Request\Alipay\TradeFastPayRefundQuery;
-use Archman\PaymentLib\Request\DataParser;
+use Archman\PaymentLib\Request\DataConverter;
 use Archman\PaymentLib\SignatureHelper\Alipay\Validator;
 use Archman\PaymentLib\Test\Config;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +19,7 @@ class TradeFastPayRefundQueryTest extends TestCase
             $configData = Config::get('alipay', 'config', $each['appID']);
             $config = new AlipayConfig($configData);
 
-            $data = DataParser::jsonToArray($each['body']);
+            $data = DataConverter::jsonToArray($each['body']);
             ['signName' => $signName, 'responseName' => $responseName] = ResponseHelper::getResponseFieldName(TradeFastPayRefundQuery::class);
 
             $content = OpenAPIResponseParser::getResponseContent($each['body'], $responseName);

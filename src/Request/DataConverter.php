@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request;
 
-class DataParser
+use Archman\PaymentLib\Exception\InternalErrorException;
+
+class DataConverter
 {
     public static function arrayToXML(array $data, string $root = 'xml'): string
     {
@@ -16,8 +20,9 @@ class DataParser
                 try {
                     $content .= "<{$key}><![CDATA[".strval($value)."]]></{$key}>";
                 } catch (\Throwable $e) {
-                    // TODO throw correct exception
-                    throw $e;
+                    throw new InternalErrorException([
+                        'data' => $data,
+                    ], "array to xml: {$e->getMessage()}", 0, $e);
                 }
             }
         }
@@ -44,30 +49,19 @@ class DataParser
             $document = simplexml_load_string($xml);
             $data     = $parse_function($document);
         } catch (\Throwable $e) {
-            // TODO throw correct exception
-            throw new \Exception("Parse XML Document Failed: {$e->getMessage()}", $e->getCode(), $e);
+            throw new InternalErrorException(['xml' => $xml], "xml to array: {$e->getMessage()}", 0, $e);
         }
 
         return $data;
     }
 
-    public static function formDataToArray(string $data): array
-    {
-        // TODO
-    }
-
-    public static function arrayToFormData(array $data): string
-    {
-        // TODO
-    }
-
     public static function jsonToArray(string $data): array
     {
-        return json_decode($data, true);
+        return json_decode($data, true, 512, JSON_THROW_ON_ERROR);
     }
 
     public static function arrayToJson(array $data): string
     {
-        return json_encode($data, JSON_FORCE_OBJECT);
+        return json_encode($data, JSON_FORCE_OBJECT | JSON_THROW_ON_ERROR);
     }
 }
