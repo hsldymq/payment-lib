@@ -8,9 +8,9 @@ use Psr\Http\Message\ResponseInterface;
 
 interface RequestableInterface
 {
+    public function send(?BaseClient $client = null);
+
     public function prepareRequest(): RequestInterface;
 
     public function prepareRequestOption(): RequestOptionInterface;
-
-    public function handleResponse(ResponseInterface $response): BaseResponse;
 }
