@@ -6,6 +6,9 @@
         <testsuite name="AlipayResponse">
             <directory suffix="Test.php">tests/Response/Alipay</directory>
         </testsuite>
+        <testsuite name="AppleIAPRequest">
+            <directory suffix="Test.php">tests/Request/Apple</directory>
+        </testsuite>
         <testsuite name="HuaweiResponse">
             <directory suffix="Test.php">tests/Response/Huawei</directory>
         </testsuite>
