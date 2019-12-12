@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Test\Request\Apple;
 
 use PHPUnit\Framework\TestCase;
@@ -12,9 +15,9 @@ class IAPTest extends TestCase
     {
         $receipt = Config::get('appleReceipt', 'production');
         $request = (new IAPReceiptValidation())
-            ->setReceiptData($receipt)
+            ->setReceiptData(strval($receipt))
             ->setEnvironment(true);
-        $data = Client::sendRequest($request);
+        $data = $request->send();
 
         $this->assertEquals(0, $data['status']);
     }
@@ -23,9 +26,9 @@ class IAPTest extends TestCase
     {
         $receipt = Config::get('appleReceipt', 'sandbox');
         $request = (new IAPReceiptValidation())
-            ->setReceiptData($receipt)
+            ->setReceiptData(strval($receipt))
             ->setEnvironment(false);
-        $data = Client::sendRequest($request);
+        $data = $request->send();
 
         $this->assertEquals(0, $data['status']);
     }
@@ -36,10 +39,10 @@ class IAPTest extends TestCase
     public function testWrongEnvReceipt_ExpectException()
     {
         $receipt = Config::get('appleReceipt', 'production');
-        $request = (new IAPReceiptValidation())
-            ->setReceiptData($receipt)
-            ->setEnvironment(false);
-        Client::sendRequest($request);
+        (new IAPReceiptValidation())
+            ->setReceiptData(strval($receipt))
+            ->setEnvironment(false)
+            ->send();
     }
 
     /**
@@ -47,9 +50,9 @@ class IAPTest extends TestCase
      */
     public function testInvalidReceipt_ExceptExcetion()
     {
-        $request = (new IAPReceiptValidation())
+        (new IAPReceiptValidation())
             ->setReceiptData('test')
-            ->setEnvironment(false);
-        Client::sendRequest($request);
+            ->setEnvironment(false)
+            ->send();
     }
 }
