@@ -8,7 +8,7 @@ use Throwable;
 
 class InternalErrorException extends \Exception
 {
-    private $context = [];
+    private array $context = [];
 
     public function __construct(array $context, $message = "", $code = 0, Throwable $previous = null)
     {

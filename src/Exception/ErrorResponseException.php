@@ -6,11 +6,11 @@ namespace Archman\PaymentLib\Exception;
 
 class ErrorResponseException extends \Exception
 {
-    private $errorCode = null;
+    private ?string $errorCode = null;
 
-    private $errorText = null;
+    private ?string $errorText = null;
 
-    private $responseData = null;
+    private ?array $responseData = null;
 
     /**
      * @param string|null $errorCode

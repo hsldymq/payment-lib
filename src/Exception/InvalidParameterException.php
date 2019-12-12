@@ -6,7 +6,7 @@ namespace Archman\PaymentLib\Exception;
 
 class InvalidParameterException extends \Exception
 {
-    private $paramName;
+    private string $paramName;
 
     public function __construct(string $paramName, $message = "", $code = 0, \Throwable $previous = null)
     {

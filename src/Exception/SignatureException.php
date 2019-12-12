@@ -8,7 +8,7 @@ class SignatureException extends \Exception
 {
     private $data;
 
-    private $sign;
+    private ?string $sign;
 
     protected $message = 'Failed To Validate Signature';
 
