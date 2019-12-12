@@ -1,11 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Test\Config;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 
 class WeChatConfig implements WeChatConfigInterface
 {
-    private $config;
+    private array $config;
 
     public function __construct(array $config)
     {
@@ -27,7 +30,7 @@ class WeChatConfig implements WeChatConfigInterface
         return $this->config['merchantID'];
     }
 
-    public function getDefaultSignType(): string
+    public function getSignType(): string
     {
         return 'MD5';
     }
@@ -55,5 +58,10 @@ class WeChatConfig implements WeChatConfigInterface
     public function getSSLKeyPath(): ?string
     {
         return $this->config['sslKey'] ?? null;
+    }
+
+    public function isSandbox(): bool
+    {
+        return $this->config['isSandbox'];
     }
 }

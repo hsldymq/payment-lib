@@ -18,7 +18,7 @@ class AuthCodeToOpenIDTest extends TestCase
 
             $request = (new AuthCodeToOpenID($config))
                 ->setAuthCode($each['fields']['auth_code'])
-                ->setNonceStr($each['fields']['noncestr']);
+                ->setNonceStr($each['fields']['nonce_str']);
 
             $this->assertEquals($each['parameters'], $request->makeParameters());
         }
