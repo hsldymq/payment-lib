@@ -14,7 +14,6 @@ use Psr\Http\Message\UriInterface;
 
 /**
  * @property WeChatConfigInterface $config
- * @property bool $isProduction
  */
 trait RequestPreparationTrait
 {
@@ -29,19 +28,13 @@ trait RequestPreparationTrait
 
     public function prepareRequestOption(): RequestOptionInterface
     {
-        $option = new RequestOption();
-
-        if (method_exists($this, 'customRequestOption')) {
-            $option = $this->customRequestOption($option);
-        }
-
-        return $option;
+        return new RequestOption();
     }
 
     public function getUri(): UriInterface
     {
         $uri = new Uri(self::URI);
-        if (!($this->isProduction ?? true)) {
+        if ($this->config->isSandbox()) {
             $path = '/sandboxnew/'.ltrim($uri->getPath(), '/');
             $uri = $uri->withPath($path);
         }
