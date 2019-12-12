@@ -1,19 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Exception\ErrorResponseException;
-use Archman\PaymentLib\Exception\InvalidParameterException;
+use Archman\PaymentLib\Request\BaseClient;
+use Archman\PaymentLib\Request\Client;
 use Archman\PaymentLib\Request\DataParser;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\RequestOption;
-use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
+use Archman\PaymentLib\Request\RequestOptionInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
-use Archman\PaymentLib\Response\BaseResponse;
 use Archman\PaymentLib\Response\WeChat\BillCommentResponse;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 use Psr\Http\Message\ResponseInterface;
@@ -26,16 +28,15 @@ use Psr\Http\Message\ResponseInterface;
 class BatchQueryBillComment implements RequestableInterface, ParameterMakerInterface
 {
     use NonceStrTrait;
-    use EnvironmentTrait;
     use RequestPreparationTrait;
 
-    private const FIXED_SIGN_TYPE = 'HMAC-SHA256';
+    private string $fixedSignType = 'HMAC-SHA256';
 
     private const URI = 'https://api.mch.weixin.qq.com/billcommentsp/batchquerycomment';
 
-    private $config;
+    private WeChatConfigInterface $config;
 
-    private $params = [
+    private array $params = [
         'begin_time' => null,
         'end_time' => null,
         'offset' => null,
@@ -49,14 +50,12 @@ class BatchQueryBillComment implements RequestableInterface, ParameterMakerInter
 
     public function makeParameters(): array
     {
-        ParameterHelper::checkRequired($this->params, ['begin_time', 'end_time', 'offset']);
-
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
-        $parameters['sign_type'] = self::FIXED_SIGN_TYPE;
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, self::FIXED_SIGN_TYPE, ['limit', 'sign_type']);
+        $parameters['sign_type'] = $this->fixedSignType;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->fixedSignType, ['limit', 'sign_type']);
 
         return $parameters;
     }
@@ -84,33 +83,34 @@ class BatchQueryBillComment implements RequestableInterface, ParameterMakerInter
 
     public function setLimit(?int $limit): self
     {
-        if ($limit !== null && ($limit > 200 || $limit < 1)) {
-            throw new InvalidParameterException("Invalid Limit Number({$limit}).");
-        }
-
         $this->params['limit'] = $limit;
 
         return $this;
     }
 
-    protected function customRequestOption(RequestOption $option): RequestOption
+    public function send(?BaseClient $client = null): BillCommentResponse
     {
-        $option->setRootCAFilePath($this->config->getRootCAPath())
+        $response = $client ? $client->sendRequest($this) : Client::send($this);
+
+        return $this->handleResponse($response);
+    }
+
+    public function prepareRequestOption(): RequestOptionInterface
+    {
+        return (new RequestOption())->setRootCAFilePath($this->config->getRootCAPath())
             ->setSSLKeyFilePath($this->config->getSSLKeyPath())
             ->setSSLKeyPassword($this->config->getSSLKeyPassword())
             ->setSSLCertFilePath($this->config->getClientCertPath())
             ->setSSLCertPassword($this->config->getClientCertPassword());
-
-        return $option;
     }
 
     /**
      * @param ResponseInterface $response
      *
-     * @return BaseResponse
+     * @return BillCommentResponse
      * @throws
      */
-    public function handleResponse(ResponseInterface $response): BaseResponse
+    private function handleResponse(ResponseInterface $response): BillCommentResponse
     {
         $rawBody = strval($response->getBody());
 

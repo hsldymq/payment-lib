@@ -1,15 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Archman\PaymentLib\Request\BaseClient;
+use Archman\PaymentLib\Request\Client;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
-use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
+use Archman\PaymentLib\Response\GeneralResponse;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -20,15 +24,14 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 class AuthCodeToOpenID implements RequestableInterface, ParameterMakerInterface
 {
     use NonceStrTrait;
-    use EnvironmentTrait;
     use RequestPreparationTrait;
     use ResponseHandlerTrait;
 
     private const URI = 'https://api.mch.weixin.qq.com/tools/authcodetoopenid';
 
-    private $config;
+    private WeChatConfigInterface $config;
 
-    private $params = [
+    private array $params = [
         'auth_code' => null,
     ];
 
@@ -39,12 +42,11 @@ class AuthCodeToOpenID implements RequestableInterface, ParameterMakerInterface
 
     public function makeParameters(): array
     {
-        ParameterHelper::checkRequired($this->params, ['auth_code']);
-
+        $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['auth_code'] = $this->params['auth_code'];
-        $parameters['noncestr'] = $this->getNonceStr();
+        $parameters['nonce_str'] = $this->getNonceStr();
         $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
 
         return $parameters;
@@ -55,5 +57,12 @@ class AuthCodeToOpenID implements RequestableInterface, ParameterMakerInterface
         $this->params['auth_code'] = $code;
 
         return $this;
+    }
+
+    public function send(?BaseClient $client = null): GeneralResponse
+    {
+        $response = $client ? $client->sendRequest($this) : Client::send($this);
+
+        return new GeneralResponse($this->handleResponse($response));
     }
 }

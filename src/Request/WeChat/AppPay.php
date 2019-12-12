@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
-use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
@@ -17,16 +18,13 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 class AppPay implements ParameterMakerInterface
 {
     use NonceStrTrait;
-    use EnvironmentTrait;
 
-    private $config;
+    private WeChatConfigInterface $config;
 
-    /** @var \DateTime */
-    private $datetime;
-
-    private $params = [
+    private array $params = [
         'prepayid' => null,
-        'package' => 'Sign=WXPay',
+        'package' => null,
+        'timestamp' => null,
     ];
 
     public function __construct(WeChatConfigInterface $config)
@@ -36,13 +34,12 @@ class AppPay implements ParameterMakerInterface
 
     public function makeParameters(): array
     {
-        ParameterHelper::checkRequired($this->params, ['prepayid', 'package']);
-
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
         $parameters['partnerid'] = $this->config->getMerchantID();
         $parameters['noncestr'] = $this->getNonceStr();
-        $parameters['timestamp'] = $this->getTimestamp();
+        $parameters['package'] ??= 'Sign=WXPay';
+        $parameters['timestamp'] ??= time();
         $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
 
         return $parameters;
@@ -56,23 +53,30 @@ class AppPay implements ParameterMakerInterface
     }
 
     /**
-     * 用于生成timestamp.
+     * 设置timestamp字段.
      *
      * @param \DateTime|null $dt
      *
-     * @return AppPay
+     * @return self
      */
     public function setTimestamp(?\DateTime $dt): self
     {
-        $this->datetime = $dt;
+        $this->params['timestamp'] = $dt ? $dt->getTimestamp() : null;
 
         return $this;
     }
 
-    private function getTimestamp(): int
+    /**
+     * 设置package字段.
+     *
+     * @param string|null $pkg
+     *
+     * @return $this
+     */
+    public function setPackage(?string $pkg): self
     {
-        $datetime =  $this->datetime ?? new \DateTime('now', new \DateTimeZone('+0800'));
+        $this->params['package'] = $pkg;
 
-        return $datetime->getTimestamp();
+        return $this;
     }
 }

@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
-use Archman\PaymentLib\Exception\ErrorResponseException;
-use Archman\PaymentLib\Exception\InternalErrorException;
 use Archman\PaymentLib\Request\BaseClient;
 use Archman\PaymentLib\Request\Client;
-use Archman\PaymentLib\Request\DataParser;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
+use Archman\PaymentLib\Request\RequestOption;
+use Archman\PaymentLib\Request\RequestOptionInterface;
 use Archman\PaymentLib\Request\WeChat\Enums\TarTypeEnum;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
@@ -20,24 +21,25 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * 下载对账单.
+ * 下载资金账单.
  *
- * @see https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_6&index=8
+ * @see https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_18&index=9
  */
-class DownloadBill implements RequestableInterface, ParameterMakerInterface
+class DownloadFundFlow implements RequestableInterface, ParameterMakerInterface
 {
     use NonceStrTrait;
     use RequestPreparationTrait;
     use ResponseHandlerTrait;
 
-    private const URI = 'https://api.mch.weixin.qq.com/pay/downloadbill';
+    private const URI = 'https://api.mch.weixin.qq.com/pay/downloadfundflow';
 
     private WeChatConfigInterface $config;
 
+    private string $fixedSignType = 'HMAC-SHA256';
+
     private array $params = [
-        'device_info' => null,
         'bill_date' => null,
-        'bill_type' => null,
+        'account_type' => null,
         'tar_type' => null,
     ];
 
@@ -52,8 +54,8 @@ class DownloadBill implements RequestableInterface, ParameterMakerInterface
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();
-        $parameters['sign_type'] = $this->config->getSignType();
-        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->config->getSignType());
+        $parameters['sign_type'] = $this->fixedSignType;
+        $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->fixedSignType);
 
         return $parameters;
     }
@@ -65,9 +67,10 @@ class DownloadBill implements RequestableInterface, ParameterMakerInterface
         return $this;
     }
 
-    public function setBillType(string $type): self
+
+    public function setAccountType(string $type): self
     {
-        $this->params['bill_type'] = $type;
+        $this->params['account_type'] = $type;
 
         return $this;
     }
@@ -86,6 +89,15 @@ class DownloadBill implements RequestableInterface, ParameterMakerInterface
         return $this->parseBillResponse($response);
     }
 
+    public function PrepareRequestOption(): RequestOptionInterface
+    {
+        return (new RequestOption())->setRootCAFilePath($this->config->getRootCAPath())
+            ->setSSLKeyFilePath($this->config->getSSLKeyPath())
+            ->setSSLKeyPassword($this->config->getSSLKeyPassword())
+            ->setSSLCertFilePath($this->config->getClientCertPath())
+            ->setSSLCertPassword($this->config->getClientCertPassword());
+    }
+
     /**
      * @param ResponseInterface $response
      *
@@ -94,17 +106,13 @@ class DownloadBill implements RequestableInterface, ParameterMakerInterface
      */
     private function parseBillResponse(ResponseInterface $response): BillResponse
     {
-        $body = $response->getBody()->getContents();
-
+        $body = strval($response->getBody());
         if (strpos($body, '<xml>') === 0) {
             $this->parseXMLDataAndCheck($body);
         }
 
         if ($this->params['tar_type'] === TarTypeEnum::GZIP) {
             $body = gzdecode($body);
-            if ($body === false) {
-                throw new InternalErrorException(['data' => $body], 'gzip decoding bill data');
-            }
         }
 
         return new BillResponse($body);
