@@ -8,7 +8,7 @@ use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Exception\ErrorResponseException;
 use Archman\PaymentLib\Request\BaseClient;
 use Archman\PaymentLib\Request\Client;
-use Archman\PaymentLib\Request\DataParser;
+use Archman\PaymentLib\Request\DataConverter;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
@@ -116,7 +116,7 @@ class BatchQueryBillComment implements RequestableInterface, ParameterMakerInter
 
         $errCode = $errMsg = $data = null;
         if (strpos($rawBody, '<xml>') === 0) {
-            $data = DataParser::xmlToArray($rawBody);
+            $data = DataConverter::xmlToArray($rawBody);
             if (strtoupper($data['return_code']) !== 'SUCCESS') {
                 $errCode = $data['return_code'];
                 $errMsg = $data['return_msg'];

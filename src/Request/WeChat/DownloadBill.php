@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
-use Archman\PaymentLib\Exception\ErrorResponseException;
 use Archman\PaymentLib\Exception\InternalErrorException;
 use Archman\PaymentLib\Request\BaseClient;
 use Archman\PaymentLib\Request\Client;
-use Archman\PaymentLib\Request\DataParser;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
