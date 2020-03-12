@@ -55,9 +55,9 @@ class FundTransCommonQuery implements RequestableInterface, ParameterMakerInterf
         return $this;
     }
 
-    public function setBizScene(?string $code): self
+    public function setBizScene(?string $scene): self
     {
-        $this->bizContent['biz_scene'] = $code;
+        $this->bizContent['biz_scene'] = $scene;
 
         return $this;
     }
