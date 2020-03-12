@@ -15,10 +15,9 @@ use function GuzzleHttp\json_encode;
  */
 trait OpenAPIParameterMakerTrait
 {
-    /** @var \DateTime */
-    private $datetime;
+    private \DateTime $datetime;
 
-    private $encryptionEnabled = false;
+    private bool $encryptionEnabled = false;
 
     public function setTimestamp(\DateTime $dt): self
     {
