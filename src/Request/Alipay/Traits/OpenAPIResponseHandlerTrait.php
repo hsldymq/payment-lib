@@ -7,10 +7,9 @@ use Archman\PaymentLib\Request\Alipay\Helper\Encryption;
 use Archman\PaymentLib\Request\Alipay\Helper\OpenAPIResponseParser;
 use Archman\PaymentLib\Response\BaseResponse;
 use Archman\PaymentLib\Response\GeneralResponse;
-use Psr\Http\Message\ResponseInterface;
-use Archman\PaymentLib\Request\DataParser;
 use Archman\PaymentLib\SignatureHelper\Alipay\Validator;
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * @property AlipayConfigInterface $config
@@ -23,7 +22,7 @@ trait OpenAPIResponseHandlerTrait
         $body = strval($response->getBody());
         $contentStr = OpenAPIResponseParser::getResponseContent($body, self::CONTENT_FIELD);
 
-        $data = DataParser::jsonToArray($body);
+        $data = json_decode($body, true);
         $signature = $data[self::SIGN_FIELD];
         $content = $data[self::CONTENT_FIELD];
 
@@ -32,7 +31,11 @@ trait OpenAPIResponseHandlerTrait
 
         // 数据已加密
         if (is_string($content)) {
-            $content = DataParser::jsonToArray(Encryption::decrypt($content, $this->config->getOpenAPIEncryptionKey()));
+            $content = json_decode(
+                Encryption::decrypt($content, $this->config->getOpenAPIEncryptionKey()),
+                true,
+                JSON_THROW_ON_ERROR
+            );
             $data[self::CONTENT_FIELD] = $content;
         }
 
