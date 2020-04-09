@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request;
 
 use Psr\Http\Message\RequestInterface;
@@ -8,11 +10,19 @@ use GuzzleHttp\Client as GuzzleClient;
 
 class Client extends BaseClient
 {
+    public static function send(RequestableInterface $request): ResponseInterface
+    {
+        $req = $request->prepareRequest();
+        $option = $request->prepareRequestOption();
+
+        return self::doSend($req, $option);
+    }
+
     protected static function doSend(RequestInterface $request, RequestOptionInterface $option): ResponseInterface
     {
         $ssl = [];
         if ($path = $option->getSSLKeyFilePath()) {
-            if ($password = $option->getSSLKeyPassword()) {
+            if (($password = $option->getSSLKeyPassword()) !== null) {
                 $ssl = [$path, $password];
             } else {
                 $ssl = $path;
@@ -21,7 +31,7 @@ class Client extends BaseClient
 
         $cert = [];
         if ($path = $option->getSSLCertFilePath()) {
-            if ($password = $option->getSSLCertPassword()) {
+            if (($password = $option->getSSLCertPassword()) !== null) {
                 $cert = [$path, $password];
             } else {
                 $cert = $path;
