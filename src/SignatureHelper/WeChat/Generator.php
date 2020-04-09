@@ -12,7 +12,7 @@ class Generator
 {
     use SignStringPackerTrait;
 
-    private $config;
+    private WeChatConfigInterface $config;
 
     public function __construct(WeChatConfigInterface $config)
     {
@@ -23,7 +23,7 @@ class Generator
     {
         $packed = $this->packRequestSignString($data, $exclude);
 
-        $signType = $signType ?? $this->config->getDefaultSignType();
+        $signType = $signType ?? $this->config->getSignType();
 
         switch (strtoupper($signType)) {
             case 'MD5':
