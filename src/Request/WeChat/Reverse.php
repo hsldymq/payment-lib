@@ -43,7 +43,7 @@ class Reverse implements RequestableInterface, ParameterMakerInterface
     {
         ParameterHelper::checkRequired($this->params, [], ['transaction_id', 'out_trade_no']);
 
-        $signType = $this->config->getDefaultSignType();
+        $signType = $this->config->getSignType();
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = $this->getNonceStr();

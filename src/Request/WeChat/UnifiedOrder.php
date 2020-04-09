@@ -2,6 +2,8 @@
 
 namespace Archman\PaymentLib\Request\WeChat;
 
+use Archman\PaymentLib\Request\BaseClient;
+use Archman\PaymentLib\Request\Client;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
@@ -9,6 +11,7 @@ use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
+use Archman\PaymentLib\Response\BaseResponse;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -23,11 +26,6 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
     use NonceStrTrait;
     use RequestPreparationTrait;
     use ResponseHandlerTrait;
-
-    const TRADE_TYPE_JS_API = 'JSAPI';
-    const TRADE_TYPE_NATIVE = 'NATIVE';
-    const TRADE_TYPE_APP = 'APP';
-    const TRADE_TYPE_MICRO_PAY = 'MICROPAY';
 
     private const URI = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
@@ -80,7 +78,7 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
     public function __construct(WeChatConfigInterface $config)
     {
         $this->config = $config;
-        $this->signType = $config->getDefaultSignType();
+        $this->signType = $config->getSignType();
     }
 
     public function makeParameters(): array
@@ -157,6 +155,7 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
      * @param int $price
      *
      * @return self
+     * @throws
      */
     public function addGoodsDetail(string $goodsID, ?string $wxPayGoodsID, ?string $goodsName, int $quantity, int $price): self
     {
@@ -326,6 +325,13 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
         $this->h5Info['wap_url'] = $wapURL;
 
         return $this;
+    }
+
+    public function send(?BaseClient $client = null): BaseResponse
+    {
+        $response = $client ? $client->sendRequest($this) : Client::send($this);
+
+        return $this->handleResponse($response);
     }
 
     private function clearH5Info()

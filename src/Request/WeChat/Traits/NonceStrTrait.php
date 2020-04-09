@@ -6,7 +6,8 @@ namespace Archman\PaymentLib\Request\WeChat\Traits;
 
 trait NonceStrTrait
 {
-    private ?string $nonceStr = null;
+    /** @var string|null  */
+    private $nonceStr = null;
 
     public function setNonceStr(?string $str): self
     {
@@ -17,6 +18,6 @@ trait NonceStrTrait
 
     public function getNonceStr(): string
     {
-        return $this->nonceStr ?? md5(microtime(true));
+        return $this->nonceStr ?? md5(strval(microtime(true)));
     }
 }

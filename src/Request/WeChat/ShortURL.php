@@ -35,7 +35,7 @@ class ShortURL implements RequestableInterface, ParameterMakerInterface
     public function __construct(WeChatConfigInterface $config)
     {
         $this->config = $config;
-        $this->signType = $config->getDefaultSignType();
+        $this->signType = $config->getSignType();
     }
 
     public function makeParameters(): array

@@ -3,6 +3,7 @@
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Archman\PaymentLib\Request\BaseClient;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
@@ -20,17 +21,16 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 class MicroPay implements RequestableInterface, ParameterMakerInterface
 {
     use NonceStrTrait;
-    use EnvironmentTrait;
     use RequestPreparationTrait;
     use ResponseHandlerTrait;
 
     private const URI = 'https://api.mch.weixin.qq.com/pay/micropay';
 
-    private $config;
+    private WeChatConfigInterface $config;
 
-    private $signType;
+    private string $signType;
 
-    private $params = [
+    private array $params = [
         'device_info' => null,
         'body' => null,
         'detail' => null,
@@ -47,13 +47,13 @@ class MicroPay implements RequestableInterface, ParameterMakerInterface
         'scene_info' => null,
     ];
 
-    private $detail = [
+    private array $detail = [
         'cost_price' => null,
         'receipt_id' => null,
         'goods_detail' => [],
     ];
 
-    private $storeInfo = [
+    private array $storeInfo = [
         'id' => null,
         'name' => null,
         'area_code' => null,
@@ -63,7 +63,7 @@ class MicroPay implements RequestableInterface, ParameterMakerInterface
     public function __construct(WeChatConfigInterface $config)
     {
         $this->config = $config;
-        $this->signType = $config->getDefaultSignType();
+        $this->signType = $config->getSignType();
     }
 
     public function makeParameters(): array
@@ -129,6 +129,7 @@ class MicroPay implements RequestableInterface, ParameterMakerInterface
      * @param int $price
      *
      * @return self
+     * @throws
      */
     public function addGoodsDetail(string $goodsID, ?string $wxPayGoodsID, ?string $goodsName, int $quantity, int $price): self
     {
@@ -226,5 +227,10 @@ class MicroPay implements RequestableInterface, ParameterMakerInterface
         $address && $this->storeInfo['address'] = $address;
 
         return $this;
+    }
+
+    public function send(?BaseClient $client = null)
+    {
+        // TODO: Implement send() method.
     }
 }

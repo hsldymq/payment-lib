@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Archman\PaymentLib\Request\BaseClient;
+use Archman\PaymentLib\Request\Client;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
@@ -11,6 +15,7 @@ use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
+use Archman\PaymentLib\Response\BaseResponse;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -38,6 +43,7 @@ class Refund implements RequestableInterface, ParameterMakerInterface
         'refund_fee_type' => null,
         'refund_desc' => null,
         'refund_account' => null,
+        'notify_url' => null,
     ];
 
     public function __construct(WeChatConfigInterface $config)
@@ -49,7 +55,7 @@ class Refund implements RequestableInterface, ParameterMakerInterface
     {
         ParameterHelper::checkRequired($this->params, ['out_refund_no', 'total_fee', 'refund_fee'], ['transaction_id', 'out_trade_no']);
 
-        $signType = $this->config->getDefaultSignType();
+        $signType = $this->config->getSignType();
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['appid'] = $this->config->getAppID();
         $parameters['mch_id'] = $this->config->getMerchantID();
@@ -97,25 +103,40 @@ class Refund implements RequestableInterface, ParameterMakerInterface
         return $this;
     }
 
-    public function setRefundFeeType(string $type): self
+    public function setRefundFeeType(?string $type): self
     {
         $this->params['refund_fee_type'] = $type;
 
         return $this;
     }
 
-    public function setRefundDescription(string $desc): self
+    public function setRefundDescription(?string $desc): self
     {
         $this->params['refund_desc'] = $desc;
 
         return $this;
     }
 
-    public function setRefundAccount(string $account): self
+    public function setRefundAccount(?string $account): self
     {
         $this->params['refund_account'] = $account;
 
         return $this;
+    }
+
+    public function setNotifyURL(?string $uri): self
+    {
+        $this->params['notify_url'] = $uri;
+
+        return $this;
+    }
+
+    public function send(?BaseClient $client = null): BaseResponse
+    {
+        $client = $client ?? new Client();
+        $response = $client->sendRequest($this);
+
+        return $this->handleResponse($response);
     }
 
     protected function customRequestOption(RequestOption $option): RequestOption
