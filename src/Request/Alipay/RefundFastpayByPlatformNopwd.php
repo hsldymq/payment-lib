@@ -4,7 +4,7 @@ namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Archman\PaymentLib\Exception\ErrorResponseException;
-use Archman\PaymentLib\Request\DataParser;
+use Archman\PaymentLib\Request\DataConverter;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
@@ -159,7 +159,7 @@ class RefundFastpayByPlatformNopwd implements RequestableInterface, ParameterMak
      */
     public function handleResponse(ResponseInterface $response): BaseResponse
     {
-        $data = DataParser::xmlToArray($response->getBody());
+        $data = DataConverter::xmlToArray($response->getBody());
 
         if (strtoupper($data['is_success']) === 'F') {
             throw new ErrorResponseException($data['error'], $data['error'], $response, $data['error']);
