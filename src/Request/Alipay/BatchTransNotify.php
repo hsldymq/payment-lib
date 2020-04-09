@@ -15,9 +15,9 @@ use Archman\PaymentLib\SignatureHelper\Alipay\Generator;
  */
 class BatchTransNotify implements ParameterMakerInterface
 {
-    private $config;
+    private AlipayConfigInterface $config;
 
-    private $params = [
+    private array $params = [
         'service' => 'batch_trans_notify',
         '_input_charset' => 'utf-8',
         'notify_url' => null,
@@ -29,10 +29,9 @@ class BatchTransNotify implements ParameterMakerInterface
         'extend_param' => null,
     ];
 
-    /** @var \Datetime */
-    private $payDate;
+    private \DateTime $payDate;
 
-    private $detailDataArr = [];
+    private array $detailDataArr = [];
 
     public function __construct(AlipayConfigInterface $config)
     {
