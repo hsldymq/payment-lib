@@ -2,7 +2,7 @@
 
 namespace Archman\PaymentLib\Request\Alipay\Helper;
 
-use Archman\PaymentLib\Request\DataParser;
+use Archman\PaymentLib\Request\DataConverter;
 
 class OpenAPIResponseParser
 {
@@ -27,7 +27,7 @@ class OpenAPIResponseParser
      */
     public static function getResponseContent(string $body, string $contentFieldName): string
     {
-        $parsed = DataParser::jsonToArray($body);
+        $parsed = DataConverter::jsonToArray($body);
 
         preg_match("/\"{$contentFieldName}\"\s*:\s*/", $body, $matches);
         if (!isset($matches[0])) {
