@@ -2,19 +2,19 @@
 
 namespace Archman\PaymentLib\Response\WeChat;
 
+use Archman\PaymentLib\Exception\InternalErrorException;
 use Archman\PaymentLib\Response\BaseResponse;
 
 class BillResponse extends BaseResponse implements \Iterator
 {
-    /** @var int */
-    private $offset;
+    private int $offset;
 
-    private $position = 0;
+    private int $position = 0;
 
     /**
      * @var array 根据账单类型的不同而不同 [
      *      [
-     *          '交易时间' => 'xxx,
+     *          '交易时间' => 'xxx',
      *          '公众账号ID' => 'yyy',
      *          '商户号' => 'zzz',
      *          ...
@@ -22,22 +22,16 @@ class BillResponse extends BaseResponse implements \Iterator
      *      ...
      * ]
      */
-    private $bill = [];
+    private array $bill = [];
 
-    // 总交易订单数
-    private $billCount = 0;
-
-    // 总交易额
-    private $tradeAmount = 0;
-
-    // 总退款金额
-    private $refundAmount = 0;
-
-    // 总代金券或立减优惠退款金额
-    private $prefRefundAmount = 0;
-
-    // 手续费总金额
-    private $chargeAmount = 0;
+    /**
+     * @var array 合计 [
+     *      '总交易订单数' => 'xxx',
+     *      '应结订单总金额' => 'yyy',
+     *      ...
+     * ]
+     */
+    private array $summary = [];
 
     public function __construct(string $bill)
     {
@@ -47,6 +41,8 @@ class BillResponse extends BaseResponse implements \Iterator
         if (strpos($bill, "\xEF\xBB\xBF") === 0) {
             $bill = substr($bill, 3);
         }
+
+        // 这个接口微信给过来的数据开头带BOM表示,并且按照\r\n分割,文档里没有说明!
         $rows = preg_split('/\r?\n/', $bill);
         $rowCount = count($rows);
 
@@ -60,69 +56,38 @@ class BillResponse extends BaseResponse implements \Iterator
             $eachRow = array_shift($rows);
             $eachRow = ltrim($eachRow, '`');
             $fields = explode(',`', $eachRow);
-            $this->bill[] = array_combine($keys, $fields);
+            $combined = array_combine($keys, $fields);
+            if ($combined === false) {
+                throw new InternalErrorException([
+                    'titles' => $keys,
+                    'values' => $fields,
+                ], "combining bill titles with values");
+            }
+            $this->bill[] = $combined;
         }
 
         if (count($rows) > 0) {
-            $fields = explode(',`', ltrim($rows[1], '`'));
-            [$billCount, $tradeAmount, $refundAmount, $preferentialRefundAmount, $chargeAmount] = $fields;
-
-            $this->billCount = intval($billCount);
-            $this->tradeAmount = intval(round($tradeAmount * 100));
-            $this->refundAmount = intval(round($refundAmount * 100));
-            $this->prefRefundAmount = intval(round($preferentialRefundAmount * 100));
-            $this->chargeAmount = intval(round($chargeAmount * 100));
+            $keys = explode(',', array_shift($rows));
+            $fields = explode(',`', ltrim(array_shift($rows), '`'));
+            $combined = array_combine($keys, $fields);
+            if ($combined === false) {
+                throw new InternalErrorException([
+                    'titles' => $keys,
+                    'values' => $fields,
+                ], "combining bill summary titles with values");
+            }
+            $this->summary = $combined;
         }
     }
 
     /**
-     * 返回总交易订单数.
+     * 返回合计.
      *
-     * @return int
+     * @return array
      */
-    public function getBillCount(): int
+    public function summary(): array
     {
-        return $this->billCount;
-    }
-
-    /**
-     * 返回总交易额(单位: 分).
-     *
-     * @return int
-     */
-    public function getTradeAmount(): int
-    {
-        return $this->tradeAmount;
-    }
-
-    /**
-     * 返回总退款金额(单位: 分).
-     *
-     * @return int
-     */
-    public function getRefundAmount(): int
-    {
-        return $this->refundAmount;
-    }
-
-    /**
-     * 返回总代金券或立减优惠退款金额(单位: 分).
-     *
-     * @return int
-     */
-    public function getPrefRefundAmount(): int
-    {
-        return $this->prefRefundAmount;
-    }
-
-    /**
-     * 返回手续费总金额(单位: 分).
-     *
-     * @return int
-     */
-    public function getChargeAmount(): int
-    {
-        return $this->chargeAmount;
+        return $this->summary;
     }
 
     public function getOffset(): int
