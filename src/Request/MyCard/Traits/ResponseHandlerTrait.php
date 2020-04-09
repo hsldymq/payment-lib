@@ -3,7 +3,7 @@
 namespace Archman\PaymentLib\Request\MyCard\Traits;
 
 use Archman\PaymentLib\Exception\ErrorResponseException;
-use Archman\PaymentLib\Request\DataParser;
+use Archman\PaymentLib\Request\DataConverter;
 use Archman\PaymentLib\Response\BaseResponse;
 use Archman\PaymentLib\Response\GeneralResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -15,7 +15,7 @@ trait ResponseHandlerTrait
         $body = strval($response->getBody());
 
         try {
-            $data = DataParser::jsonToArray($body);
+            $data = DataConverter::jsonToArray($body);
         } catch (\Throwable $e) {
             throw new ErrorResponseException(
                 $e->getCode(),
