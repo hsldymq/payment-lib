@@ -44,8 +44,8 @@ class PromotionTransfer implements \Archman\PaymentLib\Request\RequestableInterf
         ParameterHelper::checkRequired($this->params, ['partner_trade_no', 'openid', 'check_name', 'amount', 'desc']);
 
         $parameters = ParameterHelper::packValidParameters($this->params);
-        $parameters['appid'] = $this->config->getAppID();
-        $parameters['mch_id'] = $this->config->getMerchantID();
+        $parameters['mch_appid'] = $this->config->getAppID();
+        $parameters['mchid'] = $this->config->getMerchantID();
         $parameters['nonce_str'] = md5(microtime(true));
         $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->sign_type);
 
