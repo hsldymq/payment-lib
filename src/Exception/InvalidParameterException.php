@@ -8,7 +8,7 @@ class InvalidParameterException extends \Exception
 {
     private string $paramName;
 
-    public function __construct(string $paramName, $message = "", $code = 0, \Throwable $previous = null)
+    public function __construct(string $paramName, string $message = "", int $code = 0, \Throwable $previous = null)
     {
         $this->paramName = $paramName;
 

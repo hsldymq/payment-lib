@@ -10,7 +10,7 @@ class InternalErrorException extends \Exception
 {
     private array $context = [];
 
-    public function __construct(array $context, $message = "", $code = 0, Throwable $previous = null)
+    public function __construct(array $context, string $message = "", int $code = 0, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
         $this->context = $context;
