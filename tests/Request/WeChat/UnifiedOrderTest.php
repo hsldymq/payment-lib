@@ -28,7 +28,7 @@ class UnifiedOrderTest extends TestCase
                 ->setOpenID($each['fields']['openid'] ?? null)
                 ->setSceneInfo($each['fields']['scene_info'] ?? null);
 
-            $response = Client::sendRequest($request);
+            $response = $request->send();
 
             $this->assertArrayHasKey('prepay_id', $response);
         }
