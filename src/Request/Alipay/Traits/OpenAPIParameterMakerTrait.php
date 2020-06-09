@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\Alipay\Traits;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
