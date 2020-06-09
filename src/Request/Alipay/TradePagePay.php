@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
@@ -16,14 +18,14 @@ class TradePagePay implements ParameterMakerInterface
 {
     use OpenAPIParameterMakerTrait;
 
-    private $config;
+    private AlipayConfigInterface $config;
 
-    private $params = [
+    private array $params = [
         'return_url' => null,
         'notify_url' => null,
     ];
 
-    private $bizContent = [
+    private array $bizContent = [
         'out_trade_no' => null,
         'product_code' => 'FAST_INSTANT_TRADE_PAY', // 必填参数(固定值)
         'total_amount' => null,

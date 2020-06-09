@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Request\Alipay\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIParameterMakerTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIRequestPreparationTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIResponseHandlerTrait;
@@ -20,19 +23,19 @@ class TradeFastPayRefundQuery implements RequestableInterface, ParameterMakerInt
     use OpenAPIParameterMakerTrait;
     use OpenAPIRequestPreparationTrait;
     use OpenAPIResponseHandlerTrait;
+    use DefaultSenderTrait;
 
     private const SIGN_FIELD = 'sign';
 
     private const CONTENT_FIELD = 'alipay_trade_fastpay_refund_query_response';
 
-    /** @var AlipayConfigInterface */
-    private $config;
+    private AlipayConfigInterface $config;
 
-    private $params = [
+    private array $params = [
         'app_auth_token' => null,
     ];
 
-    private $bizContent = [
+    private array $bizContent = [
         'trade_no' => null,
         'out_trade_no' => null,
         'out_request_no' => null,

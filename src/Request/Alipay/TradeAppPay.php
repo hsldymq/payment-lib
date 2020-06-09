@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
@@ -17,13 +19,13 @@ class TradeAppPay implements ParameterMakerInterface
 {
     use OpenAPIParameterMakerTrait;
 
-    private $config;
+    private AlipayConfigInterface $config;
 
-    private $params = [
+    private array $params = [
         'notify_url' => null,
     ];
 
-    private $bizContent = [
+    private array $bizContent = [
         'body' => null,
         'subject' => null,
         'out_trade_no' => null,
@@ -140,7 +142,7 @@ class TradeAppPay implements ParameterMakerInterface
     ): self {
         $data = ParameterHelper::packValidParameters([
             'sys_service_provider_id' => $sysServiceProviderID,
-            'needBuyerRealnamed' => is_null($needBuyerRealNamed) ? null : $needBuyerRealNamed ? 'T' : 'F',
+            'needBuyerRealnamed' => is_null($needBuyerRealNamed) ? null : ($needBuyerRealNamed ? 'T' : 'F'),
             'TRANS_MEMO' => $transMemo,
             'hb_fq_num' => "$HBFQNum",
             'hb_fq_seller_percent' => "$HBFQSellerPercent",

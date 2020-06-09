@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Request\Alipay\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIRequestPreparationTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIResponseHandlerTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIParameterMakerTrait;
@@ -20,19 +23,20 @@ class TradeClose implements RequestableInterface, ParameterMakerInterface
     use OpenAPIResponseHandlerTrait;
     use OpenAPIRequestPreparationTrait;
     use OpenAPIParameterMakerTrait;
+    use DefaultSenderTrait;
 
     private const SIGN_FIELD = 'sign';
 
     private const CONTENT_FIELD = 'alipay_trade_close_response';
 
-    private $config;
+    private AlipayConfigInterface $config;
 
-    private $params = [
+    private array $params = [
         'notify_url' => null,
         'app_auth_token' => null,
     ];
 
-    private $bizContent = [
+    private array $bizContent = [
         'trade_no' => null,
         'out_trade_no' => null,
         'operator_id' => null,

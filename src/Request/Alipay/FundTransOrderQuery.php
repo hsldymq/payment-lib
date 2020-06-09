@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Request\Alipay\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIResponseHandlerTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIRequestPreparationTrait;
@@ -20,13 +23,14 @@ class FundTransOrderQuery implements RequestableInterface, ParameterMakerInterfa
     use OpenAPIRequestPreparationTrait;
     use OpenAPIResponseHandlerTrait;
     use OpenAPIParameterMakerTrait;
+    use DefaultSenderTrait;
 
     private const SIGN_FIELD = 'sign';
     private const CONTENT_FIELD = 'alipay_fund_trans_order_query_response';
 
-    private $config;
+    private AlipayConfigInterface $config;
 
-    private $bizContent = [
+    private array $bizContent = [
         'out_biz_no' => null,           // 与order_id二选一
         'order_id' => null,
     ];

@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 use Archman\PaymentLib\Exception\ErrorResponseException;
+use Archman\PaymentLib\Request\Alipay\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\DataConverter;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
@@ -25,20 +28,22 @@ use function GuzzleHttp\Psr7\build_query;
  */
 class RefundFastpayByPlatformNopwd implements RequestableInterface, ParameterMakerInterface
 {
+    use DefaultSenderTrait;
+
     private const FIXED_SIGN_TYPE = 'MD5';
 
-    private $config;
+    private AlipayConfigInterface $config;
 
     /** @var \Datetime */
-    private $datetime;
+    private \DateTime $datetime;
 
     /** @var string */
-    private $serialNumber;
+    private string $serialNumber;
 
     /** @var array */
-    private $detailList = [];
+    private array $detailList = [];
 
-    private $params = [
+    private array $params = [
         'service' => 'refund_fastpay_by_platform_nopwd',
         '_input_charset' => 'utf-8',
         'sign_type' => self::FIXED_SIGN_TYPE,
@@ -155,14 +160,14 @@ class RefundFastpayByPlatformNopwd implements RequestableInterface, ParameterMak
      * @param ResponseInterface $response
      *
      * @return BaseResponse
-     * @throws ErrorResponseException
+     * @throws
      */
     public function handleResponse(ResponseInterface $response): BaseResponse
     {
         $data = DataConverter::xmlToArray($response->getBody());
 
         if (strtoupper($data['is_success']) === 'F') {
-            throw new ErrorResponseException($data['error'], $data['error'], $response, $data['error']);
+            throw new ErrorResponseException($data['error'], $data['error'], $data, $data['error']);
         }
 
         return new GeneralResponse($data);

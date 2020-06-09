@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Request\Alipay\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIResponseHandlerTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIRequestPreparationTrait;
@@ -20,18 +23,19 @@ class TradeRefund implements RequestableInterface, ParameterMakerInterface
     use OpenAPIParameterMakerTrait;
     use OpenAPIRequestPreparationTrait;
     use OpenAPIResponseHandlerTrait;
+    use DefaultSenderTrait;
 
-    private $config;
+    private AlipayConfigInterface $config;
 
     private const SIGN_FIELD = 'sign';
 
     private const CONTENT_FIELD = 'alipay_trade_refund_response';
 
-    private $params = [
+    private array $params = [
         'app_auth_token' => null,
     ];
 
-    private $biz_content = [
+    private array $biz_content = [
         'out_trade_no' => null,
         'trade_no' => null,
         'refund_amount' => null,

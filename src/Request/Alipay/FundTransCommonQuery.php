@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Request\Alipay\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIResponseHandlerTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIRequestPreparationTrait;
@@ -20,6 +23,7 @@ class FundTransCommonQuery implements RequestableInterface, ParameterMakerInterf
     use OpenAPIRequestPreparationTrait;
     use OpenAPIResponseHandlerTrait;
     use OpenAPIParameterMakerTrait;
+    use DefaultSenderTrait;
 
     private const SIGN_FIELD = 'sign';
     private const CONTENT_FIELD = 'alipay_fund_trans_common_query_response';

@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Request\Alipay\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIResponseHandlerTrait;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIRequestPreparationTrait;
@@ -20,6 +23,7 @@ class FundTransToAccountTransfer implements RequestableInterface, ParameterMaker
     use OpenAPIRequestPreparationTrait;
     use OpenAPIResponseHandlerTrait;
     use OpenAPIParameterMakerTrait;
+    use DefaultSenderTrait;
 
     public const PAYEE_TYPE_LOGONID = 'ALIPAY_LOGONID';
     public const PAYEE_TYPE_USERID = 'ALIPAY_USERID';
@@ -27,9 +31,9 @@ class FundTransToAccountTransfer implements RequestableInterface, ParameterMaker
     private const SIGN_FIELD = 'sign';
     private const CONTENT_FIELD = 'alipay_fund_trans_toaccount_transfer_response';
 
-    private $config;
+    private AlipayConfigInterface $config;
 
-    private $bizContent = [
+    private array $bizContent = [
         'out_biz_no' => null,           // 必填
         'payee_type' => null,           // 必填
         'payee_account' => null,        // 必填
@@ -82,6 +86,7 @@ class FundTransToAccountTransfer implements RequestableInterface, ParameterMaker
      * @param int $amount 单位: 分
      *
      * @return FundTransToAccountTransfer
+     * @throws
      */
     public function setAmount(int $amount): self
     {

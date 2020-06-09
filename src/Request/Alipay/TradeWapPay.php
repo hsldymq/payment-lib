@@ -16,14 +16,14 @@ class TradeWapPay implements ParameterMakerInterface
 {
     use OpenAPIParameterMakerTrait;
 
-    private $config;
+    private AlipayConfigInterface $config;
 
-    private $params = [
+    private array $params = [
         'return_url' => null,
         'notify_url' => null,
     ];
 
-    private $bizContent = [
+    private array $bizContent = [
         'body' => null,
         'subject' => null,
         'out_trade_no' => null,
@@ -142,6 +142,7 @@ class TradeWapPay implements ParameterMakerInterface
     /**
      * @param int $amount 单位: 分
      * @return self
+     * @throws
      */
     public function setTotalAmount(int $amount): self
     {
