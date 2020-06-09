@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\SignatureHelper\MyCard;
 
 use Archman\PaymentLib\ConfigManager\MyCardConfigInterface;
 
 class Generator
 {
-    private $config;
+    private MyCardConfigInterface $config;
 
     public function __construct(MyCardConfigInterface $config)
     {

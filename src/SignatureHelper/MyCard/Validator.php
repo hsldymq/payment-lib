@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\SignatureHelper\MyCard;
 
 use Archman\PaymentLib\ConfigManager\MyCardConfigInterface;
@@ -7,7 +9,7 @@ use Archman\PaymentLib\Exception\SignatureException;
 
 class Validator
 {
-    private $config;
+    private MyCardConfigInterface $config;
 
     public function __construct(MyCardConfigInterface $config)
     {
