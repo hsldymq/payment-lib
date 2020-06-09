@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Response;
 
 abstract class BaseResponse implements \ArrayAccess
 {
-    protected $data;
+    protected array $data;
 
     public function __construct(array $data)
     {

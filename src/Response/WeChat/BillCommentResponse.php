@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Response\WeChat;
 
 use Archman\PaymentLib\Response\BaseResponse;
@@ -7,9 +9,9 @@ use Archman\PaymentLib\Response\BaseResponse;
 class BillCommentResponse extends BaseResponse implements \Iterator
 {
     /** @var int */
-    private $offset;
+    private int $offset;
 
-    private $position = 0;
+    private int $position = 0;
 
     /**
      * @var array [
@@ -22,7 +24,7 @@ class BillCommentResponse extends BaseResponse implements \Iterator
      *      ...
      * ]
      */
-    private $comments = [];
+    private array $comments = [];
 
     public function __construct(string $comments)
     {
