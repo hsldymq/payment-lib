@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\SignatureHelper\Huawei;
 
 use Archman\PaymentLib\ConfigManager\HuaweiConfigInterface;
@@ -13,7 +15,7 @@ class Validator
 {
     use SignStringPackerTrait;
 
-    private $config;
+    private HuaweiConfigInterface $config;
 
     public function __construct(HuaweiConfigInterface $config)
     {
