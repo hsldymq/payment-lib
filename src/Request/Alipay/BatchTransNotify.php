@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
@@ -87,6 +89,7 @@ class BatchTransNotify implements ParameterMakerInterface
      * @param string $remark 备注
      *
      * @return BatchTransNotify
+     * @throws
      */
     public function addDetailData(
         string $serialNo,
