@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\MyCard\Traits;
 
 use Archman\PaymentLib\Request\RequestOption;

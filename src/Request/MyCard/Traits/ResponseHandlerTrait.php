@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\MyCard\Traits;
 
 use Archman\PaymentLib\Exception\ErrorResponseException;
@@ -18,11 +20,11 @@ trait ResponseHandlerTrait
             $data = DataConverter::jsonToArray($body);
         } catch (\Throwable $e) {
             throw new ErrorResponseException(
-                $e->getCode(),
+                strval($e->getCode()),
                 $e->getMessage(),
                 null,
-                $e->getCode(),
                 $e->getMessage(),
+                $e->getCode(),
                 $e
             );
         }
