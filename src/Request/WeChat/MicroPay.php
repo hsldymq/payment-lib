@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
@@ -7,7 +9,7 @@ use Archman\PaymentLib\Request\BaseClient;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
-use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
@@ -23,6 +25,7 @@ class MicroPay implements RequestableInterface, ParameterMakerInterface
     use NonceStrTrait;
     use RequestPreparationTrait;
     use ResponseHandlerTrait;
+    use DefaultSenderTrait;
 
     private const URI = 'https://api.mch.weixin.qq.com/pay/micropay';
 
@@ -227,10 +230,5 @@ class MicroPay implements RequestableInterface, ParameterMakerInterface
         $address && $this->storeInfo['address'] = $address;
 
         return $this;
-    }
-
-    public function send(?BaseClient $client = null)
-    {
-        // TODO: Implement send() method.
     }
 }

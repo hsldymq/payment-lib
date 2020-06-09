@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
-use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
@@ -20,17 +22,17 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 class Report implements RequestableInterface, ParameterMakerInterface
 {
     use NonceStrTrait;
-    use EnvironmentTrait;
     use RequestPreparationTrait;
     use ResponseHandlerTrait;
+    use DefaultSenderTrait;
 
     private const URI = 'https://api.mch.weixin.qq.com/payitil/report';
 
-    private $config;
+    private WeChatConfigInterface $config;
 
-    private $signType;
+    private string $signType;
 
-    private $params = [
+    private array $params = [
         'device_info' => null,
         'interface_url' => null,
         'execute_time' => null,

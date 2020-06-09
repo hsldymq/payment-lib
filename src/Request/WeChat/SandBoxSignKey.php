@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
@@ -7,6 +9,7 @@ use Archman\PaymentLib\Request\DataConverter;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestOption;
 use Archman\PaymentLib\Request\RequestOptionInterface;
+use Archman\PaymentLib\Request\WeChat\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
@@ -22,10 +25,11 @@ class SandBoxSignKey implements RequestableInterface, ParameterMakerInterface
     use NonceStrTrait;
     use RequestPreparationTrait;
     use ResponseHandlerTrait;
+    use DefaultSenderTrait;
 
     private const URI = 'https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey';
 
-    private $config;
+    private WeChatConfigInterface $config;
 
     public function __construct(WeChatConfigInterface $config)
     {

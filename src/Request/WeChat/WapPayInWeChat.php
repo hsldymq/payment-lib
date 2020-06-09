@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
-use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\SignatureHelper\Wechat\Generator;
 
@@ -17,16 +18,15 @@ use Archman\PaymentLib\SignatureHelper\Wechat\Generator;
 class WapPayInWeChat implements ParameterMakerInterface
 {
     use NonceStrTrait;
-    use EnvironmentTrait;
 
-    private $config;
+    private WeChatConfigInterface $config;
 
-    private $signType = 'MD5';
+    private string $signType = 'MD5';
 
     /** @var \DateTime */
-    private $datetime;
+    private \DateTime $datetime;
 
-    private $params = [
+    private array $params = [
         'package' => null,
     ];
 

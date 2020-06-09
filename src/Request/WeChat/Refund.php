@@ -5,17 +5,14 @@ declare(strict_types=1);
 namespace Archman\PaymentLib\Request\WeChat;
 
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
-use Archman\PaymentLib\Request\BaseClient;
-use Archman\PaymentLib\Request\Client;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\RequestOption;
-use Archman\PaymentLib\Request\WeChat\Traits\EnvironmentTrait;
+use Archman\PaymentLib\Request\WeChat\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
-use Archman\PaymentLib\Response\BaseResponse;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -26,15 +23,15 @@ use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 class Refund implements RequestableInterface, ParameterMakerInterface
 {
     use NonceStrTrait;
-    use EnvironmentTrait;
     use RequestPreparationTrait;
     use ResponseHandlerTrait;
+    use DefaultSenderTrait;
 
     private const URI = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
 
-    private $config;
+    private WeChatConfigInterface $config;
 
-    private $params = [
+    private array $params = [
         'transaction_id' => null,
         'out_trade_no' => null,
         'out_refund_no' => null,
@@ -129,14 +126,6 @@ class Refund implements RequestableInterface, ParameterMakerInterface
         $this->params['notify_url'] = $uri;
 
         return $this;
-    }
-
-    public function send(?BaseClient $client = null): BaseResponse
-    {
-        $client = $client ?? new Client();
-        $response = $client->sendRequest($this);
-
-        return $this->handleResponse($response);
     }
 
     protected function customRequestOption(RequestOption $option): RequestOption

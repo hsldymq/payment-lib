@@ -1,17 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\WeChat;
 
-use Archman\PaymentLib\Request\BaseClient;
-use Archman\PaymentLib\Request\Client;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
+use Archman\PaymentLib\Request\WeChat\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
-use Archman\PaymentLib\Response\BaseResponse;
 use Archman\PaymentLib\SignatureHelper\WeChat\Generator;
 
 /**
@@ -26,27 +26,28 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
     use NonceStrTrait;
     use RequestPreparationTrait;
     use ResponseHandlerTrait;
+    use DefaultSenderTrait;
 
     private const URI = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
-    private $config;
+    private WeChatConfigInterface $config;
 
-    private $signType;
+    private string $signType;
 
-    private $detail = [
+    private array $detail = [
         'cost_price' => null,
         'receipt_id' => null,
         'goods_detail' => [],
     ];
 
-    private $storeInfo = [
+    private array $storeInfo = [
         'id' => null,
         'name' => null,
         'area_code' => null,
         'address' => null,
     ];
 
-    private $h5Info = [
+    private array $h5Info = [
         'type' => null,
         'app_name' => null,
         'bundle_id' => null,
@@ -55,7 +56,7 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
         'wap_url' => null,
     ];
 
-    private $params = [
+    private array $params = [
         'device_info' => null,
         'body' => null,                 // 必填
         'detail' => null,
@@ -325,13 +326,6 @@ class UnifiedOrder implements RequestableInterface, ParameterMakerInterface
         $this->h5Info['wap_url'] = $wapURL;
 
         return $this;
-    }
-
-    public function send(?BaseClient $client = null): BaseResponse
-    {
-        $response = $client ? $client->sendRequest($this) : Client::send($this);
-
-        return $this->handleResponse($response);
     }
 
     private function clearH5Info()
