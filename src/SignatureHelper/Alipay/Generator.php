@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\SignatureHelper\Alipay;
 
 use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
@@ -9,9 +11,9 @@ class Generator
 {
     use SignStringPackerTrait;
 
-    private $config;
+    private AlipayConfigInterface $config;
 
-    private $isMAPI;
+    private bool $isMAPI;
 
     public function __construct(AlipayConfigInterface $config, bool $isMAPI = false)
     {
