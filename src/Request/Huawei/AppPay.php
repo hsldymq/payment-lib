@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\Huawei;
 
 use Archman\PaymentLib\ConfigManager\HuaweiConfigInterface;
@@ -14,9 +16,9 @@ use Archman\PaymentLib\SignatureHelper\Huawei\Generator;
  */
 class AppPay implements ParameterMakerInterface
 {
-    private $config;
+    private HuaweiConfigInterface $config;
 
-    private $params = [
+    private array $params = [
         'productName' => null,
         'productDesc' => null,
         'requestId' => null,
@@ -82,6 +84,7 @@ class AppPay implements ParameterMakerInterface
      * @param int $amount 单位:分
      *
      * @return self
+     * @throws
      */
     public function setAmount(int $amount): self
     {
