@@ -6,7 +6,7 @@ use Archman\PaymentLib\ConfigManager\GoogleConfigInterface;
 
 class Validator
 {
-    private $config;
+    private GoogleConfigInterface $config;
 
     public function __construct(GoogleConfigInterface $config)
     {
