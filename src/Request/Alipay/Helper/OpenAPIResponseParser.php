@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Archman\PaymentLib\Request\Alipay\Helper;
 
 use Archman\PaymentLib\Request\DataConverter;
