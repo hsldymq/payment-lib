@@ -8,5 +8,5 @@ use Archman\PaymentLib\ConfigManager\MyCardConfigInterface;
 
 interface MyCardConfigLoaderInterface
 {
-    public static function load(array $context): MyCardConfigInterface;
+    public static function loadMyCardConfig(array $context): MyCardConfigInterface;
 }

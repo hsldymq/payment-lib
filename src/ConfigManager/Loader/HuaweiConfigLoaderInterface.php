@@ -11,5 +11,5 @@ use Archman\PaymentLib\ConfigManager\HuaweiConfigInterface;
  */
 interface HuaweiConfigLoaderInterface
 {
-    public static function load(array $context): HuaweiConfigInterface;
+    public static function loadHuaweiConfig(array $context): HuaweiConfigInterface;
 }

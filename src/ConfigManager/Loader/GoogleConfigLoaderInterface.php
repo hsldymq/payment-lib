@@ -11,5 +11,5 @@ use Archman\PaymentLib\ConfigManager\GoogleConfigInterface;
  */
 interface GoogleConfigLoaderInterface
 {
-    public static function load(array $context): GoogleConfigInterface;
+    public static function loadGoogleConfig(array $context): GoogleConfigInterface;
 }

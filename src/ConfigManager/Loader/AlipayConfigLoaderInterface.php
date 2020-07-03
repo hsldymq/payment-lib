@@ -11,5 +11,5 @@ use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
  */
 interface AlipayConfigLoaderInterface
 {
-    public static function load(array $context): AlipayConfigInterface;
+    public static function loadAlipayConfig(array $context): AlipayConfigInterface;
 }

@@ -11,5 +11,5 @@ use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
  */
 interface WeChatConfigLoaderInterface
 {
-    public static function load(array $context): WeChatConfigInterface;
+    public static function loadWeChatConfig(array $context): WeChatConfigInterface;
 }

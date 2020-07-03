@@ -8,5 +8,5 @@ use Archman\PaymentLib\ConfigManager\NewebPayConfigInterface;
 
 interface NewebPayConfigLoaderInterface
 {
-    public static function load(array $context): NewebPayConfigInterface;
+    public static function loadNewebPayConfig(array $context): NewebPayConfigInterface;
 }
