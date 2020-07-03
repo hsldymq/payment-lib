@@ -9,7 +9,7 @@ use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
 /**
  * 支付宝配置载入器.
  */
-interface AlipayConfigLoaderInterface extends ConfigLoaderInterface
+interface AlipayConfigLoaderInterface
 {
     public static function load(array $context): AlipayConfigInterface;
 }

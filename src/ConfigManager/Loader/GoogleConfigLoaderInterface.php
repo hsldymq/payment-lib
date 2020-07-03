@@ -9,7 +9,7 @@ use Archman\PaymentLib\ConfigManager\GoogleConfigInterface;
 /**
  * 谷歌内购配置载入器.
  */
-interface GoogleConfigLoaderInterface extends ConfigLoaderInterface
+interface GoogleConfigLoaderInterface
 {
     public static function load(array $context): GoogleConfigInterface;
 }

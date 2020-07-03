@@ -9,7 +9,7 @@ use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
 /**
  * 微信支付配置载入器.
  */
-interface WeChatConfigLoaderInterface extends ConfigLoaderInterface
+interface WeChatConfigLoaderInterface
 {
     public static function load(array $context): WeChatConfigInterface;
 }
