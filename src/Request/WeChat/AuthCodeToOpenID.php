@@ -10,6 +10,7 @@ use Archman\PaymentLib\Request\Client;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\RequestableInterface;
+use Archman\PaymentLib\Request\WeChat\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\ResponseHandlerTrait;
@@ -26,6 +27,7 @@ class AuthCodeToOpenID implements RequestableInterface, ParameterMakerInterface
     use NonceStrTrait;
     use RequestPreparationTrait;
     use ResponseHandlerTrait;
+    use DefaultSenderTrait;
 
     private const URI = 'https://api.mch.weixin.qq.com/tools/authcodetoopenid';
 
@@ -57,12 +59,5 @@ class AuthCodeToOpenID implements RequestableInterface, ParameterMakerInterface
         $this->params['auth_code'] = $code;
 
         return $this;
-    }
-
-    public function send(?BaseClient $client = null): GeneralResponse
-    {
-        $response = $client ? $client->sendRequest($this) : Client::send($this);
-
-        return new GeneralResponse($this->handleResponse($response));
     }
 }
