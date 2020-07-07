@@ -40,7 +40,6 @@ class QueryTradeInfo implements RequestableInterface, ParameterMakerInterface
     public function prepareRequest(): RequestInterface
     {
         $parameters = $this->makeParameters();
-        print_r($parameters);
         $request = new Request('POST', 'https://core.spgateway.com/API/QueryTradeInfo', [
             'Content-Type' => 'application/x-www-form-urlencoded',
         ], stream_for(build_query($parameters)));
