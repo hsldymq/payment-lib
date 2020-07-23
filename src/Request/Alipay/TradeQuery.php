@@ -16,7 +16,7 @@ use Archman\PaymentLib\Request\RequestableInterface;
 /**
  * 统一收单线下交易查询.
  *
- * @see https://docs.open.alipay.com/api_1/alipay.trade.query
+ * @link https://docs.open.alipay.com/api_1/alipay.trade.query
  */
 class TradeQuery implements RequestableInterface, ParameterMakerInterface
 {

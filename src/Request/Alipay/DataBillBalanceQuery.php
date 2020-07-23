@@ -18,7 +18,7 @@ use Archman\PaymentLib\Response\BaseResponse;
 /**
  * 支付宝商家账户当前余额查询.
  *
- * @see https://opendocs.alipay.com/apis/api_15/alipay.data.bill.balance.query
+ * @link https://opendocs.alipay.com/apis/api_15/alipay.data.bill.balance.query
  */
 class DataBillBalanceQuery implements RequestableInterface, ParameterMakerInterface
 {

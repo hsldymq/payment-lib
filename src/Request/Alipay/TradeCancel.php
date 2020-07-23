@@ -16,7 +16,7 @@ use Archman\PaymentLib\Request\RequestableInterface;
 /**
  * 统一收单交易撤销接口.
  *
- * @see https://docs.open.alipay.com/api_1/alipay.trade.cancel/
+ * @link https://docs.open.alipay.com/api_1/alipay.trade.cancel/
  */
 class TradeCancel implements RequestableInterface, ParameterMakerInterface
 {

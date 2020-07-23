@@ -16,7 +16,7 @@ use Archman\PaymentLib\Request\RequestableInterface;
 /**
  * 统一收单交易退款查询.
  *
- * @see https://docs.open.alipay.com/api_1/alipay.trade.fastpay.refund.query/
+ * @link https://docs.open.alipay.com/api_1/alipay.trade.fastpay.refund.query/
  */
 class TradeFastPayRefundQuery implements RequestableInterface, ParameterMakerInterface
 {

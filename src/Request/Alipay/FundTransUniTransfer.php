@@ -19,7 +19,7 @@ use Archman\PaymentLib\Response\BaseResponse;
 /**
  * 单笔转账.
  *
- * @see https://docs.open.alipay.com/api_28/alipay.fund.trans.uni.transfer
+ * @link https://docs.open.alipay.com/api_28/alipay.fund.trans.uni.transfer
  */
 class FundTransUniTransfer implements RequestableInterface, ParameterMakerInterface
 {

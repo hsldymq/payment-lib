@@ -10,7 +10,7 @@ use Archman\PaymentLib\Request\ParameterMakerInterface;
 /**
  * 手机网站支付.
  *
- * @see https://docs.open.alipay.com/203/107090/ 文档地址
+ * @link https://docs.open.alipay.com/203/107090/ 文档地址
  */
 class TradeWapPay implements ParameterMakerInterface
 {
