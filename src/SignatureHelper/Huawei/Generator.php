@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\SignatureHelper\Huawei;
 
-use Archman\PaymentLib\ConfigManager\HuaweiConfigInterface;
+use Archman\PaymentLib\Config\HuaweiConfigInterface;
 
 /**
  * @see http://developer.huawei.com/consumer/cn/service/hms/catalog/huaweiiap.html?page=hmssdk_huaweiiap_sample_code_s

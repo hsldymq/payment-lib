@@ -2,7 +2,7 @@
 
 namespace Archman\PaymentLib\Request\Alipay;
 
-use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Config\AlipayConfigInterface;
 use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIParameterMakerTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;

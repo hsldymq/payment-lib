@@ -7,7 +7,7 @@ namespace Archman\PaymentLib\Request\WeChat;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\WeChat\Traits\NonceStrTrait;
-use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Archman\PaymentLib\Config\WeChatConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\RequestableInterface;
 use Archman\PaymentLib\Request\WeChat\Traits\RequestPreparationTrait;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\SignatureHelper\Alipay;
 
-use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Config\AlipayConfigInterface;
 use Archman\PaymentLib\Exception\SignatureException;
 
 class Generator

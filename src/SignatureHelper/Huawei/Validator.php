@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\SignatureHelper\Huawei;
 
-use Archman\PaymentLib\ConfigManager\HuaweiConfigInterface;
+use Archman\PaymentLib\Config\HuaweiConfigInterface;
 use Archman\PaymentLib\Exception\SignatureException;
 
 /**

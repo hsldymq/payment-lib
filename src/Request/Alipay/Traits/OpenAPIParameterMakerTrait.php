@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Request\Alipay\Traits;
 
-use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Config\AlipayConfigInterface;
 use Archman\PaymentLib\Request\Alipay\Helper\Encryption;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\SignatureHelper\Alipay\Generator;

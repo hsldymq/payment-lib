@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Request\NewebPay;
 
-use Archman\PaymentLib\ConfigManager\NewebPayConfigInterface;
+use Archman\PaymentLib\Config\NewebPayConfigInterface;
 use Archman\PaymentLib\Request\BaseClient;
 use Archman\PaymentLib\Request\Client;
 use Archman\PaymentLib\Request\ParameterMakerInterface;

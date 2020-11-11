@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Request\WeChat;
 
-use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Archman\PaymentLib\Config\WeChatConfigInterface;
 use Archman\PaymentLib\Exception\ErrorResponseException;
 use Archman\PaymentLib\Request\BaseClient;
 use Archman\PaymentLib\Request\Client;

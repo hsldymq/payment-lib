@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Request\Alipay;
 
-use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Config\AlipayConfigInterface;
 use Archman\PaymentLib\Request\BaseClient;
 use Archman\PaymentLib\Request\Client;
 use Archman\PaymentLib\Request\ParameterMakerInterface;

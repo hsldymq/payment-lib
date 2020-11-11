@@ -2,7 +2,7 @@
 
 namespace Archman\PaymentLib\Test\Config;
 
-use Archman\PaymentLib\ConfigManager\MyCardConfigInterface;
+use Archman\PaymentLib\Config\MyCardConfigInterface;
 
 class MyCardConfig implements MyCardConfigInterface
 {

@@ -1,7 +1,7 @@
 <?php
 namespace Archman\PaymentLib\Test\Config;
 
-use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Config\AlipayConfigInterface;
 
 class AlipayConfig implements AlipayConfigInterface
 {

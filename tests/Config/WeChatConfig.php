@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Test\Config;
 
-use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Archman\PaymentLib\Config\WeChatConfigInterface;
 
 class WeChatConfig implements WeChatConfigInterface
 {

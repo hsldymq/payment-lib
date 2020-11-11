@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Archman\PaymentLib\ConfigManager\Loader;
+namespace Archman\PaymentLib\Config\Loader;
 
-use Archman\PaymentLib\ConfigManager\HuaweiConfigInterface;
+use Archman\PaymentLib\Config\HuaweiConfigInterface;
 
 /**
  * 华为支付配置载入器.

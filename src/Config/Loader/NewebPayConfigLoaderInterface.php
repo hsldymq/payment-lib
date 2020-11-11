@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Archman\PaymentLib\ConfigManager\Loader;
+namespace Archman\PaymentLib\Config\Loader;
 
-use Archman\PaymentLib\ConfigManager\NewebPayConfigInterface;
+use Archman\PaymentLib\Config\NewebPayConfigInterface;
 
 interface NewebPayConfigLoaderInterface
 {

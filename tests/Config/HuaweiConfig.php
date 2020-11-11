@@ -1,7 +1,7 @@
 <?php
 namespace Archman\PaymentLib\Test\Config;
 
-use Archman\PaymentLib\ConfigManager\HuaweiConfigInterface;
+use Archman\PaymentLib\Config\HuaweiConfigInterface;
 
 class HuaweiConfig implements HuaweiConfigInterface
 {

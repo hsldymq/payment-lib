@@ -12,7 +12,7 @@ use Archman\PaymentLib\Response\GeneralResponse;
 use Psr\Http\Message\ResponseInterface;
 use Archman\PaymentLib\Request\DataConverter;
 use Archman\PaymentLib\SignatureHelper\Alipay\Validator;
-use Archman\PaymentLib\ConfigManager\AlipayConfigInterface;
+use Archman\PaymentLib\Config\AlipayConfigInterface;
 
 /**
  * @property AlipayConfigInterface $config

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Request\Huawei;
 
-use Archman\PaymentLib\ConfigManager\HuaweiConfigInterface;
+use Archman\PaymentLib\Config\HuaweiConfigInterface;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 use Archman\PaymentLib\SignatureHelper\Huawei\Generator;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\SignatureHelper\MyCard;
 
-use Archman\PaymentLib\ConfigManager\MyCardConfigInterface;
+use Archman\PaymentLib\Config\MyCardConfigInterface;
 
 class Generator
 {

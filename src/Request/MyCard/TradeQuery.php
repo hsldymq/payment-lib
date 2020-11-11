@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Request\MyCard;
 
-use Archman\PaymentLib\ConfigManager\MyCardConfigInterface;
+use Archman\PaymentLib\Config\MyCardConfigInterface;
 use Archman\PaymentLib\Request\MyCard\Traits\DefaultSenderTrait;
 use Archman\PaymentLib\Request\MyCard\Traits\RequestPreparationTrait;
 use Archman\PaymentLib\Request\MyCard\Traits\ResponseHandlerTrait;

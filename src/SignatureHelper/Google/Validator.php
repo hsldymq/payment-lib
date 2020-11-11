@@ -2,7 +2,7 @@
 
 namespace Archman\PaymentLib\SignatureHelper\Google;
 
-use Archman\PaymentLib\ConfigManager\GoogleConfigInterface;
+use Archman\PaymentLib\Config\GoogleConfigInterface;
 
 class Validator
 {

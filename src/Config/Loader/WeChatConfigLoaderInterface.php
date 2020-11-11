@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Archman\PaymentLib\ConfigManager\Loader;
+namespace Archman\PaymentLib\Config\Loader;
 
-use Archman\PaymentLib\ConfigManager\WeChatConfigInterface;
+use Archman\PaymentLib\Config\WeChatConfigInterface;
 
 /**
  * 微信支付配置载入器.
