@@ -8,5 +8,5 @@ interface ConfigInterface
 {
     public function getAppID(): string;
 
-    public function getPartnerID(): string;
+    public function getPID(): string;
 }
