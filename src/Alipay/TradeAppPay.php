@@ -28,6 +28,7 @@ class TradeAppPay implements ParameterMakerInterface
     private OpenAPIConfigInterface $config;
 
     private array $params = [
+        'timestamp' => null,
         'notify_url' => null,
     ];
 
