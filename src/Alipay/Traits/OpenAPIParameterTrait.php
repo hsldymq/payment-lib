@@ -26,7 +26,7 @@ trait OpenAPIParameterTrait
 
         $parameters['app_id'] = $this->config->getAppID();
         $parameters['method'] = self::METHOD;
-        $parameters['format'] = 'json';
+        $parameters['format'] = 'JSON';
         $parameters['charset'] = self::CHARSET;
         $parameters['sign_type'] = $this->config->getSignType();
         $parameters['timestamp'] = $this->getDatetimeStr();
