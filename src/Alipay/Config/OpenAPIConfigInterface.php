@@ -37,7 +37,7 @@ interface OpenAPIConfigInterface extends ConfigInterface
     public function getAESKey(): ?string;
 
     /**
-     * 是否开启了AES加密.
+     * 是否开启AES加密.
      *
      * @return bool
      */
