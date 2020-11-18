@@ -30,11 +30,11 @@ interface OpenAPIConfigInterface extends ConfigInterface
     /**
      * 返回AES密钥.
      *
-     * @return string|null 如果返回null则代表没有配置密钥,内容不会加密.
+     * @return string
      *
      * @see https://docs.open.alipay.com/common/104567 查看关于AES加密接口内容的作用
      */
-    public function getAESKey(): ?string;
+    public function getAESKey(): string;
 
     /**
      * 是否开启AES加密.
