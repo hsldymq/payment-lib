@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Archman\PaymentLib\Alipay;
+namespace Archman\PaymentLib\Alipay\Config;
 
 interface OpenAPIConfigInterface extends ConfigInterface
 {
