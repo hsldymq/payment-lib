@@ -49,7 +49,6 @@ class Generator
         if (!$resource || !openssl_sign($packedString, $sign, $resource)) {
             throw new SignException(['signType' => 'RSA', 'privateKey' => $pk], openssl_error_string());
         }
-        openssl_free_key($resource);
 
         return base64_encode($sign);
     }
@@ -62,7 +61,6 @@ class Generator
         if (!$resource || !openssl_sign($packedString, $sign, $resource, OPENSSL_ALGO_SHA256)) {
             throw new SignException(['signType' => 'RSA2', 'privateKey' => $pk], openssl_error_string());
         }
-        openssl_free_key($resource);
 
         return base64_encode($sign);
     }
@@ -74,7 +72,6 @@ class Generator
         if (!$resource || !openssl_sign($packedString, $sign, $resource, OPENSSL_ALGO_DSS1)) {
             throw new SignException(['signType' => 'DSA', 'privateKey' => $pk], openssl_error_string());
         }
-        openssl_free_key($resource);
 
         return base64_encode($sign);
     }
