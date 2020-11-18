@@ -32,12 +32,12 @@ class TradeAppPay implements ParameterMakerInterface
     ];
 
     private array $bizContent = [
+        'subject' => null,
+        'out_trade_no' => null,
         'timeout_express' => null,
         'total_amount' => null,
         'product_code' => 'QUICK_MSECURITY_PAY',
         'body' => null,
-        'subject' => null,
-        'out_trade_no' => null,
         'time_expire' => null,
         'goods_type' => null,
         'promo_params' => null,
@@ -83,13 +83,13 @@ class TradeAppPay implements ParameterMakerInterface
     /**
      * 设置支付金额(单位分).
      *
-     * @param string|null $amount
+     * @param int|null $amount
      *
      * @return self
      */
-    public function setTotalAmount(?string $amount): self
+    public function setTotalAmount(?int $amount): self
     {
-        $this->bizContent['total_amount'] = $amount;
+        $this->bizContent['total_amount'] = bcdiv(strval($amount), '100', 2);
 
         return $this;
     }
