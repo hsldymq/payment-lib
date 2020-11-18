@@ -6,9 +6,8 @@ namespace Archman\PaymentLib\Alipay;
 
 use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
 use Archman\PaymentLib\Alipay\Traits\OpenAPIExtendableTrait;
+use Archman\PaymentLib\Alipay\Traits\OpenAPIParameterTrait;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
-use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIParameterMakerTrait;
-use Archman\PaymentLib\Request\ParameterHelper;
 
 /**
  * app支付接口.
@@ -18,12 +17,12 @@ use Archman\PaymentLib\Request\ParameterHelper;
 class TradeAppPay implements ParameterMakerInterface
 {
     use OpenAPIExtendableTrait;
-    use OpenAPIParameterMakerTrait;
+    use OpenAPIParameterTrait;
 
     private const METHOD = 'alipay.trade.app.pay';
-    private const FORMAT = 'json';
     private const VERSION = '1.0';
     private const CHARSET = 'utf-8';
+    private const WITH_CSR = false;
 
     private OpenAPIConfigInterface $config;
 
@@ -35,7 +34,7 @@ class TradeAppPay implements ParameterMakerInterface
     private array $bizContent = [
         'timeout_express' => null,
         'total_amount' => null,
-        'product_code' => 'QUICK_MSECURITY_PAY', // 必填参数(固定值)
+        'product_code' => 'QUICK_MSECURITY_PAY',
         'body' => null,
         'subject' => null,
         'out_trade_no' => null,
@@ -58,16 +57,6 @@ class TradeAppPay implements ParameterMakerInterface
     public function __construct(OpenAPIConfigInterface $config)
     {
         $this->config = $config;
-    }
-
-    public function makeParameters(): array
-    {
-        ParameterHelper::checkRequired($this->bizContent, ['out_trade_no', 'subject', 'total_amount']);
-
-        $bizContent = ParameterHelper::packValidParameters($this->bizContent);
-        $parameters = $this->makeSignedParameters(self::METHOD, $bizContent);
-
-        return $parameters;
     }
 
     public function setNotifyURL(?string $url): self
