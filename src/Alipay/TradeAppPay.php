@@ -205,7 +205,7 @@ class TradeAppPay implements ParameterMakerInterface
         return $this;
     }
 
-    public function setPassbackParams(?array $params): self
+    public function setPassbackParams(?string $params): self
     {
         $this->bizContent['passback_params'] = $params;
 
