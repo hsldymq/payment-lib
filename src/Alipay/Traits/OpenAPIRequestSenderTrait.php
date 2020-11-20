@@ -54,7 +54,6 @@ trait OpenAPIRequestSenderTrait
     private function doSend(ClientInterface $client): ResponseInterface
     {
         $parameters = $this->makeParameters();
-        print_r($parameters);
         $request = new Request('POST','https://openapi.alipay.com/gateway.do?'.Query::build($parameters));
 
         $this->latestRequestInfo = ['request' => $request, 'response' => null];
