@@ -1,5 +1,6 @@
 {
   "name": "hsldymq/payment-lib",
+  "homepage": "https://github.com/hsldymq/payment-lib",
   "license": "MIT",
   "require": {
     "php": ">=7.4.0",
