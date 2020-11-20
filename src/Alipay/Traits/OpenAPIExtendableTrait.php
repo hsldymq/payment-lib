@@ -35,7 +35,7 @@ trait OpenAPIExtendableTrait
      *
      * @return $this
      */
-    public function setBizContentField(string $key, $value): self
+    public function setBizContent(string $key, $value): self
     {
         $this->bizContent[$key] = $value;
 
