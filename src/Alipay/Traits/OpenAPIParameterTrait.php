@@ -8,7 +8,6 @@ use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
 use Archman\PaymentLib\Alipay\Helper\AESEncryption;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Alipay\Signature\Generator;
-use function GuzzleHttp\json_encode;
 
 /**
  * @property OpenAPIConfigInterface $config
@@ -38,10 +37,16 @@ trait OpenAPIParameterTrait
             $bizContent = AESEncryption::encrypt($bizContent, $this->config->getAESKey());
         }
         $parameters['biz_content'] = $bizContent;
-
         $parameters['sign'] = (new Generator($this->config))->makeSign($parameters);
 
         return $parameters;
+    }
+
+    public function setAppAuthToken(?string $token): self
+    {
+        $this->params['app_auth_token'] = $token;
+
+        return $this;
     }
 
     public function setTimestamp(\DateTimeInterface $dt): self
