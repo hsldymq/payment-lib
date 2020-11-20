@@ -8,9 +8,10 @@ class ContextualException extends \Exception
 {
     protected array $context;
 
-    public function __construct(array $context, string $message = '', int $code = 0, \Throwable $prev = null)
+    public function __construct(array $context, string $message = '', $code = 0, \Throwable $prev = null)
     {
-        parent::__construct($message, $code, $prev);
+        parent::__construct($message, intval($code), $prev);
+        $this->code = $code;
         $this->context = $context;
     }
 
