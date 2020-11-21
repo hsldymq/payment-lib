@@ -51,6 +51,11 @@ trait OpenAPIRequestSenderTrait
         return $content;
     }
 
+    public function getLatestRequestInfo(): array
+    {
+        return $this->latestRequestInfo;
+    }
+
     protected function doSend(ClientInterface $client): ResponseInterface
     {
         $parameters = $this->makeParameters();
@@ -63,10 +68,5 @@ trait OpenAPIRequestSenderTrait
         $this->latestRequestInfo['response'] = $request;
 
         return $response;
-    }
-
-    public function getLatestRequestInfo(): array
-    {
-        return $this->latestRequestInfo;
     }
 }
