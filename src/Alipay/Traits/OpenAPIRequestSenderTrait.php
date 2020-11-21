@@ -44,8 +44,9 @@ trait OpenAPIRequestSenderTrait
         (new Validator($this->config))->validateSign($signature, $this->config->getSignType(), $contentStr);
 
         $content = $data[self::RESPONSE_CONTENT_FIELD];
-        if (($content['code'] ?? '') !== '10000') {
-            throw new AlipayOpenAPIResponseException($content, $content['msg'], $content['code']);
+        $code = strval($content['code'] ?? '');
+        if ($code !== '10000') {
+            throw new AlipayOpenAPIResponseException($content, $content['msg'], $code);
         }
 
         return $content;
