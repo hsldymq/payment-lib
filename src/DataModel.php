@@ -10,6 +10,11 @@ class DataModel implements \ArrayAccess
 {
     private array $data = [];
 
+    final public function __construct(array $data)
+    {
+        $this->data = $data;
+    }
+
     public function offsetExists($offset)
     {
         return isset($this->data[$offset]);
@@ -28,5 +33,10 @@ class DataModel implements \ArrayAccess
     public function offsetUnset($offset)
     {
         throw new ContextualException(['offset' => $offset], 'unset immutable data model');
+    }
+
+    private function assignProps()
+    {
+        // TODO
     }
 }
