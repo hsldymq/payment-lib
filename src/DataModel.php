@@ -8,11 +8,16 @@ use Archman\PaymentLib\Exception\ContextualException;
 
 class DataModel implements \ArrayAccess
 {
+    private static array $converters = [
+        'default' => [ModelDataConverter::class, 'defaultConvert'],
+    ];
+
     private array $data = [];
 
     final public function __construct(array $data)
     {
         $this->data = $data;
+        $this->assignProps();
     }
 
     public function offsetExists($offset)
@@ -37,6 +42,29 @@ class DataModel implements \ArrayAccess
 
     private function assignProps()
     {
-        // TODO
+        $obj = new \ReflectionObject($this);
+        foreach ($obj->getProperties() as $prop) {
+            $attr = $prop->getAttributes('DataModel')[0] ?? null;
+            if (!$attr) {
+                continue;
+            }
+            $fieldName = $attr->getArguments()[0] ?? null;
+            if (!$fieldName || !isset($this->data[$fieldName])) {
+                continue;
+            }
+
+            $typeStr = strval($prop->getType());
+            if ($typeStr) {
+                // TODO
+//                $converterName = 'default';
+//                $attr = $prop->getAttributes('DataModelConverter')[0] ?? null;
+//                if ($attr && ($name = $attr->getArguments()[0] ?? null)) {
+//                    $converterName = $name;
+//                }
+            }
+
+            $value = $this->data[$fieldName];
+            $prop->setValue($this, $value);
+        }
     }
 }
