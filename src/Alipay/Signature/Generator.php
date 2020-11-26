@@ -6,7 +6,7 @@ namespace Archman\PaymentLib\Alipay\Signature;
 
 use Archman\PaymentLib\Alipay\Config\MAPIConfigInterface;
 use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
-use Archman\PaymentLib\Exception\SignException;
+use Archman\PaymentLib\Exception\SignGenerationException;
 
 class Generator
 {
@@ -36,7 +36,7 @@ class Generator
                 $sign = $this->makeSignMD5($packed);
                 break;
             default:
-                throw (new SignException(['signType' => $signType], "unsupported sign type"));
+                throw (new SignGenerationException(['signType' => $signType], "unsupported sign type"));
         }
 
         return $sign;
@@ -47,7 +47,7 @@ class Generator
         $pk = $this->config->getPrivateKey();
         $resource = openssl_get_privatekey($pk);
         if (!$resource || !openssl_sign($packedString, $sign, $resource)) {
-            throw new SignException(['signType' => 'RSA', 'privateKey' => $pk], openssl_error_string());
+            throw new SignGenerationException(['signType' => 'RSA', 'privateKey' => $pk], openssl_error_string());
         }
 
         return base64_encode($sign);
@@ -59,7 +59,7 @@ class Generator
 
         $resource = openssl_get_privatekey($pk);
         if (!$resource || !openssl_sign($packedString, $sign, $resource, OPENSSL_ALGO_SHA256)) {
-            throw new SignException(['signType' => 'RSA2', 'privateKey' => $pk], openssl_error_string());
+            throw new SignGenerationException(['signType' => 'RSA2', 'privateKey' => $pk], openssl_error_string());
         }
 
         return base64_encode($sign);
@@ -70,7 +70,7 @@ class Generator
         $pk = $this->config->getPrivateKey();
         $resource = openssl_get_privatekey($pk);
         if (!$resource || !openssl_sign($packedString, $sign, $resource, OPENSSL_ALGO_DSS1)) {
-            throw new SignException(['signType' => 'DSA', 'privateKey' => $pk], openssl_error_string());
+            throw new SignGenerationException(['signType' => 'DSA', 'privateKey' => $pk], openssl_error_string());
         }
 
         return base64_encode($sign);

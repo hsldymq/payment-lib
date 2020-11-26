@@ -6,7 +6,7 @@ namespace Archman\PaymentLib\Alipay\Signature;
 
 use Archman\PaymentLib\Alipay\Config\MAPIConfigInterface;
 use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
-use Archman\PaymentLib\Exception\SignException;
+use Archman\PaymentLib\Exception\SignValidationException;
 
 /**
  * 支付包签名验证器.
@@ -52,11 +52,11 @@ class Validator
                 $result = $this->validateSignMD5($signature, $packedString);
                 break;
             default:
-                throw (new SignException(['signType' => $signType], "unsupported sign type"));
+                throw (new SignValidationException(['signType' => $signType], "unsupported sign type"));
         }
 
         if (!$result) {
-            throw (new SignException(['signType' => $signType, 'signature' => $signature], "failed to validate signature"));
+            throw (new SignValidationException(['signType' => $signType, 'signature' => $signature], "failed to validate signature"));
         }
 
         return true;
@@ -69,7 +69,7 @@ class Validator
         if (!$resource ||
             ($result = openssl_verify($packedString, base64_decode($signature), $resource)) === -1
         ) {
-            throw new SignException(['signType' => 'RSA', 'alipayPublicKey' => $pk], openssl_error_string());
+            throw new SignValidationException(['signType' => 'RSA', 'alipayPublicKey' => $pk], openssl_error_string());
         }
 
         return $result === 1;
@@ -82,7 +82,7 @@ class Validator
         if (!$resource ||
             ($result = openssl_verify($packedString, base64_decode($signature), $resource, OPENSSL_ALGO_SHA256)) === -1
         ) {
-            throw new SignException(['signType' => 'RSA2', 'alipayPublicKey' => $pk], openssl_error_string());
+            throw new SignValidationException(['signType' => 'RSA2', 'alipayPublicKey' => $pk], openssl_error_string());
         }
 
         return $result === 1;
@@ -95,7 +95,7 @@ class Validator
         if (!$resource ||
             ($result = openssl_verify($packedString, base64_decode($signature), $resource, OPENSSL_ALGO_DSS1)) === -1
         ) {
-            throw new SignException(['signType' => 'DSA', 'alipayPublicKey' => $pk], openssl_error_string());
+            throw new SignValidationException(['signType' => 'DSA', 'alipayPublicKey' => $pk], openssl_error_string());
         }
 
         return $result === 1;
