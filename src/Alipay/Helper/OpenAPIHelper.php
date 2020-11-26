@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Alipay\Helper;
 
-use Archman\PaymentLib\Exception\ContextualException;
+use Archman\PaymentLib\Exception\InvalidDataStructureException;
 
 class OpenAPIHelper
 {
@@ -33,14 +33,14 @@ class OpenAPIHelper
 
         preg_match("/\"{$fieldName}\"\s*:\s*/", $data, $matches);
         if (!isset($matches[0])) {
-            throw new ContextualException(['fieldName' => $fieldName], 'expected specific field');
+            throw new InvalidDataStructureException($data, ['fieldName' => $fieldName], 'expected specific field');
         }
         $contentFieldPos = strpos($data, $matches[0]);
         $contentFieldLen = strlen($matches[0]);
 
         preg_match("/\s*}\s*$/", $data, $matches);
         if (!isset($matches[0])) {
-            throw new \Exception("expected ending with '}'");
+            throw new InvalidDataStructureException($data, [], "expected ending with '}'");
         }
         $length = -strlen($matches[0]);
 
@@ -50,7 +50,7 @@ class OpenAPIHelper
             } else if ($isNext ?? false) {
                 preg_match("/\s*,\s*\"{$field}\"/", $data, $matches);
                 if (!isset($matches[0])) {
-                    throw new ContextualException(['fieldName' => $field],"field order error");
+                    throw new InvalidDataStructureException($data, ['fieldName' => $field], 'field order error');
                 }
                 $nextFieldPos = strpos($data, $matches[0]);
                 $length = $nextFieldPos - $contentFieldPos - $contentFieldLen;

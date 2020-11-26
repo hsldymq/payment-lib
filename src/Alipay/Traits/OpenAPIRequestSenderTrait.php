@@ -11,6 +11,7 @@ use Archman\PaymentLib\ClientOption;
 use Archman\PaymentLib\DefaultClientFactoryProvider;
 use Archman\PaymentLib\Alipay\Signature\Validator;
 use Archman\PaymentLib\Exception\AlipayOpenAPIResponseException;
+use Archman\PaymentLib\Exception\InvalidDataStructureException;
 use GuzzleHttp\Psr7\Query;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientInterface;
@@ -36,9 +37,14 @@ trait OpenAPIRequestSenderTrait
 
         $response = $this->doSend($client);
 
-        $bodyStr =  strval($response->getBody());
+        $bodyStr = strval($response->getBody());
+        try {
+            $data = json_decode($bodyStr, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\Throwable $e) {
+            throw new InvalidDataStructureException($bodyStr, [], $e->getMessage(), $e->getCode(), $e);
+        }
+
         $contentStr = OpenAPIHelper::getResponseContent($bodyStr, self::RESPONSE_CONTENT_FIELD);
-        $data = json_decode($bodyStr, true, 512, JSON_THROW_ON_ERROR);
         $signature = $data['sign'];
 
         (new Validator($this->config))->validateSign($signature, $this->config->getSignType(), $contentStr);
