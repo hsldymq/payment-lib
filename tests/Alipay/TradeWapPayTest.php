@@ -1,10 +1,13 @@
 <?php
-namespace Archman\PaymentLib\Test\Request\Alipay;
 
+declare(strict_types=1);
+
+namespace Archman\PaymentLib\Test\Alipay;
+
+use Archman\PaymentLib\Alipay\TradeWapPay;
+use Archman\PaymentLib\Test\Alipay\Config\OpenAPIConfig;
 use PHPUnit\Framework\TestCase;
 use Archman\PaymentLib\Test\Config;
-use Archman\PaymentLib\Test\Config\AlipayConfig;
-use Archman\PaymentLib\Request\Alipay\TradeWapPay;
 
 class TradeWapPayTest extends TestCase
 {
@@ -13,8 +16,7 @@ class TradeWapPayTest extends TestCase
         $cases = Config::get('alipay', 'testCases', 'request', 'TradeWapPay');
         foreach ($cases as $each) {
             $configData = Config::get('alipay', 'config', $each['appID']);
-            $config = new AlipayConfig($configData);
-            $config->setOpenAPIDefaultSignType($each['signType']);
+            $config = new OpenAPIConfig($configData, $each['signType']);
 
             $request = (new TradeWapPay($config))
                 ->setReturnURL($each['fields']['return_url'] ?? null)
@@ -27,7 +29,8 @@ class TradeWapPayTest extends TestCase
                 ->setTimeoutExpress($each['fields']['timeout_express'] ?? null)
                 ->setGoodsType($each['fields']['goods_type'] ?? null)
                 ->setPassbackParams($each['fields']['passback_params'] ?? null)
-                ->setQuitUrl($each['fields']['quit_url'] ?? null);
+                ->setStoreID($each['fields']['store_id'] ?? null)
+                ->setQuitURL($each['fields']['quit_url'] ?? null);
 
             $this->assertEquals($each['parameters'], $request->makeParameters());
             $this->assertEquals($each['html'], $request->makeFormHTML($each['htmlAutoSubmit'], $each['htmlFormID']));
