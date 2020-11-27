@@ -7,8 +7,6 @@ namespace Archman\PaymentLib\Alipay;
 use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
 use Archman\PaymentLib\Alipay\Traits\OpenAPIExtendableTrait;
 use Archman\PaymentLib\Alipay\Traits\OpenAPIParameterTrait;
-use Archman\PaymentLib\Alipay\Traits\OpenAPIRequestSenderTrait;
-use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 
 /**
@@ -20,13 +18,11 @@ class TradeWapPay implements ParameterMakerInterface
 {
     use OpenAPIExtendableTrait;
     use OpenAPIParameterTrait;
-    use OpenAPIRequestSenderTrait;
 
     private const METHOD = 'alipay.trade.wap.pay';
     private const VERSION = '1.0';
     private const CHARSET = 'utf-8';
     private const WITH_CERT = false;
-    private const RESPONSE_CONTENT_FIELD = 'alipay_trade_wap_pay_response';
 
     private OpenAPIConfigInterface $config;
 
@@ -75,7 +71,7 @@ class TradeWapPay implements ParameterMakerInterface
             $fields[] = "<input name='{$name}' value='{$value}' type='hidden'>";
         }
 
-        $formID = $formID ?? 'TradeWapPay_'.md5(intval(microtime(true) * 1000).random_int(10000, 99999));
+        $formID = $formID ?? 'TradeWapPay_'.md5(microtime(true));
         $submitScript = $autoSubmit ? "<script>document.getElementById('{$formID}').submit();</script>" : '';
         $form = "
             <form id='{$formID}' action='https://openapi.alipay.com/gateway.do' method='POST' enctype='application/x-www-form-urlencoded'>
