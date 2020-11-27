@@ -52,7 +52,7 @@ trait OpenAPIRequestSenderTrait
         $content = $data[self::RESPONSE_CONTENT_FIELD];
         $code = strval($content['code'] ?? '');
         if ($code !== '10000') {
-            throw new AlipayOpenAPIResponseException($content, $content['msg'], $code);
+            throw new AlipayOpenAPIResponseException($content, $content['msg'] ?? '', $code);
         }
 
         return $content;
