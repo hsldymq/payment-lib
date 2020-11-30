@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Archman\PaymentLib\Exception;
 
 /**
- * @method string getCode()
+ * 当支付宝OpenAPI响应数据中code不为10000时抛此异常.
+ *
+ * @method string getCode() 获取响应中code值
+ * @method string getMessage() 获取响应中msg值
  */
 class AlipayOpenAPIResponseException extends ContextualException
 {
