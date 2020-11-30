@@ -1,10 +1,13 @@
 <?php
-namespace Archman\PaymentLib\Test\Request\Alipay;
 
+declare(strict_types=1);
+
+namespace Archman\PaymentLib\Test\Alipay;
+
+use Archman\PaymentLib\Test\Alipay\Config\OpenAPIConfig;
 use PHPUnit\Framework\TestCase;
 use Archman\PaymentLib\Test\Config;
-use Archman\PaymentLib\Test\Config\AlipayConfig;
-use Archman\PaymentLib\Request\Alipay\TradePagePay;
+use Archman\PaymentLib\Alipay\TradePagePay;
 
 class TradePagePayTest extends TestCase
 {
@@ -13,8 +16,8 @@ class TradePagePayTest extends TestCase
         $cases = Config::get('alipay', 'testCases', 'request', 'TradePagePay');
         foreach ($cases as $each) {
             $configData = Config::get('alipay', 'config', $each['appID']);
-            $config = new AlipayConfig($configData);
-            $config->setOpenAPIDefaultSignType($each['signType']);
+            $config = new OpenAPIConfig($configData, $each['signType']);
+            $config->enableAESEncrypt($each['encrypted'] ?? false);
 
             $request = (new TradePagePay($config))
                 ->setTotalAmount($each['fields']['amount'])
