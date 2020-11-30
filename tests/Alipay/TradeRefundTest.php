@@ -1,8 +1,9 @@
 <?php
 
-namespace Archman\PaymentLib\Test\Request\Alipay;
+namespace Archman\PaymentLib\Test\Alipay;
 
-use Archman\PaymentLib\Request\Alipay\TradeRefund;
+use Archman\PaymentLib\Alipay\TradeRefund;
+use Archman\PaymentLib\Test\Alipay\Config\OpenAPIConfig;
 use PHPUnit\Framework\TestCase;
 use Archman\PaymentLib\Test\Config;
 use Archman\PaymentLib\Test\Config\AlipayConfig;
@@ -14,15 +15,14 @@ class TradeRefundTest extends TestCase
         $cases = Config::get('alipay', 'testCases', 'request', 'TradeRefund');
         foreach ($cases as $each) {
             $configData = Config::get('alipay', 'config', $each['appID']);
-            $config = new AlipayConfig($configData);
-            $config->setOpenAPIDefaultSignType($each['signType']);
+            $config = new OpenAPIConfig($configData, $each['signType']);
+            $config->enableAESEncrypt($each['encrypted']);
 
             $request = (new TradeRefund($config))
                 ->setOutTradeNo($each['fields']['out_trade_no'])
                 ->setTimestamp(new \DateTime($each['fields']['timestamp']))
                 ->setRefundAmount($each['fields']['refund_amount'])
-                ->setRefundReason($each['fields']['refund_reason'])
-                ->encrypt($each['encrypted']);
+                ->setRefundReason($each['fields']['refund_reason']);
 
             $this->assertEquals($each['parameters'], $request->makeParameters());
         }
