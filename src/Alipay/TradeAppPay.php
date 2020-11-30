@@ -89,7 +89,10 @@ class TradeAppPay implements ParameterMakerInterface
      */
     public function setTotalAmount(?int $amount): self
     {
-        $this->bizContent['total_amount'] = bcdiv(strval($amount), '100', 2);
+        if ($amount !== null) {
+            $amount = bcdiv(strval($amount), '100', 2);
+        }
+        $this->bizContent['total_amount'] = $amount;
 
         return $this;
     }

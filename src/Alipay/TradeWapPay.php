@@ -12,7 +12,7 @@ use Archman\PaymentLib\Request\ParameterMakerInterface;
 /**
  * 手机网站支付.
  *
- * @link https://docs.open.alipay.com/203/107090/ 文档地址
+ * @see https://docs.open.alipay.com/203/107090/ 文档地址
  */
 class TradeWapPay implements ParameterMakerInterface
 {
@@ -134,13 +134,16 @@ class TradeWapPay implements ParameterMakerInterface
     }
 
     /**
-     * @param int $amount 单位: 分
+     * @param int|null $amount 单位: 分
      *
      * @return self
      */
-    public function setTotalAmount(int $amount): self
+    public function setTotalAmount(?int $amount): self
     {
-        $this->bizContent['total_amount'] = bcdiv(strval($amount), '100', 2);
+        if ($amount !== null) {
+            $amount = bcdiv(strval($amount), '100', 2);
+        }
+        $this->bizContent['total_amount'] = $amount;
 
         return $this;
     }
