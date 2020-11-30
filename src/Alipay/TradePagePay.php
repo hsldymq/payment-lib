@@ -2,23 +2,30 @@
 
 declare(strict_types=1);
 
-namespace Archman\PaymentLib\Request\Alipay;
+namespace Archman\PaymentLib\Alipay;
 
-use Archman\PaymentLib\Config\AlipayConfigInterface;
-use Archman\PaymentLib\Request\Alipay\Traits\OpenAPIParameterMakerTrait;
+use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
+use Archman\PaymentLib\Alipay\Traits\OpenAPIExtendableTrait;
+use Archman\PaymentLib\Alipay\Traits\OpenAPIParameterTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Request\ParameterMakerInterface;
 
 /**
  * PC场景下单支付.
  *
- * @link https://docs.open.alipay.com/270/alipay.trade.page.pay
+ * @see https://opendocs.alipay.com/apis/api_1/alipay.trade.page.pay 文档地址
  */
 class TradePagePay implements ParameterMakerInterface
 {
-    use OpenAPIParameterMakerTrait;
+    use OpenAPIExtendableTrait;
+    use OpenAPIParameterTrait;
 
-    private AlipayConfigInterface $config;
+    private const METHOD = 'alipay.trade.page.pay';
+    private const VERSION = '1.0';
+    private const CHARSET = 'utf-8';
+    private const WITH_CERT = false;
+
+    private OpenAPIConfigInterface $config;
 
     private array $params = [
         'return_url' => null,
@@ -27,23 +34,35 @@ class TradePagePay implements ParameterMakerInterface
 
     private array $bizContent = [
         'out_trade_no' => null,
-        'product_code' => 'FAST_INSTANT_TRADE_PAY', // 必填参数(固定值)
+        'product_code' => 'FAST_INSTANT_TRADE_PAY',
         'total_amount' => null,
         'subject' => null,
         'body' => null,
+        'time_expire' => null,
         'goods_detail' => null,
         'passback_params' => null,
         'extend_params' => null,
         'goods_type' => null,
         'timeout_express' => null,
+        'promo_params' => null,
+        'royalty_info' => null,
+        'sub_merchant' => null,
+        'merchant_order_no' => null,
         'enable_pay_channels' => null,
+        'store_id' => null,
         'disable_pay_channels' => null,
-        'auth_token' => null,
         'qr_pay_mode' => null,
         'qrcode_width' => null,
+        'settle_info' => null,
+        'invoice_info' => null,
+        'agreement_sign_params' => null,
+        'integration_type' => null,
+        'request_from_url' => null,
+        'business_params' => null,
+        'ext_user_info' => null,
     ];
 
-    public function __construct(AlipayConfigInterface $config)
+    public function __construct(OpenAPIConfigInterface $config)
     {
         $this->config = $config;
     }
@@ -74,20 +93,6 @@ class TradePagePay implements ParameterMakerInterface
         return $form;
     }
 
-    /**
-     * @return array
-     * @throws
-     */
-    public function makeParameters(): array
-    {
-        ParameterHelper::checkRequired($this->bizContent, ['out_trade_no', 'subject', 'total_amount']);
-
-        $bizContent = ParameterHelper::packValidParameters($this->bizContent);
-        $parameters = $this->makeSignedParameters('alipay.trade.page.pay', $bizContent);
-
-        return $parameters;
-    }
-
     public function setReturnURL(?string $url): self
     {
         $this->params['return_url'] = $url;
@@ -102,22 +107,24 @@ class TradePagePay implements ParameterMakerInterface
         return $this;
     }
 
-    public function setOutTradeNo(string $no): self
+    public function setOutTradeNo(?string $no): self
     {
         $this->bizContent['out_trade_no'] = $no;
 
         return $this;
     }
 
-    public function setTotalAmount(int $amount): self
+    public function setTotalAmount(?int $amount): self
     {
-        ParameterHelper::checkAmount($amount);
-        $this->bizContent['total_amount'] = ParameterHelper::transAmountUnit($amount);
+        if ($amount !== null) {
+            $amount = bcdiv(strval($amount), '100', 2);
+        }
+        $this->bizContent['total_amount'] = $amount;
 
         return $this;
     }
 
-    public function setSubject(string $subject): self
+    public function setSubject(?string $subject): self
     {
         $this->bizContent['subject'] = $subject;
 
@@ -146,17 +153,9 @@ class TradePagePay implements ParameterMakerInterface
         return $this;
     }
 
-    public function setExtendParams(
-        ?string $sysServiceProviderID = null,
-        ?int $HBFQNum = null,
-        ?float $HBFQSellerPercent = null
-    ): self {
-        $data = ParameterHelper::packValidParameters([
-            'sys_service_provider_id' => $sysServiceProviderID,
-            'hb_fq_num' => "$HBFQNum",
-            'hb_fq_seller_percent' => "$HBFQSellerPercent",
-        ]);
-        $this->bizContent['extend_params'] = $data ? json_encode($data) : null;
+    public function setExtendParams(?array $params): self
+    {
+        $this->bizContent['extend_params'] = $params ? json_encode($params, JSON_THROW_ON_ERROR) : null;
 
         return $this;
     }
@@ -189,23 +188,16 @@ class TradePagePay implements ParameterMakerInterface
         return $this;
     }
 
-    public function setAuthToken(?string $token): self
+    public function setQRPayMode(?string $mode): self
     {
-        $this->bizContent['auth_token'] = $token;
+        $this->bizContent['qr_pay_mode'] = $mode;
 
         return $this;
     }
 
-    public function setQRPayMode(?int $mode): self
+    public function setQRCodeWidth(?string $width): self
     {
-        $this->bizContent['qr_pay_mode'] = "$mode";
-
-        return $this;
-    }
-
-    public function setQRCodeWidth(?int $width): self
-    {
-        $this->bizContent['qrcode_width'] = "$width";
+        $this->bizContent['qrcode_width'] = $width;
 
         return $this;
     }
