@@ -1,11 +1,13 @@
 <?php
 
-namespace Archman\PaymentLib\Test\Request\Alipay;
+declare(strict_types=1);
 
-use Archman\PaymentLib\Request\Alipay\TradeClose;
+namespace Archman\PaymentLib\Test\Alipay;
+
+use Archman\PaymentLib\Alipay\TradeClose;
+use Archman\PaymentLib\Test\Alipay\Config\OpenAPIConfig;
 use PHPUnit\Framework\TestCase;
 use Archman\PaymentLib\Test\Config;
-use Archman\PaymentLib\Test\Config\AlipayConfig;
 
 class TradeCloseTest extends TestCase
 {
@@ -14,13 +16,12 @@ class TradeCloseTest extends TestCase
         $cases = Config::get('alipay', 'testCases', 'request', 'TradeClose');
         foreach ($cases as $each) {
             $configData = Config::get('alipay', 'config', $each['appID']);
-            $config = new AlipayConfig($configData);
-            $config->setOpenAPIDefaultSignType($each['signType']);
+            $config = new OpenAPIConfig($configData, $each['signType']);
+            $config->enableAESEncrypt($each['encrypted'] ?? false);
 
             $request = (new TradeClose($config))
                 ->setOutTradeNo($each['fields']['out_trade_no'])
-                ->setTimestamp(new \DateTime($each['fields']['timestamp']))
-                ->encrypt($each['encrypted']);
+                ->setTimestamp(new \DateTime($each['fields']['timestamp']));
 
             $this->assertEquals($each['parameters'], $request->makeParameters());
         }
