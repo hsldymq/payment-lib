@@ -17,7 +17,7 @@ class TradeQueryTest extends TestCase
         foreach ($cases as $each) {
             $configData = Config::get('alipay', 'config', $each['appID']);
             $config = new OpenAPIConfig($configData, $each['signType']);
-            $config->enableAESEncrypt($each['encrypted']);
+            $config->enableAESEncrypt($each['encrypted'] ?? false);
 
             $request = (new TradeQuery($config))
                 ->setTimestamp(new \DateTime($each['fields']['timestamp']))
