@@ -6,6 +6,7 @@ namespace Archman\PaymentLib\Alipay\Traits;
 
 use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
 use Archman\PaymentLib\Alipay\Helper\AESEncryption;
+use Archman\PaymentLib\Alipay\Helper\CertHelper;
 use Archman\PaymentLib\Request\ParameterHelper;
 use Archman\PaymentLib\Alipay\Signature\Generator;
 
@@ -32,6 +33,11 @@ trait OpenAPIParameterTrait
         $parameters['version'] = self::VERSION;
 
         $bizContent = json_encode($bizContent ?: new class{}, JSON_THROW_ON_ERROR);
+        if ($this->config->isCertEnabled()) {
+            $parameters['app_cert_sn'] = CertHelper::getCertSN($this->config->getCert());
+            $parameters['alipay_root_cert_sn'] = CertHelper::getRootCertSN($this->config->getAlipayRootCert());
+        }
+
         if ($this->config->isAESEncryptionEnabled()) {
             $parameters['encrypt_type'] = 'AES';
             $bizContent = AESEncryption::encrypt($bizContent, $this->config->getAESKey());
