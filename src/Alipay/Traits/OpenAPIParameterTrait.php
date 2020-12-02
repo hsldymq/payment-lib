@@ -17,7 +17,7 @@ use Archman\PaymentLib\Alipay\Signature\Generator;
  */
 trait OpenAPIParameterTrait
 {
-    private \DateTimeInterface $datetime;
+    private ?\DateTimeInterface $datetime;
 
     public function makeParameters(): array
     {
@@ -55,7 +55,7 @@ trait OpenAPIParameterTrait
         return $this;
     }
 
-    public function setTimestamp(\DateTimeInterface $dt): self
+    public function setTimestamp(?\DateTimeInterface $dt): self
     {
         $this->datetime = $dt;
 
