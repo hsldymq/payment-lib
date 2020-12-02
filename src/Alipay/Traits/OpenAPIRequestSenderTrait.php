@@ -48,9 +48,11 @@ trait OpenAPIRequestSenderTrait
         }
 
         $contentStr = OpenAPIHelper::getResponseContent($bodyStr, self::RESPONSE_CONTENT_FIELD);
-        $signature = $data['sign'];
-
-        (new Validator($this->config))->validateSign($signature, $this->config->getSignType(), $contentStr);
+        $signature = $data['sign'] ?? null;
+        // TODO 如果没有签名, 但是code为10000. 是否抛出异常?
+        if ($signature) {
+            (new Validator($this->config))->validateSign($signature, $this->config->getSignType(), $contentStr);
+        }
 
         $content = $data[self::RESPONSE_CONTENT_FIELD];
         if ($this->config->isAESEncryptionEnabled()) {
