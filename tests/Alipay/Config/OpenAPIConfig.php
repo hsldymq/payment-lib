@@ -14,6 +14,8 @@ class OpenAPIConfig implements OpenAPIConfigInterface
 
     private bool $aesEncEnabled = false;
 
+    private bool $certEnabled = false;
+
     public function __construct(array $config, string $signType)
     {
         $this->config = $config;
@@ -43,6 +45,31 @@ class OpenAPIConfig implements OpenAPIConfigInterface
     public function getAlipayPublicKey(): string
     {
         return $this->config['openAPIAlipayPublicKeys'][$this->signType];
+    }
+
+    public function getCert(): string
+    {
+        return $this->config['openAPIAppCert'] ?? '';
+    }
+
+    public function getAlipayCert(): string
+    {
+        return $this->config['openAPIAlipayCert'] ?? '';
+    }
+
+    public function isCertEnabled(): bool
+    {
+        return $this->certEnabled;
+    }
+
+    public function enableCert(bool $enabled)
+    {
+        $this->certEnabled = $enabled;
+    }
+
+    public function getAlipayRootCert(): string
+    {
+        return $this->config['openAPIAlipayRootCert'] ?? '';
     }
 
     public function getAESKey(): string
