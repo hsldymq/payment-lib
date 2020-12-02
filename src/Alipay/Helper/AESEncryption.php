@@ -4,35 +4,45 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Alipay\Helper;
 
+use Archman\PaymentLib\Exception\ContextualException;
+
 class AESEncryption
 {
     /**
      * 当前仅支持AES/CBC/PKCS5Padding.
      *
      * @param string $data
-     * @param string $key
+     * @param string $encryptedKey
      *
      * @return string
      */
-    public static function encrypt(string $data, string $key): string
+    public static function encrypt(string $data, string $encryptedKey): string
     {
         $iv = str_repeat("\0", 16);
+        $result = openssl_encrypt($data, 'AES-128-CBC', base64_decode($encryptedKey), 0, $iv);
+        if ($result === false) {
+            throw new ContextualException(['encryptKey' => $encryptedKey, 'iv' => $iv], openssl_error_string());
+        }
 
-        return openssl_encrypt($data, 'AES-128-CBC', base64_decode($key), 0, $iv);
+        return $result;
     }
 
     /**
      * 当前仅支持AES/CBC/PKCS5Padding.
      *
      * @param string $encryptedData
-     * @param string $key
+     * @param string $decryptedKey
      *
      * @return string
      */
-    public static function decrypt(string $encryptedData, string $key): string
+    public static function decrypt(string $encryptedData, string $decryptedKey): string
     {
-        $iv = implode('', array_fill(0, 16, chr(0)));
+        $iv = str_repeat("\0", 16);
+        $result = openssl_decrypt($encryptedData, 'AES-128-CBC', base64_decode($decryptedKey), 0, $iv);
+        if ($result === false) {
+            throw new ContextualException(['decryptKey' => $decryptedKey, 'iv' => $iv], openssl_error_string());
+        }
 
-        return openssl_decrypt($encryptedData, 'AES-128-CBC', base64_decode($key), 0, $iv);
+        return $result;
     }
 }
