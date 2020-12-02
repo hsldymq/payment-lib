@@ -19,7 +19,6 @@ class TradeCancelTest extends TestCase
             $config = new OpenAPIConfig($configData, $each['signType']);
             $config->enableAESEncrypt($each['encrypted'] ?? false);
 
-
             $request = (new TradeCancel($config))
                 ->setOutTradeNo($each['fields']['out_trade_no'])
                 ->setTimestamp(new \DateTime($each['fields']['timestamp']));
