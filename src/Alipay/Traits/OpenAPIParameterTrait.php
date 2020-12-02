@@ -31,7 +31,7 @@ trait OpenAPIParameterTrait
         $parameters['timestamp'] = $this->getDatetimeStr();
         $parameters['version'] = self::VERSION;
 
-        $bizContent = json_encode($bizContent ?: new class{});
+        $bizContent = json_encode($bizContent ?: new class{}, JSON_THROW_ON_ERROR);
         if ($this->config->isAESEncryptionEnabled()) {
             $parameters['encrypt_type'] = 'AES';
             $bizContent = AESEncryption::encrypt($bizContent, $this->config->getAESKey());
