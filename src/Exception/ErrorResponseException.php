@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Exception;
 
-class ErrorResponseException extends \Exception
+class ErrorResponseException extends ContextualException
 {
     private ?string $errorCode = null;
 
@@ -20,25 +20,25 @@ class ErrorResponseException extends \Exception
         int $code = 0,
         ?\Throwable $previous = null
     ) {
-        $this->errorCode = $errorCode;
-        $this->errorText = $errorText;
-        $this->responseData = $responseData;
-
-        parent::__construct($message, $code, $previous);
+        parent::__construct([
+            'errorCode' => $errorCode,
+            'errorText' => $errorText,
+            'responseData' => $responseData,
+        ], $message, $code, $previous);
     }
 
     public function getErrorCode(): ?string
     {
-        return $this->errorCode;
+        return $this->context['errorCode'] ?? null;
     }
 
     public function getErrorText(): ?string
     {
-        return $this->errorText;
+        return $this->context['errorText'] ?? null;
     }
 
     public function getResponseData(): ?array
     {
-        return $this->responseData;
+        return $this->context['responseData'] ?? null;
     }
 }

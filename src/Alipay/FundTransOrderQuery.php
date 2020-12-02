@@ -24,7 +24,6 @@ class FundTransOrderQuery implements ParameterMakerInterface
     private const METHOD = 'alipay.fund.trans.order.query';
     private const VERSION = '1.0';
     private const CHARSET = 'utf-8';
-    private const WITH_CERT = false;
     private const RESPONSE_CONTENT_FIELD = 'alipay_fund_trans_order_query_response';
 
     private OpenAPIConfigInterface $config;

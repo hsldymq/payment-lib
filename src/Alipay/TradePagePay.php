@@ -23,7 +23,6 @@ class TradePagePay implements ParameterMakerInterface
     private const METHOD = 'alipay.trade.page.pay';
     private const VERSION = '1.0';
     private const CHARSET = 'utf-8';
-    private const WITH_CERT = false;
 
     private OpenAPIConfigInterface $config;
 

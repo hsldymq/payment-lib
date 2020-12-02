@@ -24,7 +24,6 @@ class TradeClose implements ParameterMakerInterface
     private const METHOD = 'alipay.trade.close';
     private const VERSION = '1.0';
     private const CHARSET = 'utf-8';
-    private const WITH_CERT = false;
     private const RESPONSE_CONTENT_FIELD = 'alipay_trade_close_response';
 
     private OpenAPIConfigInterface $config;
