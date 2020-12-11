@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Archman\PaymentLib;
 
 use Archman\PaymentLib\Exception\ContextualException;
+use JetBrains\PhpStorm\Immutable;
 
+#[Immutable]
 class DataModel implements \ArrayAccess
 {
     private static array $converters = [
