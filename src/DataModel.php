@@ -22,27 +22,27 @@ class DataModel implements \ArrayAccess
         $this->assignProps();
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->data[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->data[$offset] ?? null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         throw new ContextualException(['offset' => $offset], 'set immutable data model');
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         throw new ContextualException(['offset' => $offset], 'unset immutable data model');
     }
 
-    private function assignProps()
+    private function assignProps(): void
     {
         $obj = new \ReflectionObject($this);
         foreach ($obj->getProperties() as $prop) {
