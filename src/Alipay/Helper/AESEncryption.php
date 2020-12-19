@@ -15,6 +15,7 @@ class AESEncryption
      * @param string $encryptedKey
      *
      * @return string
+     * @throws
      */
     public static function encrypt(string $data, string $encryptedKey): string
     {
@@ -34,6 +35,7 @@ class AESEncryption
      * @param string $decryptedKey
      *
      * @return string
+     * @throws
      */
     public static function decrypt(string $encryptedData, string $decryptedKey): string
     {
