@@ -6,6 +6,7 @@ namespace Archman\PaymentLib\Alipay\Traits;
 
 use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
 use Archman\PaymentLib\Alipay\Helper\AESEncryption;
+use Archman\PaymentLib\Alipay\Helper\CertHelper;
 use Archman\PaymentLib\Alipay\Helper\OpenAPIHelper;
 use Archman\PaymentLib\ClientFactoryInterface;
 use Archman\PaymentLib\ClientOption;
@@ -52,6 +53,12 @@ trait OpenAPIRequestSenderTrait
         // TODO 如果没有签名, 但是code为10000. 是否抛出异常?
         if ($signature) {
             (new Validator($this->config))->validateSign($signature, $this->config->getSignType(), $contentStr);
+        }
+
+        // TODO 校验支付宝证书序列号
+        $alipayCertSN = $data['alipay_cert_sn'] ?? '';
+        if ($alipayCertSN && $alipayCertSN !== CertHelper::getCertSN($this->config->getAlipayCert())) {
+            // 抛出异常
         }
 
         $content = $data[self::RESPONSE_CONTENT_FIELD];
