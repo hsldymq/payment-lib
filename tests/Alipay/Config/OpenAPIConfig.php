@@ -41,7 +41,7 @@ class OpenAPIConfig implements OpenAPIConfigInterface
     public function getAlipayPublicKey(): string
     {
         if ($this->certEnabled) {
-            CertHelper::extractPublicKey($this->config['openAPI'][$this->signType]['alipayCert'] ?? '');
+            return CertHelper::extractPublicKey($this->config['openAPI'][$this->signType]['alipayCert'] ?? '');
         }
 
         return $this->config['openAPI'][$this->signType]['alipayPublicKey'] ?? '';
