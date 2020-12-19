@@ -6,6 +6,7 @@ namespace Archman\PaymentLib\Alipay\Signature;
 
 use Archman\PaymentLib\Alipay\Config\MAPIConfigInterface;
 use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
+use Archman\PaymentLib\Exception\ContextualException;
 use Archman\PaymentLib\Exception\SignValidationException;
 
 /**
@@ -65,11 +66,11 @@ class Validator
     private function validateSignRSA(string $signature, string $packedString): bool
     {
         $pk = $this->config->getAlipayPublicKey();
-        $resource = openssl_get_publickey($pk);
+        $resource = openssl_pkey_get_public(self::tryGetPKContent($pk));
         if (!$resource ||
             ($result = openssl_verify($packedString, base64_decode($signature), $resource)) === -1
         ) {
-            throw new SignValidationException(['signType' => 'RSA', 'alipayPublicKey' => $pk], openssl_error_string());
+            throw new SignValidationException(['signType' => 'RSA'], openssl_error_string());
         }
 
         return $result === 1;
@@ -78,11 +79,11 @@ class Validator
     private function validateSignRSA2(string $signature, string $packedString): bool
     {
         $pk = $this->config->getAlipayPublicKey();
-        $resource = openssl_get_publickey($pk);
+        $resource = openssl_pkey_get_public(self::tryGetPKContent($pk));
         if (!$resource ||
             ($result = openssl_verify($packedString, base64_decode($signature), $resource, OPENSSL_ALGO_SHA256)) === -1
         ) {
-            throw new SignValidationException(['signType' => 'RSA2', 'alipayPublicKey' => $pk], openssl_error_string());
+            throw new SignValidationException(['signType' => 'RSA2'], openssl_error_string());
         }
 
         return $result === 1;
@@ -91,11 +92,11 @@ class Validator
     private function validateSignDSA(string $signature, string $packedString): bool
     {
         $pk = $this->config->getAlipayPublicKey();
-        $resource = openssl_get_publickey($pk);
+        $resource = openssl_pkey_get_public(self::tryGetPKContent($pk));
         if (!$resource ||
             ($result = openssl_verify($packedString, base64_decode($signature), $resource, OPENSSL_ALGO_DSS1)) === -1
         ) {
-            throw new SignValidationException(['signType' => 'DSA', 'alipayPublicKey' => $pk], openssl_error_string());
+            throw new SignValidationException(['signType' => 'DSA'], openssl_error_string());
         }
 
         return $result === 1;
@@ -106,5 +107,18 @@ class Validator
         $safeKey = $this->config->getPrivateKey('MD5');
 
         return md5("{$packedString}{$safeKey}") === $signature;
+    }
+
+    private static function tryGetPKContent(string $pathOrContent): string
+    {
+        if (!is_file($pathOrContent)) {
+            return $pathOrContent;
+        }
+
+        $content = file_get_contents($pathOrContent);
+        if ($content === false) {
+            throw new ContextualException([], error_get_last()['message']);
+        }
+        return $content;
     }
 }
