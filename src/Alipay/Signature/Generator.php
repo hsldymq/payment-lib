@@ -6,6 +6,7 @@ namespace Archman\PaymentLib\Alipay\Signature;
 
 use Archman\PaymentLib\Alipay\Config\MAPIConfigInterface;
 use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
+use Archman\PaymentLib\Exception\ContextualException;
 use Archman\PaymentLib\Exception\SignGenerationException;
 
 class Generator
@@ -45,9 +46,9 @@ class Generator
     private function makeSignRSA(string $packedString): string
     {
         $pk = $this->config->getPrivateKey();
-        $resource = openssl_get_privatekey($pk);
+        $resource = openssl_pkey_get_private(self::tryGetPKContent($pk));
         if (!$resource || !openssl_sign($packedString, $sign, $resource)) {
-            throw new SignGenerationException(['signType' => 'RSA', 'privateKey' => $pk], openssl_error_string());
+            throw new SignGenerationException(['signType' => 'RSA'], openssl_error_string());
         }
 
         return base64_encode($sign);
@@ -56,10 +57,9 @@ class Generator
     private function makeSignRSA2(string $packedString): string
     {
         $pk = $this->config->getPrivateKey();
-
-        $resource = openssl_get_privatekey($pk);
+        $resource = openssl_pkey_get_private(self::tryGetPKContent($pk));
         if (!$resource || !openssl_sign($packedString, $sign, $resource, OPENSSL_ALGO_SHA256)) {
-            throw new SignGenerationException(['signType' => 'RSA2', 'privateKey' => $pk], openssl_error_string());
+            throw new SignGenerationException(['signType' => 'RSA2'], openssl_error_string());
         }
 
         return base64_encode($sign);
@@ -68,9 +68,9 @@ class Generator
     private function makeSignDSA(string $packedString): string
     {
         $pk = $this->config->getPrivateKey();
-        $resource = openssl_get_privatekey($pk);
+        $resource = openssl_pkey_get_private(self::tryGetPKContent($pk));
         if (!$resource || !openssl_sign($packedString, $sign, $resource, OPENSSL_ALGO_DSS1)) {
-            throw new SignGenerationException(['signType' => 'DSA', 'privateKey' => $pk], openssl_error_string());
+            throw new SignGenerationException(['signType' => 'DSA'], openssl_error_string());
         }
 
         return base64_encode($sign);
@@ -113,5 +113,18 @@ class Generator
     private function isSignField(string $field_name): bool
     {
         return $field_name === 'sign';
+    }
+
+    private static function tryGetPKContent(string $pathOrContent): string
+    {
+        if (!is_file($pathOrContent)) {
+            return $pathOrContent;
+        }
+
+        $content = file_get_contents($pathOrContent);
+        if ($content === false) {
+            throw new ContextualException([], error_get_last()['message']);
+        }
+        return $content;
     }
 }
