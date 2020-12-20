@@ -46,7 +46,7 @@ class DataModel implements \ArrayAccess
     {
         $obj = new \ReflectionObject($this);
         foreach ($obj->getProperties() as $prop) {
-            $attr = $prop->getAttributes('DataModel')[0] ?? null;
+            $attr = $prop->getAttributes('DataField')[0] ?? null;
             if (!$attr) {
                 continue;
             }
@@ -55,18 +55,18 @@ class DataModel implements \ArrayAccess
                 continue;
             }
 
-            $typeStr = strval($prop->getType());
-            if ($typeStr) {
-                // TODO
-//                $converterName = 'default';
-//                $attr = $prop->getAttributes('DataModelConverter')[0] ?? null;
-//                if ($attr && ($name = $attr->getArguments()[0] ?? null)) {
-//                    $converterName = $name;
+//            $converterAttr = $prop->getAttributes('DataConverter')[0] ?? null;
+//            if ($converterAttr) {
+//                if ($typeStr) {
+//                    $converterName = 'default';
+//
+//                    if ($attr && ($name = $attr->getArguments()[0] ?? null)) {
+//                        $converterName = $name;
+//                    }
 //                }
-            }
+//            }
 
-            $value = $this->data[$fieldName];
-            $prop->setValue($this, $value);
+            $prop->setValue($this, $this->data[$fieldName]);
         }
     }
 }
