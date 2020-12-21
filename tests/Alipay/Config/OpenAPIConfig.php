@@ -81,4 +81,9 @@ class OpenAPIConfig implements OpenAPIConfigInterface
     {
         $this->aesEncEnabled = $enabled;
     }
+
+    public function isSandBox(): bool
+    {
+        return $this->config['openAPI']['isSandbox'] ?? false;
+    }
 }
