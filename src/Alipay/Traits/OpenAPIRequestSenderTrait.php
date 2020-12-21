@@ -26,6 +26,8 @@ trait OpenAPIRequestSenderTrait
 {
     public static string $baseURI = 'https://openapi.alipay.com/gateway.do';
 
+    public static string $sandboxURI = 'https://openapi.alipaydev.com/gateway.do';
+
     private array $latestRequestInfo = [
         'request' => null,
         'response' => null,
@@ -87,7 +89,8 @@ trait OpenAPIRequestSenderTrait
     protected function doSend(ClientInterface $client): ResponseInterface
     {
         $parameters = $this->makeParameters();
-        $request = new Request('POST', self::$baseURI.'?'.Query::build($parameters));
+        $uri = $this->config->isSandBox() ? self::$sandboxURI : $uri = self::$baseURI;
+        $request = new Request('POST', "{$uri}?".Query::build($parameters));
 
         $this->latestRequestInfo = ['request' => $request, 'response' => null];
 
