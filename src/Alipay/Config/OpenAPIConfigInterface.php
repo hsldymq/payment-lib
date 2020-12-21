@@ -70,4 +70,13 @@ interface OpenAPIConfigInterface extends ConfigInterface
      * @return bool
      */
     public function isAESEncryptionEnabled(): bool;
+
+    /**
+     * 是否是沙箱环境配置.
+     *
+     * API会根据此决定请求支付宝生产环境地址还是沙箱地址.
+     *
+     * @return bool
+     */
+    public function isSandBox(): bool;
 }
