@@ -15,7 +15,7 @@ class TradeAppPayTest extends TestCase
     {
         $cases = Config::get('alipay', 'testCases', 'request', 'TradeAppPay');
         foreach ($cases as $each) {
-            $configData = Config::get('alipay', 'config', $each['appID']);
+            $configData = Config::get('alipay', 'config', $each['configName']);
             $config = new OpenAPIConfig($configData, $each['signType']);
 
             $request = (new TradeAppPay($config))

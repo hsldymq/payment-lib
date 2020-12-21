@@ -15,7 +15,7 @@ class TradeCloseTest extends TestCase
     {
         $cases = Config::get('alipay', 'testCases', 'request', 'TradeClose');
         foreach ($cases as $each) {
-            $configData = Config::get('alipay', 'config', $each['appID']);
+            $configData = Config::get('alipay', 'config', $each['configName']);
             $config = new OpenAPIConfig($configData, $each['signType']);
             $config->enableAESEncrypt($each['encrypted'] ?? false);
 
