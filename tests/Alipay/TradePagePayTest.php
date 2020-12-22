@@ -16,11 +16,11 @@ class TradePagePayTest extends TestCase
         $cases = Config::get('alipay', 'testCases', 'request', 'TradePagePay');
         foreach ($cases as $each) {
             $configData = Config::get('alipay', 'config', $each['configName']);
-            $config = new OpenAPIConfig($configData, $each['signType']);
+            $config = new OpenAPIConfig($configData, $each['signType'], $each['certEnabled'] ?? false);
             $config->enableAESEncrypt($each['encrypted'] ?? false);
 
             $request = (new TradePagePay($config))
-                ->setTotalAmount($each['fields']['amount'])
+                ->setTotalAmount($each['fields']['total_amount'])
                 ->setReturnURL($each['fields']['return_url'] ?? null)
                 ->setNotifyURL($each['fields']['notify_url'] ?? null)
                 ->setSubject($each['fields']['subject'])
@@ -29,7 +29,11 @@ class TradePagePayTest extends TestCase
                 ->setBody($each['fields']['body'] ?? null)
                 ->setTimeoutExpress($each['fields']['timeout_express'] ?? null);
 
-            $this->assertEquals($each['parameters'], $request->makeParameters());
+            if (isset($each['html'])) {
+                $this->assertEquals($each['html'], $request->makeFormHTML($each['htmlAutoSubmit'], $each['htmlFormID']));
+            } else {
+                $this->assertEquals($each['parameters'], $request->makeParameters());
+            }
         }
     }
 }
