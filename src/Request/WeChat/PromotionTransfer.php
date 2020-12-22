@@ -49,7 +49,7 @@ class PromotionTransfer implements RequestableInterface, ParameterMakerInterface
         $parameters = ParameterHelper::packValidParameters($this->params);
         $parameters['mch_appid'] = $this->config->getAppID();
         $parameters['mchid'] = $this->config->getMerchantID();
-        $parameters['nonce_str'] = md5(microtime(true));
+        $parameters['nonce_str'] = md5(strval(microtime(true)));
         $parameters['sign'] = (new Generator($this->config))->makeSign($parameters, $this->sign_type);
 
         return $parameters;

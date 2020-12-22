@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Archman\PaymentLib\Alipay;
 
 use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
+use Archman\PaymentLib\Alipay\Traits\OpenAPIEnvTrait;
 use Archman\PaymentLib\Alipay\Traits\OpenAPIExtendableTrait;
 use Archman\PaymentLib\Alipay\Traits\OpenAPIParameterTrait;
 use Archman\PaymentLib\Request\ParameterHelper;
@@ -19,6 +20,7 @@ class TradePagePay implements ParameterMakerInterface
 {
     use OpenAPIExtendableTrait;
     use OpenAPIParameterTrait;
+    use OpenAPIEnvTrait;
 
     private const METHOD = 'alipay.trade.page.pay';
     private const VERSION = '1.0';
@@ -81,10 +83,10 @@ class TradePagePay implements ParameterMakerInterface
             $fields[] = "<input name='{$name}' value='{$value}' type='hidden'>";
         }
 
-        $formID = $formID ?? 'TradePagePay_'.md5(intval(microtime(true) * 1000).random_int(10000, 99999));
+        $formID = $formID ?? 'TradePagePay_'.md5(sprintf("%d%d", intval(microtime(true) * 1000), random_int(10000, 99999)));
         $submitScript = $autoSubmit ? "<script>document.getElementById('{$formID}').submit();</script>" : '';
         $form = "
-            <form id='{$formID}' action='https://openapi.alipay.com/gateway.do' method='POST' enctype='application/x-www-form-urlencoded'>
+            <form id='{$formID}' action='{$this->getBaseUri()}' method='POST' enctype='application/x-www-form-urlencoded'>
                 %s
             </form>{$submitScript}";
         $form = sprintf($form, implode("\n", $fields ?? []));

@@ -17,7 +17,7 @@ class UnifiedOrderTest extends TestCase
             $configData = Config::get('wechat', 'config', $each['appID']);
             $config = new WeChatConfig($configData);
 
-            $outTradeNo = md5(intval(microtime(true) * 1000));
+            $outTradeNo = md5(strval(microtime(true) * 1000));
             $request = (new UnifiedOrder($config))
                 ->setOutTradeNo($outTradeNo)
                 ->setBody($each['fields']['body'])
