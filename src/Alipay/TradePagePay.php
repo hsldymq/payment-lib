@@ -89,7 +89,8 @@ class TradePagePay implements ParameterMakerInterface
             <form id='{$formID}' action='{$this->getBaseUri()}' method='POST' enctype='application/x-www-form-urlencoded'>
                 %s
             </form>{$submitScript}";
-        $form = sprintf($form, implode("\n", $fields ?? []));
+        $indent = str_pad("", 4 * 4, ' ');
+        $form = sprintf($form, implode("\n{$indent}", $fields ?? []));
 
         return $form;
     }
