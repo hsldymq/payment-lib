@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Test\Alipay;
 
-use Archman\PaymentLib\Test\Alipay\Config\OpenAPIConfig;
+use Archman\PaymentLib\Test\Alipay\Config\ConfigLoader;
 use PHPUnit\Framework\TestCase;
 use Archman\PaymentLib\Test\Config;
 use Archman\PaymentLib\Alipay\FundTransOrderQuery;
@@ -13,11 +13,9 @@ class FundTransOrderQueryTest extends TestCase
 {
     public function testMakingOrderQueryParameters()
     {
-        $cases = Config::get('alipay', 'testCases', 'request', 'FundTransOrderQuery');
+        $cases = Config::get('alipay', 'requestDataCases', 'FundTransOrderQuery');
         foreach ($cases as $each) {
-            $configData = Config::get('alipay', 'config', $each['configName']);
-            $config = new OpenAPIConfig($configData, $each['signType']);
-            $config->enableAESEncrypt($each['encrypted'] ?? false);
+            $config = ConfigLoader::loadConfig($each['configName'], $each['aesEnabled'], $each['certEnabled']);
 
             $request = (new FundTransOrderQuery($config))
                 ->setTimestamp(new \DateTime($each['fields']['timestamp']))

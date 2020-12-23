@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Archman\PaymentLib\Test\Alipay;
 
 use Archman\PaymentLib\Alipay\TradeWapPay;
-use Archman\PaymentLib\Test\Alipay\Config\OpenAPIConfig;
+use Archman\PaymentLib\Test\Alipay\Config\ConfigLoader;
 use PHPUnit\Framework\TestCase;
 use Archman\PaymentLib\Test\Config;
 
@@ -13,10 +13,9 @@ class TradeWapPayTest extends TestCase
 {
     public function testMakingParameters()
     {
-        $cases = Config::get('alipay', 'testCases', 'request', 'TradeWapPay');
+        $cases = Config::get('alipay', 'requestDataCases', 'TradeWapPay');
         foreach ($cases as $each) {
-            $configData = Config::get('alipay', 'config', $each['configName']);
-            $config = new OpenAPIConfig($configData, $each['signType']);
+            $config = ConfigLoader::loadConfig($each['configName'], $each['aesEnabled'], $each['certEnabled']);
 
             $request = (new TradeWapPay($config))
                 ->setReturnURL($each['fields']['return_url'] ?? null)

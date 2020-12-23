@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Archman\PaymentLib\Test\Alipay;
 
 use Archman\PaymentLib\Alipay\TradeQuery;
-use Archman\PaymentLib\Test\Alipay\Config\OpenAPIConfig;
+use Archman\PaymentLib\Test\Alipay\Config\ConfigLoader;
 use Archman\PaymentLib\Test\Config;
 use PHPUnit\Framework\TestCase;
 
@@ -13,11 +13,9 @@ class TradeQueryTest extends TestCase
 {
     public function testMakingParameters()
     {
-        $cases = Config::get('alipay', 'testCases', 'request', 'TradeQuery');
+        $cases = Config::get('alipay', 'requestDataCases', 'TradeQuery');
         foreach ($cases as $each) {
-            $configData = Config::get('alipay', 'config', $each['configName']);
-            $config = new OpenAPIConfig($configData, $each['signType']);
-            $config->enableAESEncrypt($each['encrypted'] ?? false);
+            $config = ConfigLoader::loadConfig($each['configName'], $each['aesEnabled'], $each['certEnabled']);
 
             $request = (new TradeQuery($config))
                 ->setTimestamp(new \DateTime($each['fields']['timestamp']))
