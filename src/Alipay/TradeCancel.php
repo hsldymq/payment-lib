@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Alipay;
 
-use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
+use Archman\PaymentLib\Alipay\Config\OpenAPI\CertConfigInterface;
+use Archman\PaymentLib\Alipay\Config\OpenAPI\PKConfigInterface;
 use Archman\PaymentLib\Alipay\Traits\OpenAPIExtendableTrait;
 use Archman\PaymentLib\Alipay\Traits\OpenAPIParameterTrait;
 use Archman\PaymentLib\Alipay\Traits\OpenAPIRequestSenderTrait;
@@ -26,7 +27,7 @@ class TradeCancel implements ParameterMakerInterface
     private const CHARSET = 'utf-8';
     private const RESPONSE_CONTENT_FIELD = 'alipay_trade_cancel_response';
 
-    private OpenAPIConfigInterface $config;
+    private CertConfigInterface|PKConfigInterface $config;
 
     private array $params = [
         'timestamp' => null,
@@ -37,7 +38,7 @@ class TradeCancel implements ParameterMakerInterface
         'out_trade_no' => null,
     ];
 
-    public function __construct(OpenAPIConfigInterface $config)
+    public function __construct(CertConfigInterface|PKConfigInterface $config)
     {
         $this->config = $config;
     }

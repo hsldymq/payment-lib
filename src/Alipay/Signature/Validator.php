@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Alipay\Signature;
 
-use Archman\PaymentLib\Alipay\Config\MAPIConfigInterface;
-use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
+use Archman\PaymentLib\Alipay\Config\OpenAPI\CertConfigInterface;
+use Archman\PaymentLib\Alipay\Config\OpenAPI\PKConfigInterface;
+use Archman\PaymentLib\Alipay\Helper\OpenAPIHelper;
 use Archman\PaymentLib\Exception\ContextualException;
 use Archman\PaymentLib\Exception\SignValidationException;
 
@@ -14,9 +15,9 @@ use Archman\PaymentLib\Exception\SignValidationException;
  */
 class Validator
 {
-    private OpenAPIConfigInterface|MAPIConfigInterface $config;
+    private CertConfigInterface|PKConfigInterface $config;
 
-    public function __construct(OpenAPIConfigInterface|MAPIConfigInterface $config)
+    public function __construct(CertConfigInterface|PKConfigInterface $config)
     {
         $this->config = $config;
     }
@@ -25,20 +26,19 @@ class Validator
      * 验证API响应签名.
      *
      * @param string $signature
-     * @param string $signType
      * @param string $data
      *
      * @return void
      * @throws
      */
-    public function validateSign(string $signature, string $signType, string $data): void
+    public function validateSign(string $signature, string $data): void
     {
-        $this->doValidateSign($signature, $signType, $data);
+        $this->doValidateSign($signature, $data);
     }
 
-    private function doValidateSign(string $signature, string $signType, string $data): bool
+    private function doValidateSign(string $signature, string $data): bool
     {
-        $signType = strtoupper($signType);
+        $signType = strtoupper($this->config->getSignType());
         switch ($signType) {
             case 'RSA':
                 $result = $this->validateSignRSA($signature, $data);
@@ -65,7 +65,7 @@ class Validator
 
     private function validateSignRSA(string $signature, string $data): bool
     {
-        $pk = $this->config->getAlipayPublicKey();
+        $pk = OpenAPIHelper::getAlipayPublicKey($this->config);
         $resource = openssl_pkey_get_public(self::tryGetPKContent($pk));
         if (!$resource ||
             ($result = openssl_verify($data, base64_decode($signature), $resource)) === -1
@@ -78,7 +78,7 @@ class Validator
 
     private function validateSignRSA2(string $signature, string $data): bool
     {
-        $pk = $this->config->getAlipayPublicKey();
+        $pk = OpenAPIHelper::getAlipayPublicKey($this->config);
         $resource = openssl_pkey_get_public(self::tryGetPKContent($pk));
         if (!$resource ||
             ($result = openssl_verify($data, base64_decode($signature), $resource, OPENSSL_ALGO_SHA256)) === -1
@@ -91,7 +91,7 @@ class Validator
 
     private function validateSignDSA(string $signature, string $data): bool
     {
-        $pk = $this->config->getAlipayPublicKey();
+        $pk = OpenAPIHelper::getAlipayPublicKey($this->config);
         $resource = openssl_pkey_get_public(self::tryGetPKContent($pk));
         if (!$resource ||
             ($result = openssl_verify($data, base64_decode($signature), $resource, OPENSSL_ALGO_DSS1)) === -1
@@ -104,7 +104,7 @@ class Validator
 
     private function validateSignMD5(string $signature, string $packedString): bool
     {
-        $safeKey = $this->config->getPrivateKey('MD5');
+        $safeKey = $this->config->getPrivateKey();
 
         return md5("{$packedString}{$safeKey}") === $signature;
     }

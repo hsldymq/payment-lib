@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Alipay\Traits;
 
-use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
+use Archman\PaymentLib\Alipay\Config\OpenAPI\CertConfigInterface;
+use Archman\PaymentLib\Alipay\Config\OpenAPI\PKConfigInterface;
 use Archman\PaymentLib\Alipay\Helper\AESEncryption;
 use Archman\PaymentLib\Alipay\Helper\CertHelper;
 use Archman\PaymentLib\Alipay\Helper\OpenAPIHelper;
@@ -20,7 +21,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * @property OpenAPIConfigInterface $config
+ * @property CertConfigInterface|PKConfigInterface $config
  */
 trait OpenAPIRequestSenderTrait
 {
@@ -52,7 +53,7 @@ trait OpenAPIRequestSenderTrait
         $signature = $data['sign'] ?? null;
         // TODO 如果没有签名, 但是code为10000. 是否抛出异常?
         if ($signature) {
-            (new Validator($this->config))->validateSign($signature, $this->config->getSignType(), $contentStr);
+            (new Validator($this->config))->validateSign($signature, $contentStr);
         }
 
         // TODO 校验支付宝证书序列号
@@ -62,7 +63,7 @@ trait OpenAPIRequestSenderTrait
         }
 
         $content = $data[self::RESPONSE_CONTENT_FIELD];
-        if ($this->config->isAESEncryptionEnabled()) {
+        if ($this->config->isAESEnabled()) {
              $d = AESEncryption::decrypt($content, $this->config->getAESKey());
              try {
                  $content = json_decode($d, true, 512, JSON_THROW_ON_ERROR);

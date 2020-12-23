@@ -4,10 +4,21 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Alipay\Helper;
 
+use Archman\PaymentLib\Alipay\Config\OpenAPI\CertConfigInterface;
+use Archman\PaymentLib\Alipay\Config\OpenAPI\PKConfigInterface;
 use Archman\PaymentLib\Exception\InvalidDataStructureException;
 
 class OpenAPIHelper
 {
+    public static function getAlipayPublicKey(CertConfigInterface|PKConfigInterface $config): string
+    {
+        if ($config instanceof CertConfigInterface) {
+            return CertHelper::extractPublicKey($config->getAlipayCert());
+        } else {
+            return $config->getAlipayPublicKey();
+        }
+    }
+
     /**
      * 从JSON响应中提取response原始字符串.
      * 此方法用于在得到Open API响应时提取出response原始字符串进行验签.

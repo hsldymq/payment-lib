@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Archman\PaymentLib\Alipay\Traits;
 
-use Archman\PaymentLib\Alipay\Config\OpenAPIConfigInterface;
+use Archman\PaymentLib\Alipay\Config\OpenAPI\CertConfigInterface;
+use Archman\PaymentLib\Alipay\Config\OpenAPI\PKConfigInterface;
 
 /**
- * @property OpenAPIConfigInterface $config
+ * @property CertConfigInterface|PKConfigInterface $config
  */
 trait OpenAPIEnvTrait
 {
