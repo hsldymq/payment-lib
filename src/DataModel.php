@@ -7,52 +7,12 @@ namespace Archman\PaymentLib;
 use Archman\PaymentLib\Exception\ContextualException;
 use JetBrains\PhpStorm\Pure;
 
-class DataModel implements \ArrayAccess, \Iterator, \Countable
+class DataModel extends \IteratorIterator implements \ArrayAccess, \Iterator, \Countable
 {
-    private array $data;
-    private array $keys;
-    private int $numKeys;
-    private int $position = 0;
-
-    final public function __construct(array $data)
+    final public function __construct(private array $data)
     {
-        $this->data = $data;
-        $this->numKeys = count($data);
-        $this->keys = array_keys($data);
+        parent::__construct(new \ArrayIterator($this->data));
         $this->assignProps();
-    }
-
-    #[Pure]
-    public function current(): mixed
-    {
-        if ($this->position >= $this->numKeys) {
-            return null;
-        }
-
-        $key = $this->keys[$this->position];
-        return $this->data[$key];
-    }
-
-    public function next(): void
-    {
-        $this->position += ($this->position < $this->numKeys ? 1 : 0);
-    }
-
-    public function rewind(): void
-    {
-        $this->position = 0;
-    }
-
-    #[Pure]
-    public function key(): string|float|int|bool|null
-    {
-        return $this->position < $this->numKeys ? $this->keys[$this->position] : null;
-    }
-
-    #[Pure]
-    public function valid(): bool
-    {
-        return $this->position >= $this->numKeys;
     }
 
     #[Pure]
@@ -77,9 +37,10 @@ class DataModel implements \ArrayAccess, \Iterator, \Countable
         throw new ContextualException(['offset' => $offset], 'unset immutable data model');
     }
 
+    #[Pure]
     public function count(): int
     {
-        return $this->numKeys;
+        return count($this->data);
     }
 
     private function assignProps(): void
