@@ -7,11 +7,11 @@ namespace Archman\PaymentLib;
 use Archman\PaymentLib\Exception\ContextualException;
 use JetBrains\PhpStorm\Pure;
 
-class DataModel implements \ArrayAccess, \Iterator
+class DataModel implements \ArrayAccess, \Iterator, \Countable
 {
-    private array $data = [];
-    private array $keys = [];
-    private int $numKeys = 0;
+    private array $data;
+    private array $keys;
+    private int $numKeys;
     private int $position = 0;
 
     final public function __construct(array $data)
@@ -75,6 +75,11 @@ class DataModel implements \ArrayAccess, \Iterator
     public function offsetUnset($offset): void
     {
         throw new ContextualException(['offset' => $offset], 'unset immutable data model');
+    }
+
+    public function count(): int
+    {
+        return $this->numKeys;
     }
 
     private function assignProps(): void
