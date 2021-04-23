@@ -55,7 +55,7 @@ class FundTransUniTransfer implements ParameterMakerInterface
      *
      * @param string|null $outBizNo
      *
-     * @return $this
+     * @return self
      */
     public function setOutBizNo(?string $outBizNo): self
     {
@@ -86,7 +86,7 @@ class FundTransUniTransfer implements ParameterMakerInterface
      *
      * @param string|null $code
      *
-     * @return $this
+     * @return self
      */
     public function setProductCode(?string $code)
     {
@@ -100,7 +100,7 @@ class FundTransUniTransfer implements ParameterMakerInterface
      *
      * @param string|null $scene
      *
-     * @return $this
+     * @return self
      */
     public function setBizScene(?string $scene): self
     {
@@ -114,7 +114,7 @@ class FundTransUniTransfer implements ParameterMakerInterface
      *
      * @param string|null $title
      *
-     * @return $this
+     * @return self
      */
     public function setOrderTitle(?string $title): self
     {
@@ -128,7 +128,7 @@ class FundTransUniTransfer implements ParameterMakerInterface
      *
      * @param string|null $id
      *
-     * @return $this
+     * @return self
      */
     public function setOriginalOrderID(?string $id): self
     {
@@ -142,7 +142,7 @@ class FundTransUniTransfer implements ParameterMakerInterface
      *
      * @param array|null $info
      *
-     * @return $this
+     * @return self
      * @throws
      */
     public function setPayeeInfo(?array $info): self
@@ -157,7 +157,7 @@ class FundTransUniTransfer implements ParameterMakerInterface
      *
      * @param string|null $remark
      *
-     * @return $this
+     * @return self
      */
     public function setRemark(?string $remark): self
     {
@@ -171,7 +171,7 @@ class FundTransUniTransfer implements ParameterMakerInterface
      *
      * @param string|null $params
      *
-     * @return $this
+     * @return self
      */
     public function setBusinessParams(?string $params): self
     {
