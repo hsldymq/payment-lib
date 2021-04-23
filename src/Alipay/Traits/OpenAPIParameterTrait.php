@@ -33,7 +33,7 @@ trait OpenAPIParameterTrait
         $parameters['timestamp'] = $this->getDatetimeStr();
         $parameters['version'] = self::VERSION;
 
-        if ($this->config instanceof CertConfigInterface && $this->config->isCertEnabled()) {
+        if ($this->config instanceof CertConfigInterface) {
             $parameters['app_cert_sn'] = CertHelper::getCertSN($this->config->getAppCert());
             $parameters['alipay_root_cert_sn'] = CertHelper::getRootCertSN($this->config->getAlipayRootCert());
         }

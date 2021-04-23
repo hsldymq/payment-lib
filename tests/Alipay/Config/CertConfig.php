@@ -50,11 +50,6 @@ class CertConfig implements CertConfigInterface
         return $this->config['openAPI']['alipayRootCert'] ?? '';
     }
 
-    public function isCertEnabled(): bool
-    {
-        return $this->certEnabled;
-    }
-
     public function getAESKey(): string
     {
         return $this->config['openAPI']['aesKey'] ?? '';
