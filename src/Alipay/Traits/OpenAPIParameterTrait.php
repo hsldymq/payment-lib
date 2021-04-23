@@ -33,13 +33,12 @@ trait OpenAPIParameterTrait
         $parameters['timestamp'] = $this->getDatetimeStr();
         $parameters['version'] = self::VERSION;
 
-        $bizContent = json_encode($bizContent ?: new class{}, JSON_THROW_ON_ERROR);
-
         if ($this->config instanceof CertConfigInterface && $this->config->isCertEnabled()) {
             $parameters['app_cert_sn'] = CertHelper::getCertSN($this->config->getAppCert());
             $parameters['alipay_root_cert_sn'] = CertHelper::getRootCertSN($this->config->getAlipayRootCert());
         }
 
+        $bizContent = json_encode($bizContent ?: new class{}, JSON_THROW_ON_ERROR);
         if ($this->config->isAESEnabled()) {
             $parameters['encrypt_type'] = 'AES';
             $bizContent = AESEncryption::encrypt($bizContent, $this->config->getAESKey());
